@@ -1,7 +1,6 @@
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import BaseUserManager
 from django.db import models
-from django.dispatch import receiver
 
 class UserManager(BaseUserManager):
     def _create_user(self, email, password, name, **extra_fields):

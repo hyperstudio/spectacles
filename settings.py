@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     # Our code
     #'specutron', # Analysis
     'app', # Users / admin things
+    'datastore',
 ]
 
 AUTH_USER_MODEL = 'app.User'
@@ -87,6 +88,12 @@ WSGI_APPLICATION = 'wsgi.application'
 # TODO(peter): use Postgres, Haystack.
 DATABASES = {
     'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'spectacles',
+        'USER': 'spectacles',
+        'PASSWORD': 'spectacles',
+    },
+    'sqlite': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
