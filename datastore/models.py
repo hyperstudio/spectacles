@@ -89,3 +89,15 @@ class Annotation(models.Model):
     updated_at = models.DateTimeField(auto_now=True, null=False)
     # Data
     data = JSONField()
+
+    @property
+    def quote(self):
+        return self.data.get('quote', '')
+
+    @property
+    def text(self):
+        return self.data.get('text', '')
+
+    @property
+    def tags(self):
+        return self.data.get('tags', [])

@@ -39,9 +39,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # Libraries
+    'haystack',
     # Our code
     #'specutron', # Analysis
-    'app', # Users / admin things
+    'app',
     'datastore',
 ]
 
@@ -85,7 +86,6 @@ WSGI_APPLICATION = 'wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
-# TODO(peter): use Postgres, Haystack.
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -98,6 +98,14 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
+        'URL': 'http://127.0.0.1:9200/',
+        'INDEX_NAME': 'spectacles',
+    },
+}
+
 
 
 # Password validation
