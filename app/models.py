@@ -47,6 +47,12 @@ class User(AbstractBaseUser):
 
     # Django Internal
 
+    def __unicode__(self):
+        return self.email
+
+    def __str__(self):
+        return str(self.email)
+
     @property
     def is_staff(self):
         return self.is_superuser

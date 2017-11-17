@@ -11,20 +11,24 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
+from envparse import env
+env.read_envfile('.env')
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
-# Quick-start development settings - unsuitable for production
+# Quick-start development settings - unsuitable for PRODUCTION
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
+# SECURITY WARNING: keep the secret key used in PRODUCTION secret!
 SECRET_KEY = 'c5o%6-up-b%f7@vv-+vt^fv1pg61*t^3b$2j0#73g5xn-p&5)q'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# SECURITY WARNING: don't run with debug turned on in PRODUCTION!
+DEBUG = env('DEBUG', True, cast=bool)
+PRODUCTION = env('PRODUCTION', not DEBUG, cast=bool)
+USE_HEROKU = env('USE_HEROKU', False, cast=bool)
 
 ALLOWED_HOSTS = ['spectacles.peterdowns.com', 'localhost']
 
@@ -39,7 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # Libraries
-    'haystack',
+    'django_elasticsearch_dsl',
     # Our code
     #'specutron', # Analysis
     'app',
@@ -87,24 +91,47 @@ WSGI_APPLICATION = 'wsgi.application'
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
 DATABASES = {
-    'default': {
+    'local': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'spectacles',
         'USER': 'spectacles',
         'PASSWORD': 'spectacles',
     },
+    'heroku' : {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': env('HEROKU_PG_NAME', None),
+        'PORT': env('HEROKU_PG_PORT', None),
+        'HOST': env('HEROKU_PG_HOST', None),
+        'USER': env('HEROKU_PG_USER', None),
+        'PASSWORD': env('HEROKU_PG_PASSWORD', None),
+    },
     'sqlite': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
-HAYSTACK_CONNECTIONS = {
-    'default': {
-        'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
-        'URL': 'http://127.0.0.1:9200/',
-        'INDEX_NAME': 'spectacles',
     },
 }
+ELASTICSEARCH_DSL = {
+    'local': {
+        'hosts': 'localhost:9200',
+        'timeout': 30,
+    },
+    'heroku': {
+        'hosts': 'https://{user}:{password}@{host}'.format(
+            user=env('HEROKU_ES_USER', ''),
+            password=env('HEROKU_ES_PASSWORD', ''),
+            host=env('HEROKU_ES_HOST', ''),
+        ),
+        'port': env('HEROKU_ES_PORT', None),
+        'timeout': 30,
+        'use_ssl': True,
+    },
+}
+
+def set_default(d):
+    d['default'] = d['heroku' if USE_HEROKU else 'local']
+
+set_default(DATABASES)
+set_default(ELASTICSEARCH_DSL)
 
 
 

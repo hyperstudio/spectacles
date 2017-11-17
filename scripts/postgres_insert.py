@@ -126,12 +126,15 @@ def insert_annotations():
     annotation_mapping = {}
 
     print('inserting annotations...')
-    for a in jsonlines(annotationfile):
+    for i, a in enumerate(jsonlines(annotationfile)):
+
         # Has to relate to a known document
         uri = a.get('uri', None)
         if not uri:
             continue
         document_slug = a['uri'].rsplit('/', 1)[1]
+        if i % 100 == 0:
+            print('%d -> %s' % (i, document_slug))
         document_id = document_mapping.get(document_slug, None)
         if not document_id:
             continue
@@ -165,7 +168,7 @@ def insert_annotations():
 
 if __name__ == '__main__':
     print('> executing...')
-    insert_users()
-    insert_documents()
+    #insert_users()
+    #insert_documents()
     insert_annotations()
     print('> done.')
