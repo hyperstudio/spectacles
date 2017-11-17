@@ -36,7 +36,7 @@ def jsonlines(fpath):
 def dt(ts):
     if isinstance(ts, datetime.datetime):
         return ts
-    return datetime.datetime.utcfromtimestamp(float(ts) / 1000))
+    return datetime.datetime.utcfromtimestamp(float(ts) / 1000)
 
 
 @transaction.atomic
@@ -55,6 +55,7 @@ def insert_users():
         )
         u.save()
         mapping[d['id']] = u.id
+        print(u.id)
 
     print('writing mapping...')
     with open('./user_mapping.json', 'w') as fout:
@@ -85,7 +86,7 @@ def insert_documents():
         if creator_id:
             creator = User.objects.get(id=creator_id)
         else:
-            creator = User.objects.get(id=1)
+            creator = User.objects.get(email='downs@mit.edu')
         doc = Document.objects.create(
             state=doc_state,
             title=d['title'],
