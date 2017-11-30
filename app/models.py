@@ -2,6 +2,9 @@ from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import BaseUserManager
 from django.db import models
 
+from app.utils import DictModel
+
+
 class UserManager(BaseUserManager):
     def _create_user(self, email, password, name, **extra_fields):
         if not email:
@@ -28,11 +31,15 @@ class UserManager(BaseUserManager):
         return self._create_user(email, password, name, **extra_fields)
 
 
-class User(AbstractBaseUser):
+class User(DictModel, AbstractBaseUser):
     USERNAME_FIELD = 'email'
     EMAIL_FIELD = 'email'
     REQUIRED_FIELDS = ['name']
     objects = UserManager()
+
+    _json_fields = (
+            'id', 'email', 'name', 'last_login',
+            'date_joined', 'is_active', 'is_superuser')
 
     id = models.AutoField(primary_key=True)
     email = models.EmailField(unique=True, null=False, blank=False)

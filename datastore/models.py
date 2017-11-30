@@ -8,8 +8,10 @@ from django.contrib.postgres.fields import JSONField
 
 from enumfields import EnumIntegerField
 from enumfields import Enum
+from enumfields import IntEnum
 
-# Create your models here.
+from app.utils import DictModel
+
 
 class Archive(models.Model):
     id = models.AutoField(primary_key=True)
@@ -27,12 +29,16 @@ class Archive(models.Model):
     updated_at = models.DateTimeField(auto_now=True, null=False)
 
 
-class DocumentState(Enum):
+class DocumentState(IntEnum):
     DELETED = 0
     DRAFT = 1
     PUBLISHED = 2
 
-class Document(models.Model):
+class Document(DictModel, models.Model):
+    _json_fields = (
+            'id', 'title', 'created_at', 'updated_at',
+            'author', 'creator')
+
     # Internal
     id = models.AutoField(primary_key=True)
     creator = models.ForeignKey(

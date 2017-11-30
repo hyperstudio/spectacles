@@ -1,8 +1,8 @@
 [x] Spec out ES document model
 [x] Fully index all data on Heroku servers for further development
 [ ] Demo
-  [ ] Set up React routes
-  [ ] Display a list of all documents
+  [X] Set up React routes
+  [X] Display a list of all documents
   [ ] Display a single document
   [ ] Search
     [ ] Write search queries, check that model supports it

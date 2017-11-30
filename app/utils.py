@@ -35,7 +35,7 @@ def to_dict(blob, followed_relation=False):
 def to_json(blob):
     return json.dumps(to_dict(blob), cls=DjangoJSONEncoder)
 
-
+# TODO: implement Enum serialization
 def props_template(path):
     def _1(fn):
         def _2(request, *args, **kwargs):
@@ -45,7 +45,7 @@ def props_template(path):
                 context[PROPS] = to_json(props)
             else:
                 context = {PROPS: to_json(context), request: request}
-            print('path:', path)
+            print("Looking for template %s" % path)
             return render(request, path, context)
         return _2
     return _1
