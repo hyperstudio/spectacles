@@ -15,7 +15,11 @@ from django.db import transaction
 sys.path.append('..')  # Root of django app
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings')
 django.setup()
-
+from django.conf import settings
+print('ES_IGNORE_SIGNALS', settings.ES_IGNORE_SIGNALS)
+print('ES_AUTO_REFRESH', settings.ES_AUTO_REFRESH)
+print('USE_HEROKU', settings.USE_HEROKU)
+print(settings.DATABASES['default'])
 from app.models import User
 from datastore.models import Annotation
 from datastore.models import Archive
@@ -110,7 +114,6 @@ def insert_documents():
         fout.write(dumps(document_mapping))
 
 
-@transaction.atomic
 def insert_annotations():
     print('reading mapping...')
     document_mapping = {}
@@ -124,9 +127,25 @@ def insert_annotations():
     assert user_mapping
 
     annotation_mapping = {}
+    count = 0
+    try:
+        with open('./annotation_mapping.jsonlines', 'r') as fin:
+            for line in fin.readlines():
+                annotation_mapping.update(loads(line))
+                count += 1
+        print('loaded %d lines' % count)
+    except IOError:
+        annotation_mapping = {}
 
     print('inserting annotations...')
+    to_create = []
+    new_mapping = {}
+    user_cache = {}
+    document_cache = {}
     for i, a in enumerate(jsonlines(annotationfile)):
+        old_uuid = a.get('uuid', None)
+        if annotation_mapping.get(old_uuid) or not old_uuid:
+            continue
 
         # Has to relate to a known document
         uri = a.get('uri', None)
@@ -138,20 +157,29 @@ def insert_annotations():
         document_id = document_mapping.get(document_slug, None)
         if not document_id:
             continue
-        document = Document.objects.get(id=document_id)
         # Has to relate to a known user
         creator_email = a['user'] or None
         creator = None
         if creator_email:
             try:
-                creator = User.objects.get(email=creator_email)
+                creator = user_cache.get(creator_email, None)
+                if creator == -1:
+                    continue
+                if not creator:
+                    creator = User.objects.get(email=creator_email)
+                    user_cache[creator_email] = creator
             except User.DoesNotExist:
+                user_cache[creator_email] = -1
                 continue
+
+        document = document_cache.get(document_id, None)
+        if not document:
+            document = Document.objects.get(id=document_id)
+            document_cache[document_id] = document
         # The UUIDs used in Mongo are not compatible with our new data model,
         # and need to be replaced.
-        old_uuid = a['uuid']
         a['uuid'] = uuid.uuid4().hex
-        ann = Annotation.objects.create(
+        ann = Annotation(
             uuid=a['uuid'],
             created_at=dt(a['created']) if a['created'] else datetime.datetime.utcnow(),
             updated_at=dt(a['updated']) if a['updated'] else datetime.datetime.utcnow(),
@@ -159,11 +187,17 @@ def insert_annotations():
             document=document,
             data=json.loads(dumps(a))
         )
-        ann.save()
+        to_create.append(ann)
         annotation_mapping[old_uuid] = ann.uuid
-
-    with open('./annotation_mapping.json', 'w') as fout:
-        fout.write(dumps(annotation_mapping))
+        new_mapping[old_uuid] = ann.uuid
+        if len(to_create) >= 500:
+            print('--> inserting')
+            Annotation.objects.bulk_create(to_create)
+            with open('./annotation_mapping.jsonlines', 'a') as fout:
+                fout.write(dumps(new_mapping))
+                fout.write('\n')
+            to_create = []
+            new_mapping = {}
 
 
 if __name__ == '__main__':

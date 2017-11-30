@@ -1,0 +1,19 @@
+[x] Spec out ES document model
+[x] Fully index all data on Heroku servers for further development
+[ ] Demo
+  [ ] Set up React routes
+  [ ] Display a list of all documents
+  [ ] Display a single document
+  [ ] Search
+    [ ] Write search queries, check that model supports it
+    [ ] Demoable full-text search over documents, annotations
+  [ ] Add annotator.js to the document display page to show all annotations for a single document
+  [ ] Implement annotation APIs
+    [ ] CRUD
+    [ ] Authentication
+[ ] Demo v2
+  [ ] User auth routes (login, signup, logout)
+  [ ] Ingestion
+    [ ] Text processing through worker queues
+    [ ] Upload of texts
+

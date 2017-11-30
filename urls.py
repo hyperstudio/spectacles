@@ -15,7 +15,12 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
+from app import views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    #url(r'^archives$', views.archives),
+    #url(r'^archives/(\d+)$', views.archive),
+    #url(r'^documents$', views.documents),
+    #url(r'^documents/(\d+)$', views.document),
 ]

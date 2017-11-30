@@ -15,7 +15,7 @@ class DocumentAdmin(admin.ModelAdmin):
     ordering = ('id',)
 
 class AnnotationAdmin(admin.ModelAdmin):
-    list_display = ('uuid', 'document', 'creator', 'created_at', 'updated_at')
+    list_display = ('uuid', 'creator', 'created_at', 'updated_at')
     list_filter = ('created_at', 'updated_at')
     search_fields = ('uuid', 'creator')
     ordering = ('created_at',)
