@@ -53,5 +53,5 @@ def props_template(path):
 
 def json_response(fn):
     def inner(*args, **kwargs):
-        return JsonResponse(fn(*args, **kwargs))
+        return JsonResponse(fn(*args, **kwargs), safe=False)
     return inner

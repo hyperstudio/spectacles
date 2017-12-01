@@ -36,8 +36,8 @@ class DocumentState(IntEnum):
 
 class Document(DictModel, models.Model):
     _json_fields = (
-            'id', 'title', 'created_at', 'updated_at',
-            'author', 'creator')
+            'id', 'title', 'created_at', 'updated_at', 'text', 'author',
+            'creator')
 
     # Internal
     id = models.AutoField(primary_key=True)
@@ -80,7 +80,11 @@ class Upload(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, null=False)
     updated_at = models.DateTimeField(auto_now=True, null=False)
 
-class Annotation(models.Model):
+class Annotation(DictModel, models.Model):
+    _json_fields = (
+            'uuid', 'creator', 'created_at', 'updated_at',
+            'data')
+
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     # Internal
     document = models.ForeignKey(
