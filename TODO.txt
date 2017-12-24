@@ -3,16 +3,19 @@
 [ ] Demo
   [X] Set up React routes
   [X] Display a list of all documents
-  [ ] Display a single document
+  [X] Display a single document
   [ ] Search
     [ ] Write search queries, check that model supports it
     [ ] Demoable full-text search over documents, annotations
   [ ] Add annotator.js to the document display page to show all annotations for a single document
   [ ] Implement annotation APIs
-    [ ] CRUD
-    [ ] Authentication
+    [ ] Annotation CRUD
+    [X] Authentication
 [ ] Demo v2
-  [ ] User auth routes (login, signup, logout)
+  [x] User auth routes
+    [x] login
+    [x] logout
+    [ ] register
   [ ] Ingestion
     [ ] Text processing through worker queues
     [ ] Upload of texts

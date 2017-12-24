@@ -40,7 +40,7 @@ class LoginPage extends React.Component {
                 <div className="login">
                     <h3> Log In </h3>
                     {this.renderError()}
-                    <form method="post" action='/login'>
+                    <form method="post" action='/auth/login'>
                         <input type="hidden"
                                name="csrfmiddlewaretoken"
                                value={this.props.csrftoken}/>

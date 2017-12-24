@@ -51,9 +51,9 @@ INSTALLED_APPS = [
 ]
 
 AUTH_USER_MODEL = 'app.User'
-LOGIN_URL = 'login'
-LOGIN_REDIRECT_URL = 'home'
-LOGOUT_REDIRECT_URL = 'index'
+LOGIN_URL = 'app-login'
+LOGIN_REDIRECT_URL = 'app-docs'
+LOGOUT_REDIRECT_URL = 'app-login'
 APPEND_SLASH = False
 
 MIDDLEWARE = [

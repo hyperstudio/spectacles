@@ -12,9 +12,22 @@ class Documents extends React.Component {
     }
 
     render() {
-        return <div className="all-documents">
+        return <div className="documents-page">
+          <div className="user-info">{this.renderUser()}</div>
+          <div className="all-documents">
             {this.props.documents.map((d) => <DocumentEntry key={d.id} document={d}/>)}
+          </div>;
         </div>;
+    }
+
+    renderUser() {
+      let name = 'Anonymous';
+      let email = '?';
+      if (this.props.user) {
+          name = this.props.user.name;
+          email = this.props.user.email;
+      }
+      return <h1>{name} ({email})</h1>
     }
 }
 
