@@ -10,5 +10,15 @@ urlpatterns = [
     url(r'^auth/logout$', views.logout, name='app-logout'),
 
     url(r'^api/token$', views.api_token, name='api-token'),
+
+    url(r'^api/store/(\d+)$',
+        views.api_store_crud,
+        name='api-store-crud'),
+    url(r'^api/store/(\d+)/(\d+)$',
+        views.api_store_crud,
+        name='api-store-crud'),
+    url(r'^api/store/(\d+)/search$',
+        views.api_store_search,
+        name='api-store-search'),
 ]
 

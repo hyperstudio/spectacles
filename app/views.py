@@ -28,12 +28,14 @@ from datastore.models import Document
 @ensure_csrf_cookie
 @props_template('app/documents.html')
 def documents(request):
-    fields = set(Document._json_fields)
-    fields.remove('text')
-    docs = Document.objects.defer('text')[:100]
     user = request.user
     if not user.is_authenticated:
         user = None
+    # Fetch the documents without the 'text' attribute, because for the listing
+    # view it's unnecessary.
+    fields = set(Document._json_fields)
+    fields.remove('text')
+    docs = Document.objects.defer('text')[:100]
     return {
         'documents': to_dict(docs, fields=fields),
         'user': to_dict(user),
@@ -45,25 +47,44 @@ def documents(request):
 @props_template('app/document.html')
 def document(request, document_id):
     doc = get_object_or_404(Document, id=document_id)
-    annotations = doc.annotations.all()
     return {
         'document': doc,
-        'annotations': annotations,
+        'annotations': doc.annotations.all(),
     }
 
 
 @require_GET
-#@login_required
+@login_required
 @json_response
 def api_token(request):
-    #https://spectacles.cc/api/token
-    user = request.user
-    if user.is_authenticated:
-        user_id = user.id
-    else:
-        user_id = None
-    token = generate_consumer_token(user.id)
+    token = generate_consumer_token(request.user.id)
     return token
+
+
+@ensure_csrf_cookie
+@json_response
+def api_store_crud(request, document_id, annotation_id=None):
+    # TODO: different things on different method
+    doc = get_object_or_404(Document, id=document_id)
+    if annotation_id:
+        raise NotImplementedError('annotation fetch')
+    annotations = doc.annotations.all()
+    annotations = [a.data for a in annotations]
+    # TODO: weird URI and permissions updating shouldn't have to happen
+    for a in annotations:
+        a['uri'] = document_id
+        a['permissions'] = {
+            'read': [],
+            'update': [],
+            'delete': [],
+            'admin': [],
+        }
+    return to_dict(annotations)
+
+@ensure_csrf_cookie
+@json_response
+def api_store_search(request, document_id):
+    raise NotImplementedError('search')
 
 
 @require_http_methods(['POST', 'GET'])
@@ -73,6 +94,9 @@ def login(request):
     props = {
         'csrftoken': csrf.get_token(request),
     }
+    next_ = request.GET.get('next', None)
+    if next_ is not None:
+        props['next'] = next_
 
     if request.method == 'POST':
         username = request.POST['username']
@@ -80,27 +104,19 @@ def login(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             auth_login(request, user)
+            if next_ is not None:
+                return redirect(next_)
             return redirect('app-root')
-        else:
-            props.update({
-                'username': username,
-                'password': password,
-                'error': True,
-            })
-    next_ = request.GET.get('next')
-    if next_ is not None:
-        props['next'] = next_
-    path = 'art/login.html'
+        props.update({
+            'username': username,
+            'password': password,
+            'error': True,
+        })
     return props
-    #context = {PROPS: to_json(props), request: request}
-    #print('context:', context)
-    #return render(request, path, context)
 
 
 @require_http_methods(['POST', 'GET'])
 @ensure_csrf_cookie
 def logout(request):
-    print('in logout()')
     auth_logout(request)
-    print('returning a redirect')
     return redirect('app-root')

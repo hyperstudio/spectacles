@@ -26,21 +26,35 @@ class Document extends React.Component {
         tokenUrl: '/api/token',
       })
       .addPlugin('Store', {
-        prefix: '/api',
+        prefix: `/api/store/${this.props.document.id}`,
         urls: {
-          create: '/annotations',
-          update: '/annotations/:id',
-          destroy: '/annotations/:id',
-          search: '/search',
+          create:  '',
+          read:    '',
+          update:  '/:id',
+          destroy: '/:id',
+          search:  '/search',
         },
         annotationData: {
           // TODO: what to do about this ID?
           uri: this.props.document.id,
         },
-        loadFromSearch: {
-          uri: this.props.document.id,
-        },
+        //loadFromSearch: {
+        //  uri: this.props.document.id,
+        //},
+      })
+      .addPlugin('RichText', {
+        editor_enabled: true,
+        tinymce: {
+          selector: "li.annotator-item textarea",
+          plugins: "media image insertdatetime link code",
+          menubar: false,
+          toolbar_items_size: 'small',
+          extended_valid_elements : "iframe[src|frameborder|style|scrolling|class|width|height|name|align|id]",
+          toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media rubric | code ",
+    		}
       });
+    window.ANN = ann;
+    console.log('ANN:', window.ANN);
     this.state.ann = ann;
   }
 
@@ -53,9 +67,13 @@ class Document extends React.Component {
     return <div className="document">
       <div className="document-title">{doc.title}</div>
       <div className="document-author">{doc.author}</div>
-      <div className="document-content"
-           ref="documentContent"
-           dangerouslySetInnerHTML={{__html: doc.text}}>
+      <div className="document-content" ref="documentContent">
+        // For compatibility with existing annotation range definitions;
+        // the previous site must have introduced this div wrapper.
+        <div className="document-content-inner"
+             ref="documentContentInner"
+             dangerouslySetInnerHTML={{__html: doc.text}}>
+        </div>
       </div>
     </div>;
   }
