@@ -1,6 +1,8 @@
-# -*- coding: utf-8 -*-
+# coding: utf-8
 from __future__ import unicode_literals
+from __future__ import print_function
 import pdb
+import json
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login as auth_login
@@ -60,26 +62,49 @@ def api_token(request):
     token = generate_consumer_token(request.user.id)
     return token
 
+def _clean_ann(a, document_id):
+    # TODO: weird URI and permissions updating shouldn't have to happen
+    a['uri'] = document_id
+    a['permissions'] = {
+        'read': [],
+        'update': [],
+        'delete': [],
+        'admin': [],
+    }
+    return a
+
+def _clean_annotations(annotations, document_id):
+    for a in annotations:
+        yield _clean_ann(a.data, document_id)
+
 
 @ensure_csrf_cookie
 @json_response
 def api_store_crud(request, document_id, annotation_id=None):
-    # TODO: different things on different method
     doc = get_object_or_404(Document, id=document_id)
-    if annotation_id:
-        raise NotImplementedError('annotation fetch')
-    annotations = doc.annotations.all()
-    annotations = [a.data for a in annotations]
-    # TODO: weird URI and permissions updating shouldn't have to happen
-    for a in annotations:
-        a['uri'] = document_id
-        a['permissions'] = {
-            'read': [],
-            'update': [],
-            'delete': [],
-            'admin': [],
-        }
-    return to_dict(annotations)
+
+    if request.method == 'GET':
+        return to_dict(list(_clean_annotations(
+            doc.annotations.all(),
+            document_id
+        )))
+
+    if request.method == 'PUT':
+        ann = doc.annotations.filter(data__id=annotation_id)
+        if ann.exists():
+            ann = ann[0]
+        else:
+            raise NotImplementedError('404!')
+        try:
+            updated = json.loads(request.body)
+        except (TypeError, ValueError):
+            raise NotImplementedError('400!')
+
+        ann.data.update(updated)
+        ann.save()
+        return to_dict(_clean_ann(ann.data, document_id))
+
+    raise NotImplementedError(request.method)
 
 @ensure_csrf_cookie
 @json_response

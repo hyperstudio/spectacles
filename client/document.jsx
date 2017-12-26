@@ -1,8 +1,23 @@
 'use strict';
 var React = require('react');
 var DOM = require('react-dom');
-var $ = require('jquery');
+var Cookie = require('js-cookie');
+var $ = window.$; // defined by contrib on page
 
+function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+$.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+      console.log('SENDING');
+        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+            var csrf = Cookie.get('csrftoken');
+            console.log('csrf?', csrf);
+            xhr.setRequestHeader("X-CSRFToken", csrf);
+        }
+    }
+});
 
 
 class Document extends React.Component {
@@ -68,8 +83,8 @@ class Document extends React.Component {
       <div className="document-title">{doc.title}</div>
       <div className="document-author">{doc.author}</div>
       <div className="document-content" ref="documentContent">
-        // For compatibility with existing annotation range definitions;
-        // the previous site must have introduced this div wrapper.
+        {/* For compatibility with existing annotation range definitions; */}
+        {/* the previous site must have introduced this div wrapper */}
         <div className="document-content-inner"
              ref="documentContentInner"
              dangerouslySetInnerHTML={{__html: doc.text}}>

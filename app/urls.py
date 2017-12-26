@@ -11,13 +11,13 @@ urlpatterns = [
 
     url(r'^api/token$', views.api_token, name='api-token'),
 
-    url(r'^api/store/(\d+)$',
+    url(r'^api/store/(?P<document_id>\d+)$',
         views.api_store_crud,
         name='api-store-crud'),
-    url(r'^api/store/(\d+)/(\d+)$',
+    url(r'^api/store/(?P<document_id>\d+)/(?P<annotation_id>[0-9a-f-]+)$',
         views.api_store_crud,
         name='api-store-crud'),
-    url(r'^api/store/(\d+)/search$',
+    url(r'^api/store/(?P<document_id>\d+)/search$',
         views.api_store_search,
         name='api-store-search'),
 ]
