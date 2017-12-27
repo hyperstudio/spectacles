@@ -40,6 +40,10 @@ class Document extends React.Component {
       .addPlugin('Auth', {
         tokenUrl: '/api/token',
       })
+      .addPlugin('Tags', {})
+      .addPlugin('Permissions', {
+        user: this.props.user.email,
+      })
       .addPlugin('Store', {
         prefix: `/api/store/${this.props.document.id}`,
         urls: {
@@ -62,10 +66,27 @@ class Document extends React.Component {
         tinymce: {
           selector: "li.annotator-item textarea",
           plugins: "media image insertdatetime link code",
-          menubar: false,
           toolbar_items_size: 'small',
           extended_valid_elements : "iframe[src|frameborder|style|scrolling|class|width|height|name|align|id]",
-          toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media rubric | code ",
+          toolbar: [
+            'undo',
+            'redo',
+            '|',
+            'styleselect',
+            '|',
+            'bold',
+            'italic',
+            '|',
+            'bullist',
+            'numlist',
+            'outdent',
+            'indent',
+            '|',
+            'link',
+            'image',
+            'media',
+            'rubric'
+          ].join(' '),
     		}
       });
     window.ANN = ann;

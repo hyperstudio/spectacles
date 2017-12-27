@@ -3,6 +3,8 @@ from __future__ import unicode_literals
 from __future__ import print_function
 import pdb
 import json
+import uuid
+from datetime import datetime
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login as auth_login
@@ -26,7 +28,8 @@ from datastore.models import Annotation
 from datastore.models import Document
 
 
-@require_http_methods(['GET'])
+@require_GET
+@login_required
 @ensure_csrf_cookie
 @props_template('app/documents.html')
 def documents(request):
@@ -44,7 +47,8 @@ def documents(request):
     }
 
 
-@require_http_methods(['GET'])
+@require_GET
+@login_required
 @ensure_csrf_cookie
 @props_template('app/document.html')
 def document(request, document_id):
@@ -54,6 +58,7 @@ def document(request, document_id):
         'annotations': doc.annotations.all(),
     }
 
+# TODO: move these api views to a separate file?
 
 @require_GET
 @login_required
@@ -78,9 +83,14 @@ def _clean_annotations(annotations, document_id):
         yield _clean_ann(a.data, document_id)
 
 
+@require_http_methods(['GET', 'POST', 'PUT', 'DELETE'])
+@login_required
 @ensure_csrf_cookie
 @json_response
 def api_store_crud(request, document_id, annotation_id=None):
+    print('request.method =', request.method)
+    print('  document_id =', document_id)
+    print('  annotation_id =', annotation_id)
     doc = get_object_or_404(Document, id=document_id)
 
     if request.method == 'GET':
@@ -88,6 +98,60 @@ def api_store_crud(request, document_id, annotation_id=None):
             doc.annotations.all(),
             document_id
         )))
+
+    if request.method == 'DELETE':
+        ann = doc.annotations.filter(data__id=annotation_id)
+        if ann.exists():
+            ann = ann[0]
+        else:
+            raise NotImplementedError('404!')
+        ann.delete()
+        return None
+
+    if request.method == 'POST':
+        try:
+            req_data = json.loads(request.body)
+        except (TypeError, ValueError):
+            raise NotImplementedError('400!')
+        new_id = uuid.uuid4()
+        now = datetime.utcnow()
+
+        # Can't end up passing through a Lazy object wrapper (request.user)
+        # because the elasticsearch-dsl code doesn't handle it well.
+        user = request.user
+        if hasattr(user, '_wrapped'):
+            user = user._wrapped
+
+        ann_data = {
+            'id': new_id.hex,
+            'annotator_schema_version': 'v1.0',
+            'created': now.isoformat(),
+            'updated': now.isoformat(),
+            'text': req_data['text'],
+            'quote': req_data['quote'],
+            'uri': req_data['uri'],
+            'ranges': req_data['ranges'],
+            'user': user.email,
+            'consumer': 'spectacles',
+            'tags': req_data.get('tags', []),
+            'permissions': req_data.get('permissions', {
+                'read': [],
+                'admin': [],
+                'update': [],
+                'delete': [],
+                '_default': True,
+            }),
+        }
+        ann = Annotation(
+            uuid=new_id,
+            created_at=now,
+            updated_at=now,
+            creator=user,
+            document=doc,
+            data=ann_data,
+        )
+        ann.save()
+        return to_dict(_clean_ann(ann.data, document_id))
 
     if request.method == 'PUT':
         ann = doc.annotations.filter(data__id=annotation_id)
@@ -111,6 +175,8 @@ def api_store_crud(request, document_id, annotation_id=None):
 def api_store_search(request, document_id):
     raise NotImplementedError('search')
 
+
+# TODO: clean up this views file?
 
 @require_http_methods(['POST', 'GET'])
 @ensure_csrf_cookie

@@ -20,3 +20,7 @@
     [ ] Text processing through worker queues
     [ ] Upload of texts
 
+
+[ ] use pre-fetched annotations (swap out Store abstraction)
+[ ] rich text editing
+[ ] allow updating of saved annotations?

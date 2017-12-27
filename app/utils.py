@@ -46,11 +46,16 @@ def props_template(path):
                 return context
             if isinstance(context, tuple):
                 context, kwargs = context
+
+            user = request.user if request.user.is_authenticated else None
+
             props = context.get(PROPS, None)
             if props:
+                props.setdefault('user', user)
                 context[PROPS] = to_json(props, **kwargs)
             else:
                 props = context
+                props.setdefault('user', user)
                 context = {
                     PROPS: to_json(props, **kwargs),
                     request: request
