@@ -18,8 +18,7 @@ urlpatterns = [
         views.api_store_crud,
         name='api-store-crud'),
 
-    url(r'^api/search/documents$', views.api_search_documents, name='api-search-documents'),
-    url(r'^api/search/annotations$', views.api_search_annotations, name='api-search-annotations'),
+    url(r'^api/search$', views.api_search, name='api-search'),
 
     #url(r'^api/documents/(?P<document_id>\d+)$', views.api_document, name='api-document'),
     #url(r'^api/annotations$', views.api_annotations, name='api-annotations'),

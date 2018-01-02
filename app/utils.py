@@ -4,6 +4,7 @@ from django.db.models.query import QuerySet
 from django.core.serializers.json import DjangoJSONEncoder
 from django.http.response import HttpResponseBase
 import json
+import pdb
 
 PROPS = 'PROPS'
 
@@ -22,14 +23,17 @@ class DictModel():
 
 
 def to_dict(blob, **kwargs):
-    if isinstance(blob, dict):
-        return {key: to_dict(value, **kwargs) for key, value in blob.items()}
-    if isinstance(blob, list):
-        return [to_dict(value, **kwargs) for value in blob]
-    if isinstance(blob, DictModel):
-        return blob.to_dict(**kwargs)
-    if isinstance(blob, QuerySet):
-        return [to_dict(v, **kwargs) for v in blob]
+    try:
+        if isinstance(blob, dict):
+            return {key: to_dict(value, **kwargs) for key, value in blob.items()}
+        if isinstance(blob, list):
+            return [to_dict(value, **kwargs) for value in blob]
+        if isinstance(blob, DictModel):
+            return blob.to_dict(**kwargs)
+        if isinstance(blob, QuerySet):
+            return [to_dict(v, **kwargs) for v in blob]
+    except Exception as e:
+        pdb.set_trace()
     return blob
 
 

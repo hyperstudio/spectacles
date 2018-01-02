@@ -7,7 +7,7 @@ from django.conf import settings
 class ESModel(DictModel):
     _json_fields = []
 
-    def to_dict(self):
+    def to_dict(self, **kwargs):
         data = DocType.to_dict(self)
         meta = self.meta.to_dict()
         data['_meta'] = meta
@@ -19,7 +19,7 @@ document_index.settings(
     number_of_replicas=0
 )
 @document_index.doc_type
-class ESDocument(DocType, ESModel):
+class ESDocument(ESModel, DocType):
     id = fields.IntegerField(attr='id')
     creator = fields.ObjectField(properties={
         'email': fields.TextField(),
@@ -44,7 +44,7 @@ annotation_index.settings(
     number_of_replicas=0
 )
 @annotation_index.doc_type
-class ESAnnotation(DocType, ESModel):
+class ESAnnotation(ESModel, DocType):
     uuid = fields.TextField(attr='uuid')
     creator = fields.ObjectField(properties={
         'email': fields.TextField(),
@@ -74,9 +74,3 @@ class ESAnnotation(DocType, ESModel):
         model = Annotation
         ignore_signals = settings.ES_IGNORE_SIGNALS
         auto_refresh = settings.ES_AUTO_REFRESH
-
-    def to_dict(self):
-        data = DocType.to_dict(self)
-        meta = self.meta.to_dict()
-        data['_meta'] = meta
-        return data

@@ -72,7 +72,7 @@ class SearchPage extends React.Component {
             uri: '/api/search',
             body: payload,
             headers: {
-                'X-CSRFToken': Cookies.get('csrftoken'),
+                'X-CSRFToken': Cookie.get('csrftoken'),
             },
             json: true,
         }, function(error, response, body) {
@@ -85,8 +85,8 @@ class SearchPage extends React.Component {
                 return;
             }
             // TODO: better state replacement over time
-            let url = '/search/' + encodeURI(query);
-            history.replaceState({}, '', url);
+            //let url = '/search/' + encodeURI(query);
+            //history.replaceState({}, '', url);
             S.setState({
                 results: body.results,
                 complete: 'done',
@@ -111,7 +111,6 @@ class SearchPage extends React.Component {
             <div className="body gray">
                 <div className="search-bar body gray">
                     <div className="search-bar-input">
-                        <h1 className="search-bar-title"> Search /</h1>
                         <input className="search-bar-query"
                                    type="text"
                                    placeholder="What are you looking for?"

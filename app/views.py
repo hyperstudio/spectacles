@@ -177,14 +177,22 @@ def api_store_crud(request, document_id, annotation_id=None):
 @login_required
 @ensure_csrf_cookie
 @json_response
-def api_search_documents(request):
-    fields = set(Document._json_fields)
-    fields.remove('text')
+def api_search(request):
     try:
         req = json.loads(request.body)
     except (TypeError, ValueError):
         raise NotImplementedError('400!')
-    return to_dict(find_documents(req['query']), fields=fields)
+    print('query:', req['query'])
+    fields = set(Document._json_fields)
+    fields.remove('text')
+
+    docs_r = list(find_documents(req['query']).hits)
+    anns_r = list(find_annotations(req['query']).hits)
+
+    return {
+        'documents': to_dict(docs_r, fields=fields),
+        'annotations': to_dict(anns_r),
+    }
 
 @require_POST
 @login_required
