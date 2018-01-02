@@ -62,7 +62,10 @@ class DocumentPage extends React.Component {
   constructor(props) {
     super(props);
     console.log(this.props);
-    this.state = { annotations: this.props.annotations || []};
+    this.state = {
+      annotations: this.props.annotations || [],
+      columnView: 'annotations',
+    };
   }
   componentDidMount() {
     console.log('componentDidMount()\n');
@@ -180,9 +183,17 @@ class DocumentPage extends React.Component {
 
     return <div className="document-page main">
       <div className="page-header">
-        <a className="nav-item nav-archive" href="/documents"> Example Archive </a>
-        <span className="nav-item nav-spacer"> > </span>
-        <a className="nav-item nav-document" href={"/documents/" + doc.id}> {doc.title} </a>
+        <div className="header-left">
+          <a className="nav-item nav-archive" href="/documents"> Example Archive </a>
+          <span className="nav-item nav-spacer"> > </span>
+          <a className="nav-item nav-document" href={"/documents/" + doc.id}> {doc.title} </a>
+        </div>
+        <div className="header-center"></div>
+        <div className={"header-right " + this.state.columnView}>
+          <div className="state-choice choice-info">Information</div>
+          <div className="state-choice choice-sim">Similar Documents</div>
+          <div className="state-choice choice-ann">Annotations</div>
+        </div>
       </div>
       <div className="page-content content">
         <div className="box">
@@ -201,7 +212,6 @@ class DocumentPage extends React.Component {
           </div>
           {/* Annotation pane */}
           <div className="column annotations-pane">
-            <h2> Annotations </h2>
             <InputFilter inputProps={inputProps}/>
             <FilterResults items={this.state.annotations} fuseConfig={fuseConfig}>
               {filteredItems => {

@@ -1,3 +1,6 @@
+#react-root {
+    min-width: 1100px;
+}
 /*#react-root {
     position: absolute;
     top: 0;
@@ -21,7 +24,7 @@
     flex-direction: row;
 }
 .nav-item {
-    margin: 0 4px;
+    margin: 0 2px;
     font-size: 16px;
     font-family: Arial;
 }
@@ -31,8 +34,21 @@
     width: 100%;
 }
 
+.state-choice {
+    display: inline-block;
+    margin-left: 20px;
+}
+.header-right {
+    font-family: arial;
+}
+.header-right.annotations .choice-ann,
+.header-right.information .choice-info,
+.header-right.similar .choice-sim {
+    font-weight: bold;
+}
+
 .page-header {
-    margin: 10px;
+    margin: 10px 30px 10px 10px;
     display: flex;
     flex-direction: row;
     padding: 5px;
@@ -50,6 +66,9 @@
 
 .mce-window {
     opacity: 1 !important;
+}
+.header-center {
+    flex: 1;
 }
 
 
