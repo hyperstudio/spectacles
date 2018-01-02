@@ -23,6 +23,8 @@ from app.utils import json_response
 from app.utils import props_template
 from app.utils import to_dict
 from app.utils import to_json
+from app.search import find_annotations
+from app.search import find_documents
 from datastore.auth import generate_consumer_token
 from datastore.models import Annotation
 from datastore.models import Document
@@ -170,14 +172,33 @@ def api_store_crud(request, document_id, annotation_id=None):
 
     raise NotImplementedError(request.method)
 
+
+@require_POST
+@login_required
 @ensure_csrf_cookie
 @json_response
-def api_store_search(request, document_id):
-    raise NotImplementedError('search')
+def api_search_documents(request):
+    fields = set(Document._json_fields)
+    fields.remove('text')
+    try:
+        req = json.loads(request.body)
+    except (TypeError, ValueError):
+        raise NotImplementedError('400!')
+    return to_dict(find_documents(req['query']), fields=fields)
+
+@require_POST
+@login_required
+@ensure_csrf_cookie
+@json_response
+def api_search_annotations(request):
+    try:
+        req = json.loads(request.body)
+    except (TypeError, ValueError):
+        raise NotImplementedError('400!')
+    return to_dict(find_annotations(req['query']))
 
 
 # TODO: clean up this views file?
-
 @require_http_methods(['POST', 'GET'])
 @ensure_csrf_cookie
 @props_template('app/login.html')

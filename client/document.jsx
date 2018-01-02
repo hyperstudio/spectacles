@@ -2,7 +2,10 @@
 var React = require('react');
 var DOM = require('react-dom');
 var Cookie = require('js-cookie');
-var $ = window.$; // defined by contrib on page
+// Contributed from other scripts
+var $ = window.$;
+var tinyMCEPopup = window.tinyMCEPopup;
+var Annotator = window.Annotator;
 
 function csrfSafeMethod(method) {
     // these HTTP methods do not require CSRF protection
@@ -19,12 +22,41 @@ $.ajaxSetup({
     }
 });
 
+Annotator.Plugin.StoreLogger = function (element, callbacks) {
+  console.log('StoreLogger initialized!');
+  return {
+    pluginInit: function () {
+        console.log('pluginInit called');
+      this.annotator
+          .subscribe("annotationCreated", function (annotation) {
+            if (callbacks.create) {
+              callbacks.create(annotation);
+            }
+            console.info("The annotation: %o has just been created!", annotation)
+          })
+          .subscribe("annotationUpdated", function (annotation) {
+            if (callbacks.update) {
+              callbacks.update(annotation);
+            }
+            console.info("The annotation: %o has just been updated!", annotation)
+          })
+          .subscribe("annotationDeleted", function (annotation) {
+            if (callbacks.delete) {
+              callbacks.delete(annotation);
+            }
+            console.info("The annotation: %o has just been deleted!", annotation)
+          });
+    }
+  }
+};
 
-class Document extends React.Component {
+
+
+class DocumentPage extends React.Component {
   constructor(props) {
     super(props);
     console.log(this.props);
-    this.state = {};
+    this.state = { annotations: []};
   }
   componentDidMount() {
     console.log('componentDidMount()\n');
@@ -32,13 +64,25 @@ class Document extends React.Component {
   }
   componentDidUpdate() {
     console.log('componentDidUpdate()\n');
-    this.initializeAnnotator();
+    //this.initializeAnnotator();
   }
 
   initializeAnnotator() {
+    let dp = this;
+
+    let UPDATE = (ann) => {
+      console.log('GOT AN UPDATE');
+      dp.setState({annotations: ANN.dumpAnnotations()});
+    };
+
     let ann = new Annotator(this.refs.documentContent)
       .addPlugin('Auth', {
         tokenUrl: '/api/token',
+      })
+      .addPlugin('StoreLogger', {
+        update: UPDATE,
+        delete: UPDATE,
+        create: UPDATE,
       })
       .addPlugin('Tags', {})
       .addPlugin('Permissions', {
@@ -90,8 +134,13 @@ class Document extends React.Component {
     		}
       });
     window.ANN = ann;
+    //tinyMCEPopup.init();
     console.log('ANN:', window.ANN);
-    this.state.ann = ann;
+    UPDATE();
+    //this.setState({
+    //  annotations: ann.dumpAnnotations(),
+    //});
+
   }
 
   render() {
@@ -100,21 +149,44 @@ class Document extends React.Component {
     if (!doc) {
       return <div>Missing Document</div>;
     }
-    return <div className="document">
-      <div className="document-title">{doc.title}</div>
-      <div className="document-author">{doc.author}</div>
-      <div className="document-content" ref="documentContent">
-        {/* For compatibility with existing annotation range definitions; */}
-        {/* the previous site must have introduced this div wrapper */}
-        <div className="document-content-inner"
-             ref="documentContentInner"
-             dangerouslySetInnerHTML={{__html: doc.text}}>
+    return <div className="document-page">
+      <div className="document-pane">
+        <div className="document-title">{doc.title}</div>
+        <div className="document-author">{doc.author}</div>
+        <div className="document-content" ref="documentContent">
+          {/* For compatibility with existing annotation range definitions; */}
+          {/* the previous site must have introduced this div wrapper */}
+          <div className="document-content-inner"
+               ref="documentContentInner"
+               dangerouslySetInnerHTML={{__html: doc.text}}>
+          </div>
         </div>
       </div>
+      <div className="annotations-pane">
+        {this.renderAnnotations()}
+      </div>
     </div>;
+  }
+
+  renderAnnotations() {
+    let annotations = this.state.annotations;
+    if (!annotations) {
+      return <div> Missing Annotations> </div>;
+    }
+    console.log('returning a bunch of annotations', annotations);
+    return annotations.map(ann => {
+      return <div className="annotation" key={ann.id}>
+        <div className="annotation-quote">{ann.quote}</div>
+        <div className="annotation-text">{ann.text}</div>
+        <div className="annotation-tags">
+          {ann.tags.map(t => <div className="annotation-tag" key={t + ann.id}>{t}</div>)}
+        </div>
+        <div className="annotation-creator">{ann.user}</div>
+      </div>
+    })
   }
 }
 
 DOM.render(
-  <Document {...PROPS}/>,
+  <DocumentPage {...PROPS}/>,
   document.getElementById('react-root'));
