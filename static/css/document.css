@@ -11,6 +11,11 @@
     background: #FEFEFE;
 }*/
 
+.annotation img {
+    max-width: 100%;
+    height: auto;
+}
+
 .main {
     width: 100%;
     flex: 1;

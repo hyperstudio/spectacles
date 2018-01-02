@@ -19,20 +19,16 @@ function csrfSafeMethod(method) {
 }
 $.ajaxSetup({
     beforeSend: function(xhr, settings) {
-      console.log('SENDING');
         if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
             var csrf = Cookie.get('csrftoken');
-            console.log('csrf?', csrf);
             xhr.setRequestHeader("X-CSRFToken", csrf);
         }
     }
 });
 
 Annotator.Plugin.StoreLogger = function (element, callbacks) {
-  console.log('StoreLogger initialized!');
   return {
     pluginInit: function () {
-        console.log('pluginInit called');
       this.annotator
           .subscribe("annotationCreated", function (annotation) {
             if (callbacks.create) {
@@ -68,7 +64,6 @@ class DocumentPage extends React.Component {
     };
   }
   componentDidMount() {
-    console.log('componentDidMount()\n');
     this.initializeAnnotator();
   }
   componentDidUpdate() {
@@ -80,7 +75,6 @@ class DocumentPage extends React.Component {
     let dp = this;
 
     let UPDATE = (ann) => {
-      console.log('GOT AN UPDATE', ann);
       if (!ann) {
         return;
       }
@@ -162,7 +156,6 @@ class DocumentPage extends React.Component {
     window.ANN = ann;
     //tinyMCEPopup.init();
     console.log('ANN:', window.ANN);
-    UPDATE();
     //this.setState({
     //  annotations: ann.dumpAnnotations(),
     //});
@@ -171,7 +164,6 @@ class DocumentPage extends React.Component {
 
   render() {
     let doc = this.props.document;
-    console.log(doc);
     if (!doc) {
       return <div>Missing Document</div>;
     }
@@ -215,7 +207,6 @@ class DocumentPage extends React.Component {
             <InputFilter inputProps={inputProps}/>
             <FilterResults items={this.state.annotations} fuseConfig={fuseConfig}>
               {filteredItems => {
-                console.log('got results:', filteredItems);
                 return <div className='annotations-results'>
                   {filteredItems.map(ann => <Annotation {...ann}/>)}
                 </div>;
@@ -232,7 +223,6 @@ class DocumentPage extends React.Component {
     if (!annotations) {
       return <div> Missing Annotations> </div>;
     }
-    console.log('returning a bunch of annotations', annotations);
     return annotations.map(ann => <Annotation {...ann}/>);
   }
 }
@@ -240,7 +230,6 @@ class DocumentPage extends React.Component {
 class Annotation extends React.Component {
   constructor(props) {
     super(props);
-    console.log(this.props);
     this.state = {active: true};
   }
   clicked() {
@@ -249,7 +238,6 @@ class Annotation extends React.Component {
   render() {
       let ann = this.props;
       let xxx = this;
-      console.log('rendering!', this.state);
       if (xxx.state.active) {
         return <div className='annotation active' key={ann.uuid}>
           <div className="annotation-info">
