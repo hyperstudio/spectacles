@@ -8,6 +8,10 @@ const {InputFilter, FilterResults} = fuzzyFilterFactory();
 var $ = window.$;
 var tinyMCEPopup = window.tinyMCEPopup;
 var Annotator = window.Annotator;
+const fuseConfig = {
+  keys: ['data.text', 'data.quote', 'data.tags', 'creator.email', 'creator.name'],
+  shouldSort: true,
+};
 
 function csrfSafeMethod(method) {
     // these HTTP methods do not require CSRF protection
@@ -58,7 +62,7 @@ class DocumentPage extends React.Component {
   constructor(props) {
     super(props);
     console.log(this.props);
-    this.state = { annotations: this.props.annotations};
+    this.state = { annotations: this.props.annotations || []};
   }
   componentDidMount() {
     console.log('componentDidMount()\n');
@@ -169,6 +173,11 @@ class DocumentPage extends React.Component {
       return <div>Missing Document</div>;
     }
 
+    let inputProps = {
+      placeholder: "Fuzzy filter...",
+    }
+
+
     return <div className="document-page main">
       <div className="page-header">
         <a className="nav-item nav-archive" href="/documents"> Example Archive </a>
@@ -192,7 +201,16 @@ class DocumentPage extends React.Component {
           </div>
           {/* Annotation pane */}
           <div className="column annotations-pane">
-            {this.renderAnnotations()}
+            <h2> Annotations </h2>
+            <InputFilter inputProps={inputProps}/>
+            <FilterResults items={this.state.annotations} fuseConfig={fuseConfig}>
+              {filteredItems => {
+                console.log('got results:', filteredItems);
+                return <div className='annotations-results'>
+                  {filteredItems.map(ann => <Annotation {...ann}/>)}
+                </div>;
+              }}
+            </FilterResults>
           </div>
         </div>
       </div>
@@ -250,6 +268,10 @@ class Annotation extends React.Component {
   }
 }
 
+
+
 DOM.render(
   <DocumentPage {...PROPS}/>,
   document.getElementById('react-root'));
+
+
