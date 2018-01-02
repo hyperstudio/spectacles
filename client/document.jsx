@@ -2,6 +2,8 @@
 var React = require('react');
 var DOM = require('react-dom');
 var Cookie = require('js-cookie');
+import fuzzyFilterFactory from 'react-fuzzy-filter';
+const {InputFilter, FilterResults} = fuzzyFilterFactory();
 // Contributed from other scripts
 var $ = window.$;
 var tinyMCEPopup = window.tinyMCEPopup;
@@ -56,7 +58,7 @@ class DocumentPage extends React.Component {
   constructor(props) {
     super(props);
     console.log(this.props);
-    this.state = { annotations: []};
+    this.state = { annotations: this.props.annotations};
   }
   componentDidMount() {
     console.log('componentDidMount()\n');
@@ -71,8 +73,25 @@ class DocumentPage extends React.Component {
     let dp = this;
 
     let UPDATE = (ann) => {
-      console.log('GOT AN UPDATE');
-      dp.setState({annotations: ANN.dumpAnnotations()});
+      console.log('GOT AN UPDATE', ann);
+      if (!ann) {
+        return;
+      }
+      var changed = false;
+      var i;
+      for (i = 0; i < this.state.annotations.length; i++) {
+        var x = this.state.annotations[i];
+        if (x.data.id == ann.id) {
+          x.data.text = ann.text;
+          x.data.tags = ann.tags;
+          changed = true;
+          break;
+        }
+      }
+      if (changed) {
+        dp.setState({annotations: this.state.annotations});
+        return;
+      }
     };
 
     let ann = new Annotator(this.refs.documentContent)
@@ -186,16 +205,48 @@ class DocumentPage extends React.Component {
       return <div> Missing Annotations> </div>;
     }
     console.log('returning a bunch of annotations', annotations);
-    return annotations.map(ann => {
-      return <div className="annotation" key={ann.id}>
-        <div className="annotation-quote">{ann.quote}</div>
-        <div className="annotation-text">{ann.text}</div>
-        <div className="annotation-tags">
-          {ann.tags.map(t => <div className="annotation-tag" key={t + ann.id}>{t}</div>)}
-        </div>
-        <div className="annotation-creator">{ann.user}</div>
-      </div>
-    })
+    return annotations.map(ann => <Annotation {...ann}/>);
+  }
+}
+
+class Annotation extends React.Component {
+  constructor(props) {
+    super(props);
+    console.log(this.props);
+    this.state = {active: true};
+  }
+  clicked() {
+    //this.setState({active: !this.state.active});
+  }
+  render() {
+      let ann = this.props;
+      let xxx = this;
+      console.log('rendering!', this.state);
+      if (xxx.state.active) {
+        return <div className='annotation active' key={ann.uuid}>
+          <div className="annotation-info">
+            <div className="annotation-creator">{ann.creator.name}</div>
+            <div className="annotation-timestamp" onClick={xxx.clicked.bind(xxx)}>{ann.updated_at}</div>
+          </div>
+          <div className="annotation-quote">{ann.data.quote}</div>
+          <div className="annotation-text"
+               dangerouslySetInnerHTML={{__html: ann.data.text}}>
+          </div>
+          <div className="annotation-tags">
+            {(ann.data.tags || []).map(t => <div className="annotation-tag" key={t + ann.uuid}>{t}</div>)}
+          </div>
+        </div>;
+      } else {
+        return <div className='annotation' key={ann.uuid}>
+          <div className="annotation-info">
+            <div className="annotation-creator">{ann.creator.name}</div>
+            <div className="annotation-timestamp" onClick={xxx.clicked.bind(xxx)}>{ann.updated_at}</div>
+          </div>
+          <div className="annotation-text"
+               dangerouslySetInnerHTML={{__html: ann.data.text}}>
+          </div>
+        </div>;
+      }
   }
 }
 
