@@ -1,25 +1,64 @@
+#react-root {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    display: flex;
+}
+
+.main {
+    width: 100%;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+.content {
+    flex: 1;
+    display: flex;
+    overflow: auto;
+    flex-direction: row;
+}
+.nav-item {
+    margin: 0 4px;
+}
+.box {
+    min-height: -webkit-min-content;
+    display: flex;
+    width: 100%;
+}
+
+.page-header {
+    margin: 10px;
+    display: flex;
+    flex-direction: row;
+    padding: 5px;
+    margin-bottom: 0;
+}
+    
+.column {
+    overflow: auto;
+    box-shadow: 0px 2px 2px 2px #ddd;
+    margin: 10px;
+    padding: 10px 20px;
+    flex: 1;
+}
+
+
 .mce-window {
     opacity: 1 !important;
 }
 
-.document-page {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-}
 
 .document-pane {
-    box-shadow: 0px 2px 2px 2px #ddd;
-    margin: 20px;
-    padding: 10px 20px;
     color: #111;
-    flex-grow: 1;
+    /*flex-grow: 1;*/
     min-width: 600px;
     box-sizing: border-box;
+    margin-right: 5px;
 }
 .annotations-pane {
-    margin: 20px;
-    padding: 10px 20px;
+    margin-left: 5px;
     min-width: 400px;
     box-sizing: border-box;
 }

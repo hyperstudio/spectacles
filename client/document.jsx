@@ -149,21 +149,33 @@ class DocumentPage extends React.Component {
     if (!doc) {
       return <div>Missing Document</div>;
     }
-    return <div className="document-page">
-      <div className="document-pane">
-        <div className="document-title">{doc.title}</div>
-        <div className="document-author">{doc.author}</div>
-        <div className="document-content" ref="documentContent">
-          {/* For compatibility with existing annotation range definitions; */}
-          {/* the previous site must have introduced this div wrapper */}
-          <div className="document-content-inner"
-               ref="documentContentInner"
-               dangerouslySetInnerHTML={{__html: doc.text}}>
+
+    return <div className="document-page main">
+      <div className="page-header">
+        <a className="nav-item nav-archive" href="/documents"> Example Archive </a>
+        <span className="nav-item nav-spacer"> > </span>
+        <a className="nav-item nav-document" href={"/documents/" + doc.id}> {doc.title} </a>
+      </div>
+      <div className="page-content content">
+        <div className="box">
+          {/* Document pane */}
+          <div className="column document-pane">
+            <div className="document-title">{doc.title}</div>
+            <div className="document-author">{doc.author}</div>
+            <div className="document-content" ref="documentContent">
+              {/* For compatibility with existing annotation range definitions; */}
+              {/* the previous site must have introduced this div wrapper */}
+              <div className="document-content-inner"
+                   ref="documentContentInner"
+                   dangerouslySetInnerHTML={{__html: doc.text}}>
+              </div>
+            </div>
+          </div>
+          {/* Annotation pane */}
+          <div className="column annotations-pane">
+            {this.renderAnnotations()}
           </div>
         </div>
-      </div>
-      <div className="annotations-pane">
-        {this.renderAnnotations()}
       </div>
     </div>;
   }
