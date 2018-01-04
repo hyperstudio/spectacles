@@ -2,9 +2,6 @@
 var React = require('react');
 var DOM = require('react-dom');
 
-var {Nav} = require('./components/nav.jsx');
-
-
 class LoginPage extends React.Component {
     constructor(props) {
         super(props);
@@ -35,7 +32,6 @@ class LoginPage extends React.Component {
 
     render() {
         return <div>
-            <Nav user={this.props.user} links={[]}/>
             <div className="body">
                 <div className="login">
                     <h3> Log In </h3>
