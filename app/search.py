@@ -14,7 +14,7 @@ def find_annotations(query, max_count=50, highlight='text'):
     if highlight is not None:
         s = s.highlight_options(order='score')
         s = s.highlight(highlight, fragment_size=50)
-    s = s.source(include=['quote', 'text', 'tags', 'creator'])
+    s = s.source(include=['quote', 'text', 'tags', 'creator', 'document_id'])
     return s.query(m).execute()
 
 
@@ -28,5 +28,5 @@ def find_documents(query, max_count=50, highlight='text'):
     if highlight is not None:
         s = s.highlight_options(order='score')
         s = s.highlight(highlight, fragment_size=50)
-    s = s.source(include=['title', 'author', 'creator', 'tags', 'document_id'])
+    s = s.source(include=['title', 'author', 'creator', 'tags'])
     return s.query(m).execute()

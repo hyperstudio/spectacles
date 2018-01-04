@@ -131,11 +131,14 @@ a:visited {
 .annotation-text > * {
     margin: 0;
 }
+.annotation-link {
+  float: right;
+}
 .annotation-info {
     display: block;
     border-bottom: 1px solid #ccc;
     margin-bottom: 10px;
-    padding-bottom: 4px;
+    padding: 10px;
 }
 
 .annotation {

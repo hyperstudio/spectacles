@@ -1,87 +1,51 @@
 'use strict';
 var React = require('react');
 var DOM = require('react-dom');
-var Cookie = require('js-cookie');
-import fuzzyFilterFactory from 'react-fuzzy-filter';
-const {InputFilter, FilterResults} = fuzzyFilterFactory();
 // Contributed from other scripts
 var $ = window.$;
-var tinyMCEPopup = window.tinyMCEPopup;
-var Annotator = window.Annotator;
-const fuseConfig = {
-  keys: ['data.text', 'data.quote', 'data.tags', 'creator.email', 'creator.name'],
-  shouldSort: true,
-};
 
-function csrfSafeMethod(method) {
-    // these HTTP methods do not require CSRF protection
-    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-}
-$.ajaxSetup({
-    beforeSend: function(xhr, settings) {
-        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-            var csrf = Cookie.get('csrftoken');
-            xhr.setRequestHeader("X-CSRFToken", csrf);
-        }
-    }
-});
-
-Annotator.Plugin.StoreLogger = function (element, callbacks) {
-  return {
-    pluginInit: function () {
-      this.annotator
-          .subscribe("annotationCreated", function (annotation) {
-            if (callbacks.create) {
-              callbacks.create(annotation);
-            }
-            console.info("The annotation: %o has just been created!", annotation)
-          })
-          .subscribe("annotationUpdated", function (annotation) {
-            if (callbacks.update) {
-              callbacks.update(annotation);
-            }
-            console.info("The annotation: %o has just been updated!", annotation)
-          })
-          .subscribe("annotationDeleted", function (annotation) {
-            if (callbacks.delete) {
-              callbacks.delete(annotation);
-            }
-            console.info("The annotation: %o has just been deleted!", annotation)
-          });
-    }
-  }
-};
-
+import fuzzyFilterFactory from 'react-fuzzy-filter';
+import {setupCSRF, createAnnotator} from './util.jsx';
+import {Annotation} from './components/annotation.jsx';
 
 
 class DocumentPage extends React.Component {
   constructor(props) {
     super(props);
-    console.log(this.props);
     this.state = {
+      annotator: null,
       annotations: this.props.annotations || [],
       columnView: 'annotations',
     };
-  }
+
+    // FUSE client-side filtering library
+    this.inputProps = {
+      placeholder: "Fuzzy filter...",
+    };
+    this.fuseConfig = {
+      keys: ['data.text', 'data.quote', 'data.tags', 'creator.email', 'creator.name'],
+      shouldSort: true,
+    };
+    const {InputFilter, FilterResults} = fuzzyFilterFactory();
+    this.InputFilter = InputFilter;
+    this.FilterResults = FilterResults;
+  };
+
   componentDidMount() {
     this.initializeAnnotator();
-  }
-  componentDidUpdate() {
-    console.log('componentDidUpdate()\n');
-    //this.initializeAnnotator();
   }
 
   initializeAnnotator() {
     let dp = this;
-
-    let UPDATE = (ann) => {
+    let onUpdate = (ann) => {
       if (!ann) {
         return;
       }
+      // Figure out if the annotation was updated
       var changed = false;
       var i;
-      for (i = 0; i < this.state.annotations.length; i++) {
-        var x = this.state.annotations[i];
+      for (i = 0; i < dp.state.annotations.length; i++) {
+        var x = dp.state.annotations[i];
         if (x.data.id == ann.id) {
           x.data.text = ann.text;
           x.data.tags = ann.tags;
@@ -90,89 +54,23 @@ class DocumentPage extends React.Component {
         }
       }
       if (changed) {
-        dp.setState({annotations: this.state.annotations});
+        dp.setState({annotations: dp.state.annotations});
         return;
       }
+      // TODO: Figure out if the annotation was created or deleted
     };
-
-    let ann = new Annotator(this.refs.documentContent)
-      .addPlugin('Auth', {
-        tokenUrl: '/api/token',
-      })
-      .addPlugin('StoreLogger', {
-        update: UPDATE,
-        delete: UPDATE,
-        create: UPDATE,
-      })
-      .addPlugin('Tags', {})
-      .addPlugin('Permissions', {
-        user: this.props.user.email,
-      })
-      .addPlugin('Store', {
-        prefix: `/api/store/${this.props.document.id}`,
-        urls: {
-          create:  '',
-          read:    '',
-          update:  '/:id',
-          destroy: '/:id',
-          search:  '/search',
-        },
-        annotationData: {
-          // TODO: what to do about this ID?
-          uri: this.props.document.id,
-        },
-        //loadFromSearch: {
-        //  uri: this.props.document.id,
-        //},
-      })
-      .addPlugin('RichText', {
-        editor_enabled: true,
-        tinymce: {
-          selector: "li.annotator-item textarea",
-          plugins: "media image insertdatetime link code",
-          toolbar_items_size: 'small',
-          extended_valid_elements : "iframe[src|frameborder|style|scrolling|class|width|height|name|align|id]",
-          toolbar: [
-            'undo',
-            'redo',
-            '|',
-            'styleselect',
-            '|',
-            'bold',
-            'italic',
-            '|',
-            'bullist',
-            'numlist',
-            'outdent',
-            'indent',
-            '|',
-            'link',
-            'image',
-            'media',
-            'rubric'
-          ].join(' '),
-    		}
-      });
-    window.ANN = ann;
-    //tinyMCEPopup.init();
-    console.log('ANN:', window.ANN);
-    //this.setState({
-    //  annotations: ann.dumpAnnotations(),
-    //});
-
+    let ann = createAnnotator(
+        dp.refs.documentContent,
+        onUpdate,
+        dp.props.user.email,
+        dp.props.document.id
+    );
+    this.setState({annotator: ann});
   }
 
   render() {
-    let doc = this.props.document;
-    if (!doc) {
-      return <div>Missing Document</div>;
-    }
-
-    let inputProps = {
-      placeholder: "Fuzzy filter...",
-    }
-
-
+    let dp = this;
+    let doc = dp.props.document;
     return <div className="document-page main">
       <div className="page-header">
         <div className="header-left">
@@ -181,7 +79,7 @@ class DocumentPage extends React.Component {
           <a className="nav-item nav-document" href={"/documents/" + doc.id}> {doc.title} </a>
         </div>
         <div className="header-center"></div>
-        <div className={"header-right " + this.state.columnView}>
+        <div className={"header-right " + dp.state.columnView}>
           <div className="state-choice choice-info">Information</div>
           <div className="state-choice choice-sim">Similar Documents</div>
           <div className="state-choice choice-ann">Annotations</div>
@@ -204,72 +102,24 @@ class DocumentPage extends React.Component {
           </div>
           {/* Annotation pane */}
           <div className="column annotations-pane">
-            <InputFilter inputProps={inputProps}/>
-            <FilterResults items={this.state.annotations} fuseConfig={fuseConfig}>
+            <dp.InputFilter inputProps={this.inputProps}/>
+            <dp.FilterResults items={dp.state.annotations} fuseConfig={this.fuseConfig}>
               {filteredItems => {
+                // TODO: use "ann" property instead of full spread
                 return <div className='annotations-results'>
-                  {filteredItems.map(ann => <Annotation {...ann}/>)}
+                  {filteredItems.map(ann => <Annotation key={ann.uuid} {...ann}/>)}
                 </div>;
               }}
-            </FilterResults>
+            </dp.FilterResults>
           </div>
         </div>
       </div>
     </div>;
   }
-
-  renderAnnotations() {
-    let annotations = this.state.annotations;
-    if (!annotations) {
-      return <div> Missing Annotations> </div>;
-    }
-    return annotations.map(ann => <Annotation {...ann}/>);
-  }
-}
-
-class Annotation extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {active: true};
-  }
-  clicked() {
-    //this.setState({active: !this.state.active});
-  }
-  render() {
-      let ann = this.props;
-      let xxx = this;
-      if (xxx.state.active) {
-        return <div className='annotation active' key={ann.uuid}>
-          <div className="annotation-info">
-            <div className="annotation-creator">{ann.creator.name}</div>
-            <div className="annotation-timestamp" onClick={xxx.clicked.bind(xxx)}>{ann.updated_at}</div>
-          </div>
-          <div className="annotation-quote">{ann.data.quote}</div>
-          <div className="annotation-text"
-               dangerouslySetInnerHTML={{__html: ann.data.text}}>
-          </div>
-          <div className="annotation-tags">
-            {(ann.data.tags || []).map(t => <div className="annotation-tag" key={t + ann.uuid}>{t}</div>)}
-          </div>
-        </div>;
-      } else {
-        return <div className='annotation' key={ann.uuid}>
-          <div className="annotation-info">
-            <div className="annotation-creator">{ann.creator.name}</div>
-            <div className="annotation-timestamp" onClick={xxx.clicked.bind(xxx)}>{ann.updated_at}</div>
-          </div>
-          <div className="annotation-text"
-               dangerouslySetInnerHTML={{__html: ann.data.text}}>
-          </div>
-        </div>;
-      }
-  }
 }
 
 
-
+setupCSRF($);
 DOM.render(
   <DocumentPage {...PROPS}/>,
   document.getElementById('react-root'));
-
-

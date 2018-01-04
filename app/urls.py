@@ -24,7 +24,7 @@ urlpatterns = [
     #url(r'^api/annotations$', views.api_annotations, name='api-annotations'),
     #url(r'^api/annotations/(?P<annotation_id>[0-9a-f-]+)$', views.api_annotation, name='api-annotation'),
     ### Datastore
-    url(r'^api/token$', datastore.views.token, name='ds-token'),
+    url(r'^api/store/token$', datastore.views.token, name='ds-token'),
     url(r'^api/store/(?P<document_id>\d+)$',
         datastore.views.crud,
         name='ds-store-crud'),

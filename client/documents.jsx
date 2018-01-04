@@ -2,87 +2,109 @@
 var React = require('react');
 var DOM = require('react-dom');
 var Cookie = require('js-cookie');
+// TODO: use a different client side request framework like `fetch`
 var request = require('browser-request');
-import fuzzyFilterFactory from 'react-fuzzy-filter';
-const {InputFilter, FilterResults} = fuzzyFilterFactory();
 // Contributed from other scripts
 var $ = window.$;
-function csrfSafeMethod(method) { // XXX remove duplicate code
-    // these HTTP methods do not require CSRF protection
-    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+
+import fuzzyFilterFactory from 'react-fuzzy-filter';
+import {setupCSRF, createAnnotator} from './util.jsx';
+import {Annotation} from './components/annotation.jsx';
+
+
+// TODO: Two separate SearchPanes, one over documents, one over annotations.
+// Both use the elasticsearch backend route.
+class DocumentsPage extends React.Component {
+  constructor(props) {
+    super(props);
+    console.log(this.props);
+    this.state = {};
+
+    // FUSE client-side filtering library
+    this.inputProps = {
+      placeholder: "Fuzzy filter...",
+    }
+    this.fuseConfig = {
+      keys: ['author', 'title', 'creator.name', 'creator.email'],
+      shouldSort: true,
+    };
+    const {InputFilter, FilterResults} = fuzzyFilterFactory();
+    this.InputFilter = InputFilter;
+    this.FilterResults = FilterResults;
+  }
+
+  render() {
+    let dp = this;
+    return <div className="documents-page main">
+      <div className="page-header">
+        <div className="header-left">
+          <a className="nav-item nav-archive" href="/documents"> Example Archive </a>
+        </div>
+        <div className="header-center"></div>
+        <div className="header-right">
+          <div className="state-choice">{dp.renderUser()}</div>
+        </div>
+      </div>
+      <div className="content">
+        <div className="box">
+          <div className="docs-pane column">
+            <dp.InputFilter inputProps={dp.inputProps}/>
+            <dp.FilterResults items={dp.props.documents} fuseConfig={dp.fuseConfig}>
+              {filteredItems => {
+                return <div className='docs-results'>
+                  {filteredItems.map(d => <DocumentEntry key={d.id} document={d}/>)}
+                </div>;
+              }}
+            </dp.FilterResults>
+          </div>
+          <div className="search-pane column">
+            <SearchPane/>
+          </div>
+        </div>
+      </div>
+    </div>;
+  }
+
+  renderUser() {
+    let name = 'Anonymous';
+    let email = '?';
+    if (this.props.user) {
+      name = this.props.user.name;
+      email = this.props.user.email;
+    }
+    return <span>{name} ({email})</span>
+  }
 }
-const fuseConfig = {
-  keys: ['author', 'title', 'creator.name', 'creator.email'],
-  shouldSort: true,
-};
-$.ajaxSetup({
-    beforeSend: function(xhr, settings) {
-        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-            var csrf = Cookie.get('csrftoken');
-            xhr.setRequestHeader("X-CSRFToken", csrf);
-        }
-    }
-});
 
-
-
-class Documents extends React.Component {
-    constructor(props) {
-        super(props);
-        console.log(this.props);
-        this.state = {};
-    }
-
-    render() {
-        let inputProps = {
-          placeholder: "Fuzzy filter...",
-        }
-        //<div className="user-info">{this.renderUser()}</div>
-        return <div className="documents-page main">
-          <div className="page-header">
-            <div className="header-left">
-              <a className="nav-item nav-archive" href="/documents"> Example Archive </a>
-            </div>
-            <div className="header-center"></div>
-            <div className="header-right">
-              <div className="state-choice">{this.renderUser()}</div>
-            </div>
-          </div>
-          <div className="content">
-            <div className="box">
-              <div className="docs-pane column">
-                <InputFilter inputProps={inputProps}/>
-                <FilterResults items={this.props.documents} fuseConfig={fuseConfig}>
-                  {filteredItems => {
-                    return <div className='docs-results'>
-                      {filteredItems.map(d => <DocumentEntry key={d.id} document={d}/>)}
-                    </div>;
-                  }}
-                </FilterResults>
-              </div>
-              <div className="search-pane column">
-                <SearchPane/>
-              </div>
-            </div>
-          </div>
-        </div>;
-    }
-
-    renderUser() {
-      let name = 'Anonymous';
-      let email = '?';
-      if (this.props.user) {
-          name = this.props.user.name;
-          email = this.props.user.email;
-      }
-      return <span>{name} ({email})</span>
-    }
+class DocumentEntry extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+  link() {
+    return this.props.document &&
+      "/documents/" + this.props.document.id;
+  }
+  render() {
+    let doc = this.props.document;
+    return <div className="document-entry">
+      <div className="document-title">
+        <a href={this.link()}>{doc.title}</a>
+      </div>
+      <div className="document-author">
+        {doc.creator.name}
+      </div>
+      <div className="document-meta">
+        <div className="document-creator"> {doc.author}</div>
+        <div className="document-timestamp"> {doc.updated_at} </div>
+      </div>
+    </div>;
+  }
 }
 
 class SearchPane extends React.Component {
   constructor(props) {
     super(props);
-
     this.debounce = 500 /*ms*/;
     this.confirmation = 2000 /*ms*/;
     this.state = {
@@ -163,15 +185,13 @@ class SearchPane extends React.Component {
 
   renderStatus() {
     if (this.done()) {
-      return ''
-      //return `${this.state.results.length} results`
+      return '';
     }
     if (this.inProgress()) {
       return 'Loading'
     }
     return ''
   }
-
 
   render() {
     let r = this.state.results;
@@ -201,68 +221,31 @@ class SearchPane extends React.Component {
   }
 }
 
-class DocResult extends React.Component {
-  render() {
-    return <span></span>;
-  }
-}
 class AnnResult extends React.Component {
   constructor(props) {
       super(props);
       this.state = {};
   }
   render() {
-      let ann = this.props.ann;
-      return <div className='annotation active' key={ann.uuid}>
-        <div className="annotation-info">
-          <div className="annotation-creator">{ann.creator.name}</div>
-        </div>
-        <div className="annotation-quote">{ann.quote}</div>
-        <div className="annotation-text"
-             dangerouslySetInnerHTML={{__html: ann.text}}>
-        </div>
-        <div className="annotation-tags">
-          {(ann.tags || []).map(t => <div className="annotation-tag" key={t + ann._meta.uuid}>{t}</div>)}
-        </div>
-      </div>;
+    let ann = this.props.ann;
+    return <div className='annotation active' key={ann.uuid}>
+      <div className="annotation-info">
+        <div className="annotation-creator">{ann.creator.name}</div>
+        <a href={`/documents/${ann.document_id}`} className="annotation-link">View Document</a>
+      </div>
+      <div className="annotation-quote">{ann.quote}</div>
+      <div className="annotation-text"
+           dangerouslySetInnerHTML={{__html: ann.text}}>
+      </div>
+      <div className="annotation-tags">
+        {(ann.tags || []).map(t => <div className="annotation-tag" key={t + ann._meta.uuid}>{t}</div>)}
+      </div>
+    </div>;
   }
 }
 
 
-
-class DocumentEntry extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {};
-    }
-    link() {
-        return this.props.document &&
-               "/documents/" + this.props.document.id;
-    }
-    text() {
-        let doc = this.props.document;
-        if (!doc) {
-            return '<broken>'
-        }
-        return doc.title + ' - ' + doc.author + ' (' + doc.creator.email + ')';
-    }
-    render() {
-        let doc = this.props.document;
-        return <div className="document-entry">
-          <div className="document-title">
-            <a href={this.link()}>{doc.title}</a>
-          </div>
-          <div className="document-author">
-            {doc.creator.name}
-          </div>
-          <div className="document-meta">
-            <div className="document-creator"> {doc.author}</div>
-            <div className="document-timestamp"> {doc.updated_at} </div>
-          </div>
-        </div>;
-    }
-}
-
+setupCSRF($);
 DOM.render(
-        <Documents {...PROPS}/>,
+        <DocumentsPage {...PROPS}/>,
         document.getElementById('react-root'));
