@@ -40,7 +40,9 @@ def to_dict(blob, **kwargs):
 def to_json(blob, **kwargs):
     return json.dumps(to_dict(blob, **kwargs), cls=DjangoJSONEncoder)
 
-# TODO: implement Enum serialization
+
+# TODO: implement Enum serialization, and add the `state` field to the
+# Datastore model serialization fields.
 def props_template(path):
     def _1(fn):
         def _2(request, *args, **kwargs):
@@ -71,5 +73,6 @@ def props_template(path):
 
 def json_response(fn):
     def inner(*args, **kwargs):
+        # TODO: custom Exception class for easy error raising
         return JsonResponse(fn(*args, **kwargs), safe=False)
     return inner

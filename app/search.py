@@ -1,5 +1,6 @@
 # coding: utf-8
 from elasticsearch_dsl.query import MultiMatch
+
 from datastore.documents import ESAnnotation, ESDocument
 
 
@@ -15,6 +16,7 @@ def find_annotations(query, max_count=50, highlight='text'):
         s = s.highlight(highlight, fragment_size=50)
     s = s.source(include=['quote', 'text', 'tags', 'creator'])
     return s.query(m).execute()
+
 
 def find_documents(query, max_count=50, highlight='text'):
     m = MultiMatch(
