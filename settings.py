@@ -30,7 +30,7 @@ DEBUG = env('DEBUG', True, cast=bool)
 PRODUCTION = env('PRODUCTION', not DEBUG, cast=bool)
 USE_HEROKU = env('USE_HEROKU', False, cast=bool)
 
-ALLOWED_HOSTS = ['spectacles.peterdowns.com', 'localhost']
+ALLOWED_HOSTS = ['spectacles.peterdowns.com', 'localhost', 'peterdowns.com']
 
 
 # Application definition
@@ -51,9 +51,9 @@ INSTALLED_APPS = [
 ]
 
 AUTH_USER_MODEL = 'app.User'
-LOGIN_URL = 'app-login'
-LOGIN_REDIRECT_URL = 'app-docs'
-LOGOUT_REDIRECT_URL = 'app-login'
+LOGIN_URL = 'auth-login'
+LOGIN_REDIRECT_URL = 'app-documents'
+LOGOUT_REDIRECT_URL = 'auth-login'
 APPEND_SLASH = False
 
 MIDDLEWARE = [

@@ -1,4 +1,4 @@
-.PHONY: webpack-dev clean js
+.PHONY: dev clean js
 
 default: dev
 
@@ -15,4 +15,4 @@ js:
 	./node_modules/webpack/bin/webpack.js
 
 prod:
-	PRODUCTION=1 nohup ./manage.py runserver 0.0.0.0:8091 >stdout.log 2>stderr.log&
+	PRODUCTION=1 nohup ./manage.py runserver 0.0.0.0:8089 >stdout.log 2>stderr.log&
