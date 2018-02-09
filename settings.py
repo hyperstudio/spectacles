@@ -126,13 +126,13 @@ ELASTICSEARCH_DSL = {
         'use_ssl': True,
     },
 }
-print(ELASTICSEARCH_DSL['heroku']['hosts'])
 
 def set_default(d):
     d['default'] = d['heroku' if USE_HEROKU else 'local']
 
 set_default(DATABASES)
 set_default(ELASTICSEARCH_DSL)
+print(ELASTICSEARCH_DSL['default']['hosts'])
 
 # Elasticsearch Indexing
 ES_IGNORE_SIGNALS = env('ES_IGNORE_SIGNALS', False)

@@ -76,7 +76,8 @@ def insert_documents():
 
     document_mapping = {}
     print('inserting documents...')
-    for d in jsonlines(docfile):
+    for i, d in enumerate(jsonlines(docfile)):
+        if i > 200: break
         if not d['text']:
             d['text'] = ''
         if not d['author']:
@@ -203,6 +204,6 @@ def insert_annotations():
 if __name__ == '__main__':
     print('> executing...')
     #insert_users()
-    #insert_documents()
+    insert_documents()
     insert_annotations()
     print('> done.')
