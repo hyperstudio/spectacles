@@ -23,21 +23,32 @@
   - [X] Implement annotation APIs
     - [X] Annotation CRUD
     - [X] Authentication
-- [ ] Demo v2
-  - [ ] Make all searches based on the ElasticSearch backend
-  - [ ] Consistent data store on the client side
-  - [ ] Scope searches by current archive
-  - [ ] Recommendations
-    - [ ] Set up vector store
-    - [ ] "Mark this as useful / bookmarked"
-    - [ ] Intelligent recommendations using vector similarity
-  - [x] User auth routes
-    - [x] login
-    - [x] logout
-    - [ ] register
-  - [ ] Home page
+      - [x] login
+      - [x] logout
+- [ ] Spring Demo 
+  - [ ] Features
+    - [ ] Finish up search improvements
+      - [ ] Make all searches based on the ElasticSearch backend (2/16)
+      - [ ] Simple query language parsing to allow metadata search `title:"Origin of Species" author:"Darwin"` (2/16)
+      - [ ] Full-text search of documents shows relevant fragment in result, allows deeplinking to that fragment (2/16)
+      - [ ] Show all of "my" activity (documents annotated, annotations, bookmarks). (2/21)
+        - [ ] Allow searching over it by scoping the same queries as usual to belong to a certain user
+        - [ ] Allow linking to a user's activity page, searching
+    - [ ] Recommendations
+      - [ ] Set up vector store (2/23)
+      - [ ] "Mark this as useful / bookmarked" for both documents and annotations (2/23)
+      - [ ] Intelligent recommendations using vector similarity (2/28)
+    - [ ] Home page (3/2)
+    - [ ] Account creation/registration flow (3/2)
+  - [ ] Implementation details
+    - [ ] Consistent data store on the client side
+    - [ ] Scope searches by current archive
+    - [ ] Separate out recommendation and datastore backend logic to be published as a package
+
 - [ ] Future work
   - [ ] US-IRAN data
-  - [ ] Ingestion
+  - [ ] Ingestion flow
     - [ ] Text processing through worker queues
-    - [ ] Upload of texts
+    - [ ] Importers for HTML, PDF, .DOC, .TXT
+    - [ ] Command-line tools
+    - [ ] Online interface
