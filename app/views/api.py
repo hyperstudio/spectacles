@@ -24,7 +24,10 @@ def search_annotations(request):
         raise NotImplementedError('400!')
 
     print('ANNS query:', req['query'])
-    anns_r = list(search.find_annotations(req['query']).hits)
+    anns_r = list(search.find_annotations(
+        query=req['query'],
+        document_id=req.get('document_id', None),
+    ).hits)
 
     return {
         'annotations': to_dict(anns_r),
