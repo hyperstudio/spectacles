@@ -11,6 +11,7 @@ import fuzzyFilterFactory from 'react-fuzzy-filter';
 import {setupCSRF, createAnnotator} from './util.jsx';
 import {Annotation} from './components/annotation.jsx';
 import {AnnotationSearch} from './components/annotationSearch.jsx';
+import {DocumentSearch} from './components/search.jsx';
 
 
 // TODO: Two separate SearchPanes, one over documents, one over annotations.
@@ -18,7 +19,6 @@ import {AnnotationSearch} from './components/annotationSearch.jsx';
 class DocumentsPage extends React.Component {
   constructor(props) {
     super(props);
-    console.log(this.props);
     this.state = {};
 
     // FUSE client-side filtering library
@@ -29,9 +29,11 @@ class DocumentsPage extends React.Component {
       keys: ['author', 'title', 'creator.name', 'creator.email'],
       shouldSort: true,
     };
-    const {InputFilter, FilterResults} = fuzzyFilterFactory();
-    this.InputFilter = InputFilter;
-    this.FilterResults = FilterResults;
+  }
+
+  searchResult(d) {
+    let id = docId(d);
+    return <DocumentEntry key={id} document={d}/>;
   }
 
   render() {
@@ -49,6 +51,11 @@ class DocumentsPage extends React.Component {
       <div className="content">
         <div className="box">
           <div className="docs-pane column">
+            <DocumentSearch
+              resultfn={this.searchResult.bind(this)}
+              documents={dp.props.documents}
+            />
+            {/*
             <dp.InputFilter inputProps={dp.inputProps}/>
             <dp.FilterResults items={dp.props.documents} fuseConfig={dp.fuseConfig}>
               {filteredItems => {
@@ -57,6 +64,7 @@ class DocumentsPage extends React.Component {
                 </div>;
               }}
             </dp.FilterResults>
+            */}
           </div>
           <div className="search-pane column">
             <AnnotationSearch/>
@@ -77,6 +85,13 @@ class DocumentsPage extends React.Component {
   }
 }
 
+var docId = (doc) => {
+  if (doc._meta) {
+    return doc._meta.id;
+  }
+  return doc.id;
+}
+
 class DocumentEntry extends React.Component {
   constructor(props) {
     super(props);
@@ -84,11 +99,29 @@ class DocumentEntry extends React.Component {
   }
   link() {
     return this.props.document &&
-      "/documents/" + this.props.document.id;
+      "/documents/" + docId(this.props.document);
   }
+
+  renderHighlight() {
+    let doc = this.props.document;
+    let highlight = doc._meta && doc._meta.highlight;
+    if (!highlight) {
+      return '';
+    }
+    return <div className="document-highlight">
+      {highlight.text.map((t, i) =>
+        <div key={i} className="document-highlight-text"
+             dangerouslySetInnerHTML={{__html: t}}>
+        </div>
+      )}
+    </div>;
+  }
+
   render() {
     let doc = this.props.document;
-    return <div className="document-entry">
+    let id = docId(doc);
+
+    return <div className="document-entry" key={id}>
       <div className="document-title">
         <a href={this.link()}>{doc.title}</a>
       </div>
@@ -99,6 +132,7 @@ class DocumentEntry extends React.Component {
         <div className="document-creator"> {doc.author}</div>
         <div className="document-timestamp"> {doc.updated_at} </div>
       </div>
+      {this.renderHighlight()}
     </div>;
   }
 }

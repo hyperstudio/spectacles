@@ -47,7 +47,11 @@ def search_documents(request):
     print('DOCS query:', req['query'])
     fields = set(Document._json_fields)
     fields.remove('text')
-    docs_r = list(search.find_documents(req['query']).hits)
+    docs_r = list(search.find_documents(
+        query=req['query'],
+        archive_id=req.get('archive_id', None),
+    ).hits)
+    print('FINISHED docs query')
 
     return to_dict({
         'documents': to_dict(docs_r, fields=fields)

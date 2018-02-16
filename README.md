@@ -29,6 +29,8 @@
   - [ ] Features
     - [ ] Finish up search improvements
       - [ ] Make all searches based on the ElasticSearch backend (2/16)
+        - [x] Annotations in a document
+        - [ ] Documents in an archive
       - [ ] Simple query language parsing to allow metadata search `title:"Origin of Species" author:"Darwin"` (2/16)
       - [ ] Full-text search of documents shows relevant fragment in result, allows deeplinking to that fragment (2/16)
       - [ ] Show all of "my" activity (documents annotated, annotations, bookmarks). (2/21)

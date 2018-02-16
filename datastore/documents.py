@@ -13,6 +13,9 @@ class ESModel(DictModel):
         data['_meta'] = meta
         return data
 
+# TODO: add archive_id to both annotation and document
+
+
 document_index = Index('spectacles-document')
 document_index.settings(
     number_of_shards=1,

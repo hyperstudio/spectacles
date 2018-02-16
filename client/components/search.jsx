@@ -3,15 +3,15 @@ var React = require('react');
 var Cookie = require('js-cookie');
 var request = require('browser-request');
 
-
-export class AnnotationSearch extends React.Component {
+// TODO: extract out a Search component that can be used
+export class DocumentSearch extends React.Component {
   constructor(props) {
     super(props);
     this.debounce = 500 /*ms*/;
     this.confirmation = 2000 /*ms*/;
     this.defaultResults = {
-      annotations: this.props.annotations || [],
-      documents: [],
+      annotations: [],
+      documents: this.props.documents || [],
     };
     this.state = {
       query: this.props.query || '',
@@ -64,7 +64,7 @@ export class AnnotationSearch extends React.Component {
     };
     request({
       method: 'POST',
-      uri: '/api/search',
+      uri: '/api/search/documents',
       body: payload,
       headers: {
         'X-CSRFToken': Cookie.get('csrftoken'),
@@ -104,27 +104,16 @@ export class AnnotationSearch extends React.Component {
     return ''
   }
 
-  displayAnnotations(annotations) {
-    let fn;
-    if (!annotations || annotations.length == 0) {
+  displayDocuments(documents) {
+    if (!documents || documents.length == 0) {
       return;
     }
-    console.log(annotations);
-    if (this.props.resultfn) {
-      fn = this.props.resultfn;
-    } else {
-      fn = (ann) => {
-        return <AnnotationSearchResult key={ann._meta.id} ann={ann}/>;
-      }
-    }
-    return annotations.map(fn);
+    return documents.map(this.props.resultfn);
   }
 
 
   render() {
     let r = this.state.results;
-    console.log('R:', r);
-    let anns = r.annotations || [];
     let docs = r.documents || [];
     return <div className="search-page">
       <div className="body gray">
@@ -132,7 +121,7 @@ export class AnnotationSearch extends React.Component {
           <div className="search-bar-input">
             <input className="search-bar-query"
                    type="text"
-                   placeholder="Filter Annotations"
+                   placeholder="Filter Documents"
                    value={this.state.query}
                    onChange={this.onQuery} autoFocus/>
           </div>
@@ -142,30 +131,7 @@ export class AnnotationSearch extends React.Component {
         </div>
       </div>
       <div className="search-results body white">
-        {this.displayAnnotations(anns)}
-      </div>
-    </div>;
-  }
-}
-
-export class AnnotationSearchResult extends React.Component {
-  constructor(props) {
-      super(props);
-      this.state = {};
-  }
-  render() {
-    let ann = this.props.ann;
-    return <div className='annotation active' key={ann.uuid}>
-      <div className="annotation-info">
-        <div className="annotation-creator">{ann.creator.name}</div>
-        <a href={`/documents/${ann.document_id}`} className="annotation-link">View Document</a>
-      </div>
-      <div className="annotation-quote">{ann.quote}</div>
-      <div className="annotation-text"
-           dangerouslySetInnerHTML={{__html: ann.text}}>
-      </div>
-      <div className="annotation-tags">
-        {(ann.tags || []).map(t => <div className="annotation-tag" key={t + ann._meta.uuid}>{t}</div>)}
+        {this.displayDocuments(docs)}
       </div>
     </div>;
   }

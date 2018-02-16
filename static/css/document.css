@@ -182,3 +182,12 @@ a:visited {
     margin-bottom: 20px;
     padding: 5px;
 }
+.search-bar-query {
+  font-size: 20px;
+  background: white;
+  box-shadow: none;
+  border: 1px solid #ccc;
+  padding: 5px 10px;
+  width: 100%;
+  box-sizing: border-box;
+}

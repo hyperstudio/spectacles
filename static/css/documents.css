@@ -175,3 +175,9 @@ a:visited {
     max-width: 100%;
     height: auto;
 }
+.document-highlight-text {
+    font-style: italic;
+    background: #FAF8EA;
+    margin: 10px;
+    padding: 8px;
+}

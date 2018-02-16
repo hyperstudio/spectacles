@@ -77,7 +77,9 @@ def json_response(fn):
         return JsonResponse(fn(*args, **kwargs), safe=False)
     return inner
 
-def flatten(annotations):
-    for a in annotations:
-        a.update(a.pop('data'))
-    return annotations
+# This is used to get annotations in a consistent format between the Postgres
+# and ElasticSearch results. But there should be a better way to do it
+def flatten(results):
+    for r in results:
+        r.update(r.pop('data'))
+    return results

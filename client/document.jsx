@@ -108,7 +108,11 @@ class DocumentPage extends React.Component {
           </div>
           {/* Annotation pane */}
           <div className="column annotations-pane">
-            <AnnotationSearch document_id={this.props.document.id} resultfn={this.searchResult.bind(this)} annotations={dp.props.annotations}/>
+            <AnnotationSearch
+              document_id={this.props.document.id}
+              resultfn={this.searchResult.bind(this)}
+              annotations={dp.props.annotations}
+            />
           {/*
             <dp.InputFilter inputProps={this.inputProps}/>
             <dp.FilterResults items={dp.state.annotations} fuseConfig={this.fuseConfig}>
