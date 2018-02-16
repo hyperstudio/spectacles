@@ -76,3 +76,8 @@ def json_response(fn):
         # TODO: custom Exception class for easy error raising
         return JsonResponse(fn(*args, **kwargs), safe=False)
     return inner
+
+def flatten(annotations):
+    for a in annotations:
+        a.update(a.pop('data'))
+    return annotations

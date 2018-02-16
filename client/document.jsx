@@ -7,11 +7,13 @@ var $ = window.$;
 import fuzzyFilterFactory from 'react-fuzzy-filter';
 import {setupCSRF, createAnnotator} from './util.jsx';
 import {Annotation} from './components/annotation.jsx';
+import {AnnotationSearch} from './components/annotationSearch.jsx';
 
 
 class DocumentPage extends React.Component {
   constructor(props) {
     super(props);
+    console.log(this.props);
     this.state = {
       annotator: null,
       annotations: this.props.annotations || [],
@@ -68,6 +70,10 @@ class DocumentPage extends React.Component {
     this.setState({annotator: ann});
   }
 
+  searchResult(ann) {
+    return <Annotation key={ann.uuid} {...ann}/>;
+  }
+
   render() {
     let dp = this;
     let doc = dp.props.document;
@@ -102,6 +108,8 @@ class DocumentPage extends React.Component {
           </div>
           {/* Annotation pane */}
           <div className="column annotations-pane">
+            <AnnotationSearch document_id={this.props.document.id} resultfn={this.searchResult.bind(this)} annotations={dp.props.annotations}/>
+          {/*
             <dp.InputFilter inputProps={this.inputProps}/>
             <dp.FilterResults items={dp.state.annotations} fuseConfig={this.fuseConfig}>
               {filteredItems => {
@@ -111,6 +119,7 @@ class DocumentPage extends React.Component {
                 </div>;
               }}
             </dp.FilterResults>
+          */}
           </div>
         </div>
       </div>

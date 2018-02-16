@@ -9,6 +9,7 @@ from django.views.decorators.http import require_GET
 
 from app.utils import props_template
 from app.utils import to_dict
+from app.utils import flatten
 from datastore.models import Document
 
 
@@ -41,5 +42,5 @@ def document(request, document_id):
     doc = get_object_or_404(Document, id=document_id)
     return {
         'document': doc,
-        'annotations': doc.annotations.all(),
+        'annotations': flatten(to_dict(doc.annotations.all()))
     }
