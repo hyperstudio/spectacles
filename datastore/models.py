@@ -34,10 +34,19 @@ class DocumentState(IntEnum):
     DRAFT = 1
     PUBLISHED = 2
 
+
+class TextFreeDocumentManager(models.Manager):
+    def slim(self):
+        return super(TextFreeDocumentManager, self).get_queryset().defer('text')
+
 class Document(DictModel, models.Model):
     _json_fields = (
             'id', 'title', 'created_at', 'updated_at', 'text', 'author',
             'creator')
+    _slim_fields = (
+            'id', 'title', 'created_at', 'updated_at', 'author',
+            'creator')
+    slim = TextFreeDocumentManager()
 
     # Internal
     id = models.AutoField(primary_key=True)

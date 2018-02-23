@@ -20,6 +20,8 @@ urlpatterns = [
 
     # API
     url(r'^api/search$', app.views.api.search_annotations, name='api-search'),
+    url(r'^test/user$', app.views.user, name='api-user'),
+    url(r'^test/user/(?P<user_id>\d+)$', app.views.user, name='api-user'),
     url(r'^api/search/annotations$', app.views.api.search_annotations, name='api-search-anns'),
     url(r'^api/search/documents$', app.views.api.search_documents, name='api-search-docs'),
     #url(r'^api/documents/(?P<document_id>\d+)$', views.api_document, name='api-document'),

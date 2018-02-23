@@ -61,6 +61,7 @@ export class AnnotationSearch extends React.Component {
     let payload = {
       query: query,
       document_id: this.props.document_id || undefined,
+      creator_id: this.props.creator_id || undefined,
     };
     request({
       method: 'POST',

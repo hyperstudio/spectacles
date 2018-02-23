@@ -5,6 +5,9 @@ import json
 
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import ensure_csrf_cookie
+from django.views.decorators.http import require_http_methods
+from django.contrib.auth import get_user_model
+from django.shortcuts import get_object_or_404
 from django.views.decorators.http import require_POST
 
 from app import search
@@ -28,6 +31,11 @@ def search_annotations(request):
         query=req['query'],
         document_id=req.get('document_id', None),
     ).hits)
+    # TODO: fix this client-side filter (should be happening in ES)
+    creator_id = req.get('creator_id', None)
+    if creator_id is not None:
+        creator = get_object_or_404(get_user_model(), id=creator_id)
+        anns_r = filter(lambda x: x.creator.email == creator.email, anns_r)
 
     return {
         'annotations': to_dict(anns_r),

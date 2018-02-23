@@ -24,6 +24,7 @@ document_index.settings(
 @document_index.doc_type
 class ESDocument(ESModel, DocType):
     id = fields.IntegerField(attr='id')
+    # TODO: add user id to creator field
     creator = fields.ObjectField(properties={
         'email': fields.TextField(),
         'name': fields.TextField(),
