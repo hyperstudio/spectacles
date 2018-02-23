@@ -115,7 +115,7 @@ export class AnnotationSearch extends React.Component {
       fn = this.props.resultfn;
     } else {
       fn = (ann) => {
-        return <AnnotationSearchResult key={ann._meta.id} ann={ann}/>;
+        return <AnnotationSearchResult key={ann.id} ann={ann}/>;
       }
     }
     return annotations.map(fn);
@@ -166,7 +166,7 @@ export class AnnotationSearchResult extends React.Component {
            dangerouslySetInnerHTML={{__html: ann.text}}>
       </div>
       <div className="annotation-tags">
-        {(ann.tags || []).map(t => <div className="annotation-tag" key={t + ann._meta.uuid}>{t}</div>)}
+        {(ann.tags || []).map(t => <div className="annotation-tag" key={t + ann.uuid}>{t}</div>)}
       </div>
     </div>;
   }
