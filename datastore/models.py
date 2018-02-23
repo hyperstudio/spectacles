@@ -113,3 +113,24 @@ class Annotation(DictModel, models.Model):
     @property
     def tags(self):
         return self.data.get('tags', [])
+
+class Bookmark(DictModel, models.Model):
+    _json_fields = ('id',)
+    id = models.AutoField(primary_key=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=False)
+    updated_at = models.DateTimeField(auto_now=True, null=False)
+    document = models.ForeignKey( # Mandatory, always link to a document
+        'datastore.Document',
+        null=False,
+        related_name='bookmarks',
+    )
+    annotation = models.ForeignKey( # Optional, link to a specific annotation
+        'datastore.Annotation',
+        null=True,
+        related_name='bookmarks',
+    )
+    creator = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=False,
+        related_name='bookmarks',
+    )

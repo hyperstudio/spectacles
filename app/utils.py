@@ -9,7 +9,7 @@ import pdb
 PROPS = 'PROPS'
 
 
-class DictModel():
+class DictModel(object):
     def to_dict(self, fields=None, json_fields=None):
         out = {}
         for field in (fields or self._json_fields):
