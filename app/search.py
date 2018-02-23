@@ -1,5 +1,6 @@
 # coding: utf-8
 import re
+import json
 from elasticsearch_dsl.query import MultiMatch
 from elasticsearch_dsl.query import QueryString
 
@@ -13,6 +14,7 @@ def intelligent_match(query, fields, fuzziness='AUTO'):
     if r:
         return QueryString(
             query=r.groups()[0],
+            fields=fields,
             fuzziness=fuzziness
         )
     else:
@@ -24,25 +26,28 @@ def intelligent_match(query, fields, fuzziness='AUTO'):
 
 
 def find_annotations(query, max_count=50, highlight='text', document_id=None):
-    m = intelligent_match(
+    q = intelligent_match(
         query=query,
-        fields=['creator__email', 'creator__name', 'quote', 'text', 'tags'],
+        fields=['creator.email', 'creator.name', 'quote', 'text', 'tags'],
         fuzziness='AUTO'
     )
     s = ESAnnotation.search()
+    s = s.source(include=['quote', 'text', 'tags', 'creator', 'document_id', 'updated_at', 'created_at', 'uuid'])
     if highlight is not None:
         s = s.highlight_options(order='score')
         s = s.highlight(highlight, fragment_size=50)
     if document_id is not None:
         s = s.filter('match', document_id=document_id)
-    s = s.source(include=['quote', 'text', 'tags', 'creator', 'document_id', 'updated_at', 'created_at', 'uuid'])
-    return s.query(m).execute()
+    s = s.query(q)
+    #print(json.dumps(s.to_dict(), indent=2))
+    return s.execute()
+    results = s.execute()
 
 
 def find_documents(query, max_count=50, highlight='text', archive_id=None):
     m = intelligent_match(
         query=query,
-        fields=['text', 'title', 'author', 'creator__name', 'creator__email'],
+        fields=['text', 'title', 'author', 'creator.name', 'creator.email'],
         fuzziness='AUTO'
     )
     s = ESDocument.search()
