@@ -27,6 +27,8 @@ urlpatterns = [
     #url(r'^api/documents/(?P<document_id>\d+)$', views.api_document, name='api-document'),
     #url(r'^api/annotations$', views.api_annotations, name='api-annotations'),
     #url(r'^api/annotations/(?P<annotation_id>[0-9a-f-]+)$', views.api_annotation, name='api-annotation'),
+    url(r'^api/bookmark$', app.views.api.bookmark_crud, name='api-bookmark-crud'),
+    url(r'^api/bookmark/(?P<bookmark_id>\d+)$', app.views.api.bookmark_crud, name='api-bookmark-crud'),
     ### Datastore
     url(r'^api/store/token$', datastore.views.token, name='ds-token'),
     url(r'^api/store/(?P<document_id>\d+)$',

@@ -64,3 +64,52 @@ def search_documents(request):
     return to_dict({
         'documents': to_dict(docs_r, fields=fields)
     })
+
+@require_http_methods(['GET', 'POST', 'DELETE'])
+@login_required
+@ensure_csrf_cookie
+@json_response
+def bookmark_crud(request, bookmark_id=None):
+    if request.method == 'POST':
+        return bookmark_create(request)
+
+    if request.method == 'GET':
+        return bookmark_get(bookmark_id)
+
+    if request.method == 'DELETE':
+        return bookmark_delete(bookmark_id)
+
+    # TODO: correct error raising here
+    raise NotImplementedError(request.method)
+
+def create_bookmark(request):
+    try:
+        req_data = json.loads(request.body)
+    except (TypeError, ValueError):
+        # TODO: Raise the correct type of error, return to JS
+        raise NotImplementedError('400!')
+    # document_id, annotation_uuid
+    annotation_uuid = req_data.get('annotation_uuid', None)
+    if annotation_uuid is not None:
+        annotation = get_object_or_404(Annotation, uuid=annotation_uuid)
+        document = annotation.document
+    else:
+        annotation = None
+        document = get_object_or_404(Document, id=req_data['document_id'])
+
+    bookmark = Bookmark(
+        creator=request.user,
+        document=document,
+        annotation=annotation,
+    )
+    bookmark.save()
+    return to_dict(bookmark)
+
+
+def bookmark_get(bookmark_id):
+    return to_dict(get_object_or_404(Bookmark, id=bookmark_id))
+
+def bookmark_delete(bookmark_id):
+    bookmark = get_object_or_404(Bookmark, id=bookmark_id)
+    bookmark.delete()
+    return {'success': True}
