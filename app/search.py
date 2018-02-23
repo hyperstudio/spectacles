@@ -47,6 +47,8 @@ def find_documents(query, max_count=50, highlight='text', archive_id=None):
     )
     s = ESDocument.search()
     if highlight is not None:
+        # TODO: Need to make sure we're using the existing analysis vectors instead of the plain
+        # highlighter, for performance purposes. Also, need to return the offsets of the highlights
         s = s.highlight_options(order='score')
         s = s.highlight(highlight, fragment_size=50)
     if archive_id is not None:
