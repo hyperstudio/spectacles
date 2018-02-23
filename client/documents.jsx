@@ -7,7 +7,6 @@ var request = require('browser-request');
 // Contributed from other scripts
 var $ = window.$;
 
-import fuzzyFilterFactory from 'react-fuzzy-filter';
 import {setupCSRF, createAnnotator} from './util.jsx';
 import {Annotation} from './components/annotation.jsx';
 import {AnnotationSearch} from './components/annotationSearch.jsx';

@@ -4,7 +4,6 @@ var DOM = require('react-dom');
 // Contributed from other scripts
 var $ = window.$;
 
-import fuzzyFilterFactory from 'react-fuzzy-filter';
 import {setupCSRF, createAnnotator} from './util.jsx';
 import {Annotation} from './components/annotation.jsx';
 import {AnnotationSearch} from './components/annotationSearch.jsx';
@@ -19,18 +18,6 @@ class DocumentPage extends React.Component {
       annotations: this.props.annotations || [],
       columnView: 'annotations',
     };
-
-    // FUSE client-side filtering library
-    this.inputProps = {
-      placeholder: "Fuzzy filter...",
-    };
-    this.fuseConfig = {
-      keys: ['data.text', 'data.quote', 'data.tags', 'creator.email', 'creator.name'],
-      shouldSort: true,
-    };
-    const {InputFilter, FilterResults} = fuzzyFilterFactory();
-    this.InputFilter = InputFilter;
-    this.FilterResults = FilterResults;
   };
 
   componentDidMount() {
@@ -113,17 +100,6 @@ class DocumentPage extends React.Component {
               resultfn={this.searchResult.bind(this)}
               annotations={dp.props.annotations}
             />
-          {/*
-            <dp.InputFilter inputProps={this.inputProps}/>
-            <dp.FilterResults items={dp.state.annotations} fuseConfig={this.fuseConfig}>
-              {filteredItems => {
-                // TODO: use "ann" property instead of full spread
-                return <div className='annotations-results'>
-                  {filteredItems.map(ann => <Annotation key={ann.uuid} {...ann}/>)}
-                </div>;
-              }}
-            </dp.FilterResults>
-          */}
           </div>
         </div>
       </div>
