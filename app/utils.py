@@ -46,24 +46,24 @@ def to_json(blob, **kwargs):
 def props_template(path):
     def _1(fn):
         def _2(request, *args, **kwargs):
-            kwargs = {}
+            json_kwargs = {}
             context = fn(request, *args, **kwargs)
             if isinstance(context, HttpResponseBase):
                 return context
             if isinstance(context, tuple):
-                context, kwargs = context
+                context, json_kwargs = context
 
             user = request.user if request.user.is_authenticated else None
 
             props = context.get(PROPS, None)
             if props:
                 props.setdefault('user', user)
-                context[PROPS] = to_json(props, **kwargs)
+                context[PROPS] = to_json(props, **json_kwargs)
             else:
                 props = context
                 props.setdefault('user', user)
                 context = {
-                    PROPS: to_json(props, **kwargs),
+                    PROPS: to_json(props, **json_kwargs),
                     request: request
                 }
             return render(request, path, context)
@@ -81,5 +81,5 @@ def json_response(fn):
 # and ElasticSearch results. But there should be a better way to do it
 def flatten(results):
     for r in results:
-        r.update(r.pop('data'))
+        r.update(r.pop('data', {}))
     return results
