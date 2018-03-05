@@ -95,7 +95,9 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'spectacles',
         'USER': 'spectacles',
-        'PASSWORD': 'spectacles',
+        'PASSWORD': 'password',
+        'HOST': 'localhost',
+        'PORT': '',
     },
     'heroku' : {
         'ENGINE': 'django.db.backends.postgresql',
