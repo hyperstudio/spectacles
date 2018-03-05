@@ -6,7 +6,7 @@ var $ = window.$;
 
 import {setupCSRF, createAnnotator} from './util.jsx';
 import {Annotation} from './components/annotation.jsx';
-import {AnnotationSearch} from './components/annotationSearch.jsx';
+import {AnnotationSearch, AnnotationSearchResult} from './components/annotationSearch.jsx';
 
 
 let sortByTransform = (f) => (a, b) => {
@@ -22,7 +22,7 @@ class UserPage extends React.Component {
   }
 
   searchResult(ann) {
-    return <Annotation key={ann.uuid} {...ann}/>;
+    return <AnnotationSearchResult key={ann.id} ann={ann}/>;
   }
 
   render() {

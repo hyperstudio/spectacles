@@ -54,16 +54,6 @@ class DocumentsPage extends React.Component {
               resultfn={this.searchResult.bind(this)}
               documents={dp.props.documents}
             />
-            {/*
-            <dp.InputFilter inputProps={dp.inputProps}/>
-            <dp.FilterResults items={dp.props.documents} fuseConfig={dp.fuseConfig}>
-              {filteredItems => {
-                return <div className='docs-results'>
-                  {filteredItems.map(d => <DocumentEntry key={d.id} document={d}/>)}
-                </div>;
-              }}
-            </dp.FilterResults>
-            */}
           </div>
           <div className="search-pane column">
             <AnnotationSearch/>

@@ -1,13 +1,5 @@
 # Spectacles
 
-- "total result count" of matches when searching documents, with more button
-- keep the search boxes visible while scrolling
-- Make the site available online so Kurt can look at it
-- Rachel: no need for more complicated concept of relevance right now
-   - Same book annotated multiple times: useful to have that information that the annotation was for a different purpose / theme, but still useful to know that something has been annotated
-- TODO: blog post due next Friday about the beginning of Spectacles
-- TODO: list of capabilities, screenshots/online for Tuesday -- german design students might then give me something useful
-
 ## Architecture
 - `app`: contains all of the application-specific logic
 - `client`: contains all of the React.js code for the website. This code gets compiled by Webpack and the results are placed in the `static` folder.
@@ -36,18 +28,18 @@
 - [ ] Spring Demo 
   - [ ] Features
     - [ ] Finish up search improvements
-      - [ ] Make all searches based on the ElasticSearch backend (2/16)
+      - [x] Make all searches based on the ElasticSearch backend (2/16)
         - [x] Annotations in a document
         - [x] Documents in an archive
       - [x] Simple query language parsing to allow metadata search `title:"Origin of Species" author:"Darwin"` (2/16)
       - [x] Full-text search of documents shows relevant fragment in result
         - [ ] allows deeplinking to that fragment (2/16)
-      - [ ] Show all of "my" activity (documents annotated, annotations, bookmarks). (2/21)
-        - [ ] Allow searching over it by scoping the same queries as usual to belong to a certain user
-        - [ ] Allow linking to a user's activity page, searching
+      - [x] Show all of "my" activity (documents annotated, annotations, bookmarks). (2/21)
+        - [x] Allow searching over it by scoping the same queries as usual to belong to a certain user
+        - [x] Allow linking to a user's activity page, searching
     - [ ] Recommendations
       - [ ] Set up vector store (2/23)
-      - [ ] "Mark this as useful / bookmarked" for both documents and annotations (2/23)
+      - [x] "Mark this as useful / bookmarked" for both documents and annotations (2/23)
       - [ ] Intelligent recommendations using vector similarity (2/28)
     - [ ] Home page (3/2)
     - [ ] Account creation/registration flow (3/2)
