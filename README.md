@@ -47,6 +47,13 @@
     - [ ] Consistent data store on the client side
     - [ ] Scope searches by current archive
     - [ ] Separate out recommendation and datastore backend logic to be published as a package
+  - [ ] Deployment
+    - [x] Server up and running
+    - [x] Postgres installed
+    - [x] Elasticsearch installed
+    - [x] SSH keys installed and code cloned
+    - [x] Dependencies installed and django app running
+    - [ ] Django app connected to databases
 
 - [ ] Future work
   - [ ] US-IRAN data

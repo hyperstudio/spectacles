@@ -10,6 +10,26 @@ Slack
   https://hyperstudio.slack.com/messages
 
 
+2018-03-05 Monday
+=================
+How to set up the local postgres password and get it talking to Django:
+https://www.digitalocean.com/community/tutorials/how-to-use-postgresql-with-your-django-application-on-ubuntu-14-04
+
+How to populate the ES and PG databases
+```bash
+./manage.py migrate
+./manage.py search_index --create
+```
+
+Now this works
+```python
+from app import search
+from app.models import User
+search.find_annotations('food')
+User.objects.all()
+```
+
+
 2018-02-26 Monday
 =================
 Trying to install FAISS, has bad install instructions, so going with FALCONN

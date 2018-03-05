@@ -1,0 +1,3 @@
+LABEL=cloudimg-rootfs	/	 ext4	defaults	0 0
+/dev/xvdb1 /data/postgres ext4 defaults,nofail
+/dev/xvdc1 /data/elasticsearch ext4 defaults,nofail
