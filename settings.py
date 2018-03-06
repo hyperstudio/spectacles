@@ -30,7 +30,7 @@ DEBUG = env('DEBUG', True, cast=bool)
 PRODUCTION = env('PRODUCTION', not DEBUG, cast=bool)
 USE_HEROKU = env('USE_HEROKU', False, cast=bool)
 
-ALLOWED_HOSTS = ['spectacles.peterdowns.com', 'localhost', 'peterdowns.com']
+ALLOWED_HOSTS = ['spectacles.pw', 'localhost']
 
 
 # Application definition
@@ -182,3 +182,8 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
         os.path.join(BASE_DIR, 'static'),
     ]
+
+# Annotator config details
+ANNOTATOR_CONSUMER_TTL = 86400
+ANNOTATOR_CONSUMER_KEY = 'yourconsumerkey'
+ANNOTATOR_CONSUMER_SECRET = 'yourconsumersecret'

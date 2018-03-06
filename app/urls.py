@@ -11,7 +11,7 @@ import datastore.views
 
 urlpatterns = [
     # App routes
-    url(r'^$', app.views.documents, name='app-root'),
+    url(r'^$', app.views.index, name='app-root'),
     url(r'^documents$', app.views.documents, name='app-documents'),
     url(r'^documents/(\d+)$', app.views.document, name='app-document'),
     ### Authentication

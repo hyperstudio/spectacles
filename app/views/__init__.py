@@ -16,6 +16,18 @@ from app.utils import PROPS
 from datastore.models import Document
 
 
+
+@require_GET
+@ensure_csrf_cookie
+@props_template('app/index.html')
+def index(request):
+    user = request.user if request.user.is_authenticated else None
+    return {
+        'user': user,
+    }
+
+
+
 @require_GET
 @login_required
 @ensure_csrf_cookie
