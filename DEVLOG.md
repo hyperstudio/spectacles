@@ -29,6 +29,21 @@ search.find_annotations('food')
 User.objects.all()
 ```
 
+Absolutely fed up with fastText and its vector format. Can't get it loaded in gensim or in fastText itself;
+seems like the `.vec` format, while generated at the same time as the `.bin` format, is totally different
+and cannot be used unless looking to train further using the `-pretrainedVectors` flag. Not useful for
+actually predicting text, and takes up tons of space. I'm goign to investigate using Spacy instead.
+
+Had to resize a linux partition because the root size was only 8 gb.
+https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/recognize-expanded-volume-linux.html
+
+Spacy works great -- glove vectors, apparently.
+
+```python
+nlp = spacy.load('en_core_web_lg')
+nlp(u'dog').similarity(nlp(u'cat'))
+```
+
 
 2018-02-26 Monday
 =================
