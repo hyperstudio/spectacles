@@ -1,6 +1,14 @@
 #!/usr/bin/env python
 # coding: utf-8
 from __future__ import unicode_literals
+from __future__ import print_function
+import os
+import sys
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(BASE_DIR)
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "spectacles.settings")
+import django
+django.setup()
 
 import json
 import psycopg2
@@ -50,6 +58,6 @@ def dump_mongodb():
 
 if __name__ == '__main__':
     print('> executing...')
-    dump_postgres()
-    dump_mongodb()
+    #dump_postgres()
+    #dump_mongodb()
     print('> done.')

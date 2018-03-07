@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'django_elasticsearch_dsl',
     # Our code
     #'specutron', # Analysis
+    'spectacles',
     'app',
     'datastore',
 ]
@@ -66,7 +67,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'urls'
+ROOT_URLCONF = 'spectacles.urls'
 
 TEMPLATES = [
     {
@@ -84,7 +85,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'wsgi.application'
+WSGI_APPLICATION = 'spectacles.wsgi.application'
 
 
 # Database
@@ -179,8 +180,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
+print(BASE_DIR)
 STATICFILES_DIRS = [
-        os.path.join(BASE_DIR, 'static'),
+        os.path.join(BASE_DIR, '../static'),
     ]
 
 # Annotator config details

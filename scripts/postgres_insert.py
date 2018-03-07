@@ -1,25 +1,30 @@
 #!/usr/bin/env python
+# coding: utf-8
+from __future__ import unicode_literals
+from __future__ import print_function
 import os
+import sys
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(BASE_DIR)
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "spectacles.settings")
 import django
+django.setup()
+
 import codecs
 import uuid
 import json
-import sys
 import datetime
-from bson.json_util import loads, dumps
+from bson import loads, dumps
 from dateutil import parser
-
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import transaction
-
-sys.path.append('..')  # Root of django app
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings')
-django.setup()
 from django.conf import settings
+
 print('ES_IGNORE_SIGNALS', settings.ES_IGNORE_SIGNALS)
 print('ES_AUTO_REFRESH', settings.ES_AUTO_REFRESH)
 print('USE_HEROKU', settings.USE_HEROKU)
 print(settings.DATABASES['default'])
+
 from app.models import User
 from datastore.models import Annotation
 from datastore.models import Archive
@@ -204,6 +209,6 @@ def insert_annotations():
 if __name__ == '__main__':
     print('> executing...')
     #insert_users()
-    insert_documents()
-    insert_annotations()
+    #insert_documents()
+    #insert_annotations()
     print('> done.')
