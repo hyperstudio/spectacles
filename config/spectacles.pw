@@ -1,0 +1,16 @@
+upstream django {
+  server 127.0.0.1:8080;
+}
+
+server {
+  listen 80;
+  server_name spectacles.pw;
+  charset utf-8;
+  location /static {
+    alias /home/ubuntu/spectacles/static;
+  }
+  location / {
+    uwsgi_pass django;
+    include /home/ubuntu/spectacles/config/uwsgi_params;
+  }
+}
