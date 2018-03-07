@@ -1,5 +1,5 @@
 from django_elasticsearch_dsl import DocType, Index, fields
-from app.utils import DictModel
+from spectacles.utils import DictModel
 from datastore.models import Annotation
 from datastore.models import Document
 from django.conf import settings

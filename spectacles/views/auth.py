@@ -10,7 +10,7 @@ from django.shortcuts import redirect
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_http_methods
 
-from app.utils import props_template
+from spectacles.utils import props_template
 
 
 # TODO: clean up this views file?

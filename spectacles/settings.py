@@ -47,13 +47,12 @@ INSTALLED_APPS = [
     # Our code
     #'specutron', # Analysis
     'spectacles',
-    'app',
     'datastore',
 ]
 
-AUTH_USER_MODEL = 'app.User'
+AUTH_USER_MODEL = 'spectacles.User'
 LOGIN_URL = 'auth-login'
-LOGIN_REDIRECT_URL = 'app-documents'
+LOGIN_REDIRECT_URL = 'spectacles-documents'
 LOGOUT_REDIRECT_URL = 'auth-login'
 APPEND_SLASH = False
 

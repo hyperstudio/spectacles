@@ -8,11 +8,11 @@ from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_GET
 
-from app.utils import props_template
-from app.utils import json_response
-from app.utils import to_dict
-from app.utils import flatten
-from app.utils import PROPS
+from spectacles.utils import props_template
+from spectacles.utils import json_response
+from spectacles.utils import to_dict
+from spectacles.utils import flatten
+from spectacles.utils import PROPS
 from datastore.models import Document
 
 

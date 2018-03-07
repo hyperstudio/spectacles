@@ -2,7 +2,7 @@ from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import BaseUserManager
 from django.db import models
 
-from app.utils import DictModel
+from spectacles.utils import DictModel
 
 
 class UserManager(BaseUserManager):

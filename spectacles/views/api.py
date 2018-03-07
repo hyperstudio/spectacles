@@ -10,9 +10,9 @@ from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from django.views.decorators.http import require_POST
 
-from app import search
-from app.utils import json_response
-from app.utils import to_dict
+from spectacles import search
+from spectacles.utils import json_response
+from spectacles.utils import to_dict
 from datastore.models import Document
 
 

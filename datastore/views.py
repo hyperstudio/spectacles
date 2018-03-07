@@ -11,8 +11,8 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 
-from app.utils import json_response
-from app.utils import to_dict
+from spectacles.utils import json_response
+from spectacles.utils import to_dict
 from datastore.auth import generate_consumer_token
 from datastore.models import Document
 from datastore.models import Annotation

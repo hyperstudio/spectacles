@@ -10,7 +10,7 @@ from enumfields import EnumIntegerField
 from enumfields import Enum
 from enumfields import IntEnum
 
-from app.utils import DictModel
+from spectacles.utils import DictModel
 
 
 class Archive(models.Model):

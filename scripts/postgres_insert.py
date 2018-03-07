@@ -25,7 +25,7 @@ print('ES_AUTO_REFRESH', settings.ES_AUTO_REFRESH)
 print('USE_HEROKU', settings.USE_HEROKU)
 print(settings.DATABASES['default'])
 
-from app.models import User
+from spectacles.models import User
 from datastore.models import Annotation
 from datastore.models import Archive
 from datastore.models import Document
