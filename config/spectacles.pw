@@ -1,5 +1,5 @@
 upstream django {
-  server 127.0.0.1:8080;
+  server unix:///home/ubuntu/spectacles/uwsgi.sock;
 }
 
 server {

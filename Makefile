@@ -15,4 +15,4 @@ js:
 	./node_modules/webpack/bin/webpack.js
 
 prod:
-	PRODUCTION=1 nohup ./manage.py runserver 0.0.0.0:8089 >stdout.log 2>stderr.log&
+	PRODUCTION=1 uwsgi --ini ./config/spectacles.pw_uwsgi.ini

@@ -5,3 +5,5 @@ __pycache__
 .env
 node_modules
 *.log
+uwsgi.sock
+uwsgi.log
