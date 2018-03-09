@@ -1,13 +1,34 @@
+# coding: utf-8
+from __future__ import unicode_literals
+from __future__ import print_function
 from django.shortcuts import render
 from django.http import JsonResponse
+from django.db import models
 from django.db.models.query import QuerySet
 from django.core.serializers.json import DjangoJSONEncoder
 from django.http.response import HttpResponseBase
 import json
+import numpy as np
 import pdb
 
 PROPS = 'PROPS'
 
+
+class VectorModel(object):
+
+    def recalculate_vector(self):
+        raise NotImplementedError
+
+    def has_vector(self):
+        return self.vector is not None
+
+    def get_vector(self):
+        if self.has_vector():
+            return np.frombuffer(self.vector, dtype='float32')
+        return None
+
+    def set_vector(self, ndarray):
+        self.vector = ndarray.tobytes()
 
 class DictModel(object):
     def to_dict(self, fields=None, json_fields=None):
