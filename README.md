@@ -53,7 +53,8 @@
     - [x] Elasticsearch installed
     - [x] SSH keys installed and code cloned
     - [x] Dependencies installed and django app running
-    - [ ] Django app connected to databases
+    - [x] Django app connected to databases
+    - [x] Nginx connected to Django through uWSGI
 
 - [ ] Future work
   - [ ] US-IRAN data
