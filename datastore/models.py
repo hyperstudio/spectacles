@@ -11,6 +11,8 @@ from enumfields import Enum
 from enumfields import IntEnum
 
 from spectacles.utils import DictModel
+from spectacles.utils import VectorModel
+from datastore.vectors import vector_from_html_text
 
 
 class Archive(models.Model):
@@ -39,14 +41,16 @@ class TextFreeDocumentManager(models.Manager):
     def slim(self):
         return super(TextFreeDocumentManager, self).get_queryset().defer('text')
 
-class Document(DictModel, models.Model):
+class Document(VectorModel, DictModel, models.Model):
     _json_fields = (
             'id', 'title', 'created_at', 'updated_at', 'text', 'author',
             'creator')
     _slim_fields = (
             'id', 'title', 'created_at', 'updated_at', 'author',
             'creator')
+
     slim = TextFreeDocumentManager()
+    objects = models.Manager()
 
     # Internal
     id = models.AutoField(primary_key=True)
@@ -67,7 +71,17 @@ class Document(DictModel, models.Model):
     created_at = models.DateTimeField(auto_now_add=True, null=False)
     updated_at = models.DateTimeField(auto_now=True, null=False)
     author = models.TextField(null=False, blank=False)
+    vector = models.BinaryField(null=True, blank=False)
 
+    def recalculate_vector(self):
+        v = vector_from_html_text(self.text)
+        self.vector = v.tobytes()
+        return v
+
+    def save(self, *args, **kwargs):
+        if not self.has_vector() and self.text:
+            self.recalculate_vector()
+        return super(Document, self).save(*args, **kwargs)
 
 class UploadState(Enum):
     NEW = 0
@@ -89,7 +103,7 @@ class Upload(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, null=False)
     updated_at = models.DateTimeField(auto_now=True, null=False)
 
-class Annotation(DictModel, models.Model):
+class Annotation(VectorModel, DictModel, models.Model):
     _json_fields = (
             'uuid', 'creator', 'created_at', 'updated_at',
             'data')
@@ -110,6 +124,7 @@ class Annotation(DictModel, models.Model):
     updated_at = models.DateTimeField(auto_now=True, null=False)
     # Data
     data = JSONField()
+    vector = models.BinaryField(null=True, blank=False)
 
     @property
     def quote(self):
@@ -122,6 +137,14 @@ class Annotation(DictModel, models.Model):
     @property
     def tags(self):
         return self.data.get('tags', [])
+
+    def recalculate_vector(self):
+        return vector_from_html_text(self.text)
+
+    def save(self, *args, **kwargs):
+        if not self.has_vector() and self.text:
+            self.recalculate_vector()
+        return super(Annotation, self).save(*args, **kwargs)
 
 class Bookmark(DictModel, models.Model):
     _json_fields = ('id',)

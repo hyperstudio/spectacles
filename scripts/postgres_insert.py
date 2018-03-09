@@ -14,7 +14,7 @@ import codecs
 import uuid
 import json
 import datetime
-from bson import loads, dumps
+from json import loads, dumps
 from dateutil import parser
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import transaction
@@ -40,7 +40,8 @@ annotationfile = './annotations.jsonlines'
 
 def jsonlines(fpath):
     for line in codecs.open(fpath, 'r', encoding='utf-8'):
-        yield loads(line)
+        if line:
+            yield loads(line)
 
 def dt(ts):
     if isinstance(ts, datetime.datetime):
@@ -53,7 +54,7 @@ def insert_users():
     print('inserting users...')
     mapping = {}
     for d in jsonlines(userfile):
-        if d['email'] == 'downs@mit.edu':
+        if d['email'] == 'peterldowns@gmail.com':
             continue
         u = User.objects.create(
             email=d['email'],
@@ -209,6 +210,6 @@ def insert_annotations():
 if __name__ == '__main__':
     print('> executing...')
     #insert_users()
-    #insert_documents()
-    #insert_annotations()
+    insert_documents()
+    insert_annotations()
     print('> done.')
