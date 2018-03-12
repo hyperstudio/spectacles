@@ -18,4 +18,9 @@ def nlp():
 
 def vector_from_html_text(text):
     soup = BeautifulSoup(text, 'html5lib')
-    return nlp()(soup.get_text(separator=u'\n', strip=False)).vector
+    vector = nlp()(soup.get_text(separator=u'\n', strip=False)).vector
+    # Blank text consisting of <p><br/></p> will have a 0-length vector after
+    # text cleaning.
+    if vector.shape[0] > 0:
+        return vector
+    return None

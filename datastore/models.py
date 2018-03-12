@@ -77,12 +77,13 @@ class Document(VectorModel, DictModel, models.Model):
 
     def recalculate_vector(self):
         v = vector_from_html_text(self.text)
-        self.vector = v.tobytes()
+        if v:
+            self.vector = v.tobytes()
         return v
 
     def save(self, *args, **kwargs):
-        if not self.has_vector() and self.text:
-            self.recalculate_vector()
+        #if not self.has_vector() and self.text:
+        #    self.recalculate_vector()
         return super(Document, self).save(*args, **kwargs)
 
 class UploadState(Enum):
@@ -145,8 +146,8 @@ class Annotation(VectorModel, DictModel, models.Model):
         return vector_from_html_text(self.text)
 
     def save(self, *args, **kwargs):
-        if not self.has_vector() and self.text:
-            self.recalculate_vector()
+        #if not self.has_vector() and self.text:
+        #    self.recalculate_vector()
         return super(Annotation, self).save(*args, **kwargs)
 
 class Bookmark(DictModel, models.Model):
