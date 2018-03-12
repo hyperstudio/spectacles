@@ -17,7 +17,7 @@ import datetime
 from json import loads, dumps
 from dateutil import parser
 from django.core.serializers.json import DjangoJSONEncoder
-from django.db import transaction
+from django.db import transaction, IntegrityError
 from django.conf import settings
 
 print('ES_IGNORE_SIGNALS', settings.ES_IGNORE_SIGNALS)
@@ -33,10 +33,12 @@ from datastore.models import DocumentState
 from datastore.models import Upload
 from datastore.models import UploadState
 
+from os.path import abspath, expanduser
+realpath = lambda x: abspath(expanduser(x))
 
-docfile = './documents.jsonlines'
-userfile = './users.jsonlines'
-annotationfile = './annotations.jsonlines'
+docfile = realpath('~/documents.jsonlines')
+userfile = realpath('~/users.jsonlines')
+annotationfile = realpath('~/annotations.jsonlines')
 
 def jsonlines(fpath):
     for line in codecs.open(fpath, 'r', encoding='utf-8'):
@@ -44,32 +46,40 @@ def jsonlines(fpath):
             yield loads(line)
 
 def dt(ts):
+    if isinstance(ts, dict):
+        ts = ts['$date']
     if isinstance(ts, datetime.datetime):
         return ts
     return datetime.datetime.utcfromtimestamp(float(ts) / 1000)
 
 
-@transaction.atomic
 def insert_users():
     print('inserting users...')
     mapping = {}
     for d in jsonlines(userfile):
-        if d['email'] == 'peterldowns@gmail.com':
-            continue
-        u = User.objects.create(
-            email=d['email'],
-            password='fakepassword',
-            name=d.get('firstname', '') + ' ' + d.get('lastname', ''),
-            last_login=parser.parse(d['last_sign_in_at']),
-            date_joined=parser.parse(d['created_at'])
-        )
-        u.save()
-        mapping[d['id']] = u.id
-        print(u.id)
-
+        try:
+            u = User.objects.create(
+                email=d['email'],
+                password='fakepassword',
+                name=d.get('firstname', '') + ' ' + d.get('lastname', ''),
+                last_login=parser.parse(d['last_sign_in_at']),
+                date_joined=parser.parse(d['created_at'])
+            )
+            mapping[d['id']] = u.id
+            print(u.id)
+        except IntegrityError:
+            u = User.objects.get(email=d['email'])
     print('writing mapping...')
+    new_map = {}
+    try:
+        with open('./user_mapping.json', 'r') as fin:
+            new_map = loads(fin.read())
+    except IOError:
+        new_map = {}
+
+    new_map.update(mapping)
     with open('./user_mapping.json', 'w') as fout:
-        fout.write(dumps(mapping))
+        fout.write(dumps(new_map))
 
 
 def insert_documents():
@@ -81,7 +91,9 @@ def insert_documents():
 
     document_mapping = {}
     print('inserting documents...')
-    for i, d in enumerate(jsonlines(docfile)):
+    all_lines = list(jsonlines(docfile))
+    print('inserting %d documents' % len(all_lines))
+    for i, d in enumerate(all_lines):
         if not d['text']:
             d['text'] = ''
         if not d['author']:
@@ -96,6 +108,7 @@ def insert_documents():
             creator = User.objects.get(id=creator_id)
         else:
             creator = User.objects.get(email='downs@mit.edu')
+
         try:
             doc = Document.objects.create(
                 state=doc_state,
@@ -112,7 +125,7 @@ def insert_documents():
             continue
         if d['slug']:
             document_mapping[d['slug']] = doc.id
-        else:
+        if i % 100 == 0:
             sys.stdout.write('.')
             sys.stdout.flush()
 
@@ -136,7 +149,7 @@ def insert_annotations():
     annotation_mapping = {}
     count = 0
     try:
-        with open('./annotation_mapping.jsonlines', 'r') as fin:
+        with open('./annotation_mapping.json', 'r') as fin:
             for line in fin.readlines():
                 annotation_mapping.update(loads(line))
                 count += 1
@@ -189,8 +202,8 @@ def insert_annotations():
         try:
             ann = Annotation(
                 uuid=a['uuid'],
-                created_at=dt(a['created']['$date']) if a['created'] else datetime.datetime.utcnow(),
-                updated_at=dt(a['updated']['$date']) if a['updated'] else datetime.datetime.utcnow(),
+                created_at=dt(a['created']) if a['created'] else datetime.datetime.utcnow(),
+                updated_at=dt(a['updated']) if a['updated'] else datetime.datetime.utcnow(),
                 creator=creator,
                 document=document,
                 data=json.loads(dumps(a))
@@ -203,7 +216,7 @@ def insert_annotations():
         if len(to_create) >= 500:
             print('--> inserting')
             Annotation.objects.bulk_create(to_create)
-            with open('./annotation_mapping.jsonlines', 'a') as fout:
+            with open('./annotation_mapping.json', 'a') as fout:
                 fout.write(dumps(new_mapping))
                 fout.write('\n')
             to_create = []
@@ -214,5 +227,5 @@ if __name__ == '__main__':
     print('> executing...')
     #insert_users()
     #insert_documents()
-    insert_annotations()
+    #insert_annotations()
     print('> done.')
