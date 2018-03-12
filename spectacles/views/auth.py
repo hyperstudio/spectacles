@@ -33,7 +33,7 @@ def login(request):
             auth_login(request, user)
             if next_ is not None:
                 return redirect(next_)
-            return redirect('app-root')
+            return redirect('spectacles-root')
         props.update({
             'username': username,
             'password': password,
@@ -46,4 +46,4 @@ def login(request):
 @ensure_csrf_cookie
 def logout(request):
     auth_logout(request)
-    return redirect('app-root')
+    return redirect('spectacles-root')
