@@ -25,14 +25,16 @@ class DocumentIndexer(Indexer):
             self.mapping[d.id] = d.get_vector()
 
     def update(self):
+        changed = 0
         for d in Document.objects.filter(vector__isnull=False, vector_needs_synch=True):
             if not d.has_vector():
                 continue
             with transaction.atomic():
+                changed += 1
                 self.mapping[d.id] = d.get_vector()
                 d.vector_needs_sync = False
                 d.save()
-
+        return changed
 
 
 indexer = DocumentIndexer(

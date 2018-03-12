@@ -23,6 +23,7 @@ class Indexer(object):
         raise NotImplementedError
 
     def update(self):
+        # Return Falsey if no updates were detected
         raise NotImplementedError
 
     def save_annoy_file(self):
@@ -39,8 +40,9 @@ class Indexer(object):
         self.initial_load()
         try:
             while True:
-                self.update()
-                self.save_annoy_file()
+                changed = self.update()
+                if changed:
+                    self.save_annoy_file()
                 time.sleep(self.update_interval)
         except KeyboardInterrupt:
             pass

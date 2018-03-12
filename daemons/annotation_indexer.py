@@ -25,13 +25,16 @@ class AnnotationIndexer(Indexer):
             self.mapping[a.id] = a.get_vector()
 
     def update(self):
+        changed = 0
         for a in Annotation.objects.filter(vector__isnull=False, vector_needs_synch=True):
             if not a.has_vector():
                 continue
             with transaction.atomic():
+                changed += 1
                 self.mapping[a.id] = a.get_vector()
                 a.vector_needs_sync = False
                 a.save()
+        return changed
 
 
 indexer = AnnotationIndexer(
