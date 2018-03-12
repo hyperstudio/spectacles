@@ -21,9 +21,10 @@ def login(request):
     props = {
         'csrftoken': csrf.get_token(request),
     }
-    next_ = request.GET.get('next', None)
+    next_ = request.POST.get('next', request.GET.get('next', None))
     if next_ is not None:
         props['next'] = next_
+    print('next!', next_)
 
     if request.method == 'POST':
         username = request.POST['username']
@@ -32,6 +33,7 @@ def login(request):
         if user is not None:
             auth_login(request, user)
             if next_ is not None:
+                print('redirecting to', next_)
                 return redirect(next_)
             return redirect('spectacles-root')
         props.update({

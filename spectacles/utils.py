@@ -7,6 +7,7 @@ from django.db import models
 from django.db.models.query import QuerySet
 from django.core.serializers.json import DjangoJSONEncoder
 from django.http.response import HttpResponseBase
+from django.http.response import HttpResponseRedirect
 import json
 import numpy as np
 import pdb
@@ -69,7 +70,9 @@ def props_template(path):
         def _2(request, *args, **kwargs):
             json_kwargs = {}
             context = fn(request, *args, **kwargs)
-            if isinstance(context, HttpResponseBase):
+            print(type(context))
+            if isinstance(context, (HttpResponseBase, HttpResponseRedirect)):
+                print('RETURNING CONTEXT DIRECTLY')
                 return context
             if isinstance(context, tuple):
                 context, json_kwargs = context
