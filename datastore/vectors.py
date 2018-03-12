@@ -4,12 +4,18 @@ from __future__ import print_function
 import spacy
 from bs4 import BeautifulSoup
 
-print('initial spacy/NLP load')
-try:
-    nlp = spacy.load('en_core_web_lg')
-except IOError:
-    nlp = spacy.load('en_core_web_sm')
+_nlp = None
+
+def nlp():
+    global _nlp
+    if _nlp is None:
+        print('loading spacy/NLP')
+        try:
+            _nlp = spacy.load('en_core_web_lg')
+        except IOError:
+            _nlp = spacy.load('en_core_web_sm')
+    return _nlp
 
 def vector_from_html_text(text):
     soup = BeautifulSoup(text, 'html5lib')
-    return nlp(soup.get_text(separator=u'\n', strip=False)).vector
+    return nlp()(soup.get_text(separator=u'\n', strip=False)).vector
