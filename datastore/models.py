@@ -77,7 +77,7 @@ class Document(VectorModel, DictModel, models.Model):
 
     def recalculate_vector(self):
         v = vector_from_html_text(self.text)
-        if v:
+        if v is not None:
             self.vector = v.tobytes()
         return v
 
@@ -143,7 +143,10 @@ class Annotation(VectorModel, DictModel, models.Model):
         return self.data.get('tags', [])
 
     def recalculate_vector(self):
-        return vector_from_html_text(self.text)
+        v = vector_from_html_text(self.text)
+        if v is not None:
+            self.vector = v.tobytes()
+        return v
 
     def save(self, *args, **kwargs):
         #if not self.has_vector() and self.text:
