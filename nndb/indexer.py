@@ -29,7 +29,11 @@ class Indexer(object):
     def save_annoy_file(self):
         index = annoy.AnnoyIndex(self.vector_length)
         for i, v in self.mapping.items():
-            index.add_item(i, v)
+            try:
+                index.add_item(i, v)
+            except IndexError as e:
+                #print('failed to add index i =', i)
+                continue
         t = time.time()
         index.build(self.index_trees)
         index.save(self.index_path)

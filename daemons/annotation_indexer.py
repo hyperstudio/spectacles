@@ -19,14 +19,24 @@ from nndb import Indexer
 
 class AnnotationIndexer(Indexer):
     def initial_load(self):
-        for a in Annotation.objects.filter(vector__isnull=False):
-            if not d.has_vector():
+        qs = (Annotation
+                .objects
+                .only('id', 'vector')
+                .filter(vector__isnull=False)
+                .iterator())
+        for a in qs:
+            if not a.has_vector():
                 continue
             self.mapping[a.id] = a.get_vector()
 
     def update(self):
         changed = 0
-        for a in Annotation.objects.filter(vector__isnull=False, vector_needs_synch=True):
+        qs = (Annotation
+                .objects
+                .only('id', 'vector')
+                .filter(vector__isnull=False, vector_needs_synch=True)
+                .iterator())
+        for a in qs:
             if not a.has_vector():
                 continue
             with transaction.atomic():

@@ -12,6 +12,7 @@ django.setup()
 # --------------------------------------------------------------------
 from django.conf import settings
 from django.db import transaction
+from tqdm import tqdm
 
 from datastore.models import Document
 from nndb import Indexer
@@ -19,21 +20,40 @@ from nndb import Indexer
 
 class DocumentIndexer(Indexer):
     def initial_load(self):
-        for d in Document.objects.filter(vector__isnull=False):
+        qs = (Document
+                .objects
+                .only('id', 'vector')
+                .filter(vector__isnull=False)
+                .iterator())
+        i = 0
+        for d in tqdm(qs):
             if not d.has_vector():
                 continue
+            i += 1
             self.mapping[d.id] = d.get_vector()
+        print('total count = %d' % i)
 
     def update(self):
         changed = 0
-        for d in Document.objects.filter(vector__isnull=False, vector_needs_synch=True):
+        qs = (Document
+                .objects
+                .filter(vector__isnull=False, vector_needs_synch=True)
+                .iterator())
+        count = (Document
+                .objects
+                .filter(vector__isnull=False, vector_needs_synch=True)
+                .count())
+        print('update count: %d' % count)
+        i = 0
+        for d in tqdm(qs):
             if not d.has_vector():
                 continue
-            with transaction.atomic():
-                changed += 1
-                self.mapping[d.id] = d.get_vector()
-                d.vector_needs_sync = False
-                d.save()
+            changed += 1
+            self.mapping[d.id] = d.get_vector()
+            #print('saved %d' % d.id)
+            d.vector_needs_synch = False
+            d.save()
+        print('%d items changed' % changed)
         return changed
 
 

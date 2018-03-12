@@ -24,7 +24,7 @@ class Server(object):
 
         self.index = annoy.AnnoyIndex(self.vector_length)
 
-    def neighbors_by_vector(vector, n):
+    def neighbors_by_vector(self, vector, n, *args, **kwargs):
         return self.index.get_nns_by_vector(
                 vector, n, *args, **kwargs)
 
@@ -45,7 +45,6 @@ class Server(object):
                     new_index.load(self.index_path)
                     self.index.unload()
                     self.index = new_index
-                    print('reloaded', self.index_path)
                 except IOError:
                     print('could not reload', self.index_path)
         except KeyboardInterrupt:

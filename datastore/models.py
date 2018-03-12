@@ -79,6 +79,7 @@ class Document(VectorModel, DictModel, models.Model):
         v = vector_from_html_text(self.text)
         if v is not None:
             self.vector = v.tobytes()
+            self.vector_needs_synch = True
         return v
 
     def save(self, *args, **kwargs):
