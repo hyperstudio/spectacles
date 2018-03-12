@@ -15,4 +15,6 @@ pymongo==3.6.1
 bson==0.5.2
 bs4==0.0.1
 annoy==1.11.4
+zmq==0.0.0
+pyzmq==17.0.0
 pyRpc==0.2
