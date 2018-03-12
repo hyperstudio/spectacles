@@ -1,5 +1,6 @@
-# -*- coding: utf-8 -*-
+# coding: utf-8
 from __future__ import unicode_literals
+from __future__ import print_function
 import uuid
 
 from django.db import models
@@ -72,6 +73,7 @@ class Document(VectorModel, DictModel, models.Model):
     updated_at = models.DateTimeField(auto_now=True, null=False)
     author = models.TextField(null=False, blank=False)
     vector = models.BinaryField(null=True, blank=False)
+    vector_needs_synch = models.BooleanField(default=True, blank=False)
 
     def recalculate_vector(self):
         v = vector_from_html_text(self.text)
@@ -125,6 +127,7 @@ class Annotation(VectorModel, DictModel, models.Model):
     # Data
     data = JSONField()
     vector = models.BinaryField(null=True, blank=False)
+    vector_needs_synch = models.BooleanField(default=True, blank=False)
 
     @property
     def quote(self):

@@ -72,7 +72,6 @@ def insert_users():
         fout.write(dumps(mapping))
 
 
-@transaction.atomic
 def insert_documents():
     print('reading mapping...')
     user_mapping = {}
@@ -83,7 +82,6 @@ def insert_documents():
     document_mapping = {}
     print('inserting documents...')
     for i, d in enumerate(jsonlines(docfile)):
-        if i > 200: break
         if not d['text']:
             d['text'] = ''
         if not d['author']:
@@ -98,18 +96,20 @@ def insert_documents():
             creator = User.objects.get(id=creator_id)
         else:
             creator = User.objects.get(email='downs@mit.edu')
-        doc = Document.objects.create(
-            state=doc_state,
-            title=d['title'],
-            text=d['text'],
-            created_at=parser.parse(d['created_at']),
-            updated_at=parser.parse(d['updated_at']),
-            author=d['author'],
+        try:
+            doc = Document.objects.create(
+                state=doc_state,
+                title=d['title'],
+                text=d['text'],
+                created_at=parser.parse(d['created_at']),
+                updated_at=parser.parse(d['updated_at']),
+                author=d['author'],
 
-            creator=creator,
-            upload=None
-        )
-        doc.save()
+                creator=creator,
+                upload=None
+            )
+        except:
+            continue
         if d['slug']:
             document_mapping[d['slug']] = doc.id
         else:
@@ -186,14 +186,17 @@ def insert_annotations():
         # The UUIDs used in Mongo are not compatible with our new data model,
         # and need to be replaced.
         a['uuid'] = uuid.uuid4().hex
-        ann = Annotation(
-            uuid=a['uuid'],
-            created_at=dt(a['created']) if a['created'] else datetime.datetime.utcnow(),
-            updated_at=dt(a['updated']) if a['updated'] else datetime.datetime.utcnow(),
-            creator=creator,
-            document=document,
-            data=json.loads(dumps(a))
-        )
+        try:
+            ann = Annotation(
+                uuid=a['uuid'],
+                created_at=dt(a['created']['$date']) if a['created'] else datetime.datetime.utcnow(),
+                updated_at=dt(a['updated']['$date']) if a['updated'] else datetime.datetime.utcnow(),
+                creator=creator,
+                document=document,
+                data=json.loads(dumps(a))
+            )
+        except TypeError as e:
+            raise e
         to_create.append(ann)
         annotation_mapping[old_uuid] = ann.uuid
         new_mapping[old_uuid] = ann.uuid
@@ -210,6 +213,6 @@ def insert_annotations():
 if __name__ == '__main__':
     print('> executing...')
     #insert_users()
-    insert_documents()
+    #insert_documents()
     insert_annotations()
     print('> done.')

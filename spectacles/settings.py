@@ -188,3 +188,14 @@ STATICFILES_DIRS = [
 ANNOTATOR_CONSUMER_TTL = 86400
 ANNOTATOR_CONSUMER_KEY = 'yourconsumerkey'
 ANNOTATOR_CONSUMER_SECRET = 'yourconsumersecret'
+
+NNDB_SERVICES = {
+    'documents': {
+        'service_name': 'com.spectacles.documents',
+        'index_path': './indexes/documents.ann',
+    },
+    'annotations': {
+        'service_name': 'com.spectacles.annotations',
+        'index_path': './indexes/annotations.ann',
+    },
+}
