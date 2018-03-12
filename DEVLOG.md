@@ -9,11 +9,55 @@ Wiki
 Slack
   https://hyperstudio.slack.com/messages
 
+
+2018-03-12 Monday
+=================
+Been having massive trouble getting all of the annotations indexed. Server
+paused and had to reboot in the middle. Why? Oh, it ran out of memory. Right, this happened before. Unlike last time I'm writing down the solution:
+
+(1) Create a 10 gig swapfile
+
+```bash
+dd if=/dev/zero of=/swap/swapfile bs=1024 count=10485760
+chmod 600 /swap/swapfile
+mkswap /swap/swapfile
+swapon /swap/swapfile
+free -m
+```
+
+(2) Can't use the management command to index
+
+```bash
+python manage.py search_index --models spectacles.document --rebuild
+```
+
+Because it doesn't paginate, which means it has to load all of the Annotation
+objects into memory at once. Woops, that's stupid, and will crash. And with the
+pagination options set on the ESDocument, documents will randomly be missing
+because there's no `order_by` clause being used, which is required for pagination.
+
+So!
+
+```python
+from datastore.models import Annotation
+from django.core.paginator import Paginator
+p = Paginator(Annotation.objects.all().order_by('uuid'), 500)
+for i in range(1, p.num_pages + 1):
+  objects = p.page(i)
+  for a in objects:
+    a.save()
+  print('saved page %d' % i)
+```
+
+Taking some time, but at least it works.
+
+
 2018-03-07 Wednesday
 ====================
 Setting up NGINX and uWSGI to reliably serve the website:
   https://www.digitalocean.com/community/tutorials/how-to-serve-django-applications-with-uwsgi-and-nginx-on-ubuntu-14-04
   https://uwsgi-docs.readthedocs.io/en/latest/tutorials/Django_and_nginx.html
+
 
 2018-03-06 Tuesday
 ==================
