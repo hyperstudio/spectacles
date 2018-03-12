@@ -49,6 +49,9 @@ path.logs: /data/elasticsearch/logs
 # limit.
 #
 # Elasticsearch performs poorly when the system is swapping the memory.
+cluster.routing.allocation.disk.threshold_enabled: true
+cluster.routing.allocation.disk.watermark.low: 5gb
+cluster.routing.allocation.disk.watermark.high: 4gb
 #
 # ---------------------------------- Network -----------------------------------
 #
