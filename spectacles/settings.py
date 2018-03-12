@@ -137,8 +137,10 @@ set_default(ELASTICSEARCH_DSL)
 print(ELASTICSEARCH_DSL['default']['hosts'])
 
 # Elasticsearch Indexing
-ES_IGNORE_SIGNALS = env('ES_IGNORE_SIGNALS', False)
-ES_AUTO_REFRESH = env('ES_AUTO_REFRESH', True)
+ES_IGNORE_SIGNALS = env('ES_IGNORE_SIGNALS', False, cast=bool)
+ES_AUTO_REFRESH = env('ES_AUTO_REFRESH', True, cast=bool)
+print('ES_IGNORE_SIGNALS:', ES_IGNORE_SIGNALS)
+print('ES_AUTO_REFRESH:', ES_AUTO_REFRESH)
 
 
 
