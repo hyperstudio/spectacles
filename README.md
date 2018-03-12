@@ -38,16 +38,20 @@
         - [x] Allow searching over it by scoping the same queries as usual to belong to a certain user
         - [x] Allow linking to a user's activity page, searching
     - [ ] Recommendations
-      - [ ] Set up vector store (2/23)
+      - [x] Set up vector store (2/23)
       - [x] "Mark this as useful / bookmarked" for both documents and annotations (2/23)
+        - [ ] Client side code for actually bookmarking
+      - [ ] Document recommendations
+      - [ ] Annotation recommendations
       - [ ] Intelligent recommendations using vector similarity (2/28)
     - [ ] Home page (3/2)
     - [ ] Account creation/registration flow (3/2)
+    - [ ] Per-archive scoping
   - [ ] Implementation details
     - [ ] Consistent data store on the client side
     - [ ] Scope searches by current archive
     - [ ] Separate out recommendation and datastore backend logic to be published as a package
-  - [ ] Deployment
+  - [x] Deployment
     - [x] Server up and running
     - [x] Postgres installed
     - [x] Elasticsearch installed
