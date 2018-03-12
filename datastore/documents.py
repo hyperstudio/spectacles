@@ -39,6 +39,7 @@ class ESDocument(ESModel, DocType):
         model = Document
         ignore_signals = settings.ES_IGNORE_SIGNALS
         auto_refresh = settings.ES_AUTO_REFRESH
+        queryset_pagination = 1000
 
 
 
@@ -78,3 +79,4 @@ class ESAnnotation(ESModel, DocType):
         model = Annotation
         ignore_signals = settings.ES_IGNORE_SIGNALS
         auto_refresh = settings.ES_AUTO_REFRESH
+        queryset_pagination = 1000
