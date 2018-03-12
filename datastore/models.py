@@ -127,7 +127,7 @@ class Annotation(VectorModel, DictModel, models.Model):
     # Data
     data = JSONField()
     vector = models.BinaryField(null=True, blank=False)
-    vector_needs_synch = models.BooleanField(default=False, blank=False)
+    vector_needs_synch = models.BooleanField(default=True, blank=False)
 
     @property
     def quote(self):

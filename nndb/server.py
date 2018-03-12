@@ -53,11 +53,11 @@ class Server(object):
 
 
 
-if __name__ == '__main__':
-    print('running dummy.ann server')
-    s = Server(
-        index_path='./dummy.ann',
-        update_interval=5,
-        service_name='com.spectacles.dummy',
-    )
-    s.run()
+#if __name__ == '__main__':
+#    print('running dummy.ann server')
+#    s = Server(
+#        index_path='./dummy.ann',
+#        update_interval=5,
+#        service_name='com.spectacles.dummy',
+#    )
+#    s.run()

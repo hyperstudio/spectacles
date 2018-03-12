@@ -29,8 +29,10 @@ class Indexer(object):
         index = annoy.AnnoyIndex(self.vector_length)
         for i, v in self.mapping.items():
             index.add_item(i, v)
+        t = time.time()
         index.build(self.index_trees)
         index.save(self.index_path)
+        print('built and saved index:', time.time() - t)
         index.unload()
 
     def run(self):
@@ -44,26 +46,26 @@ class Indexer(object):
             pass
 
 
-class DummyIndexer(Indexer):
-    def initial_load(self):
-        for i in xrange(0, 1000):
-            v = [random.gauss(0, 1) for z in xrange(self.vector_length)]
-            self.mapping[i] = v
-
-    def update(self):
-        changed = 0
-        for i in xrange(0, 1000):
-            if random.random() > 0.5:
-                continue
-            changed += 1
-            v = [random.gauss(0, 1) for z in xrange(self.vector_length)]
-            self.mapping[i] = v
-        print('updated %d items' % changed)
-
-
-if __name__ == '__main__':
-    d = DummyIndexer(
-        index_path='./dummy.ann',
-        update_interval=5
-    )
-    d.run()
+#class DummyIndexer(Indexer):
+#    def initial_load(self):
+#        for i in xrange(0, 1000):
+#            v = [random.gauss(0, 1) for z in xrange(self.vector_length)]
+#            self.mapping[i] = v
+#
+#    def update(self):
+#        changed = 0
+#        for i in xrange(0, 1000):
+#            if random.random() > 0.5:
+#                continue
+#            changed += 1
+#            v = [random.gauss(0, 1) for z in xrange(self.vector_length)]
+#            self.mapping[i] = v
+#        print('updated %d items' % changed)
+#
+#
+#if __name__ == '__main__':
+#    d = DummyIndexer(
+#        index_path='./dummy.ann',
+#        update_interval=5
+#    )
+#    d.run()
