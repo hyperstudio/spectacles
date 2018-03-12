@@ -10,10 +10,7 @@ def nlp():
     global _nlp
     if _nlp is None:
         print('loading spacy/NLP')
-        try:
-            _nlp = spacy.load('en_core_web_lg')
-        except IOError:
-            _nlp = spacy.load('en_core_web_sm')
+        _nlp = spacy.load('en_core_web_sm')
     return _nlp
 
 def vector_from_html_text(text):
