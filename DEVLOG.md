@@ -9,6 +9,12 @@ Wiki
 Slack
   https://hyperstudio.slack.com/messages
 
+2018-03-07 Wednesday
+====================
+Setting up NGINX and uWSGI to reliably serve the website:
+  https://www.digitalocean.com/community/tutorials/how-to-serve-django-applications-with-uwsgi-and-nginx-on-ubuntu-14-04
+  https://uwsgi-docs.readthedocs.io/en/latest/tutorials/Django_and_nginx.html
+
 2018-03-06 Tuesday
 ==================
 Installing Yarn and Node
