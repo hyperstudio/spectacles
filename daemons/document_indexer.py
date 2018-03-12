@@ -26,35 +26,29 @@ class DocumentIndexer(Indexer):
                 .filter(vector__isnull=False)
                 .iterator())
         i = 0
-        for d in tqdm(qs):
+        for d in qs:
             if not d.has_vector():
                 continue
             i += 1
             self.mapping[d.id] = d.get_vector()
-        print('total count = %d' % i)
+        print('loaded %d vectors' % i)
 
     def update(self):
-        changed = 0
         qs = (Document
                 .objects
                 .filter(vector__isnull=False, vector_needs_synch=True)
                 .iterator())
-        count = (Document
-                .objects
-                .filter(vector__isnull=False, vector_needs_synch=True)
-                .count())
-        print('update count: %d' % count)
         i = 0
-        for d in tqdm(qs):
+        for d in qs:
             if not d.has_vector():
                 continue
-            changed += 1
+            i += 1
             self.mapping[d.id] = d.get_vector()
-            #print('saved %d' % d.id)
             d.vector_needs_synch = False
             d.save()
-        print('%d items changed' % changed)
-        return changed
+        if i > 0:
+            print('updated %d vectors' % i)
+        return i
 
 
 indexer = DocumentIndexer(
