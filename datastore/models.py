@@ -78,8 +78,7 @@ class Document(VectorModel, DictModel, models.Model):
     def recalculate_vector(self):
         v = vector_from_html_text(self.text)
         if v is not None:
-            self.vector = v.tobytes()
-            self.vector_needs_synch = True
+            self.set_vector(v)
         return v
 
     def save(self, *args, **kwargs):
@@ -112,7 +111,8 @@ class Annotation(VectorModel, DictModel, models.Model):
             'uuid', 'creator', 'created_at', 'updated_at',
             'data')
 
-    uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    id = models.AutoField(primary_key=True)
+    uuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
     # Internal
     document = models.ForeignKey(
         'datastore.Document',
@@ -146,7 +146,7 @@ class Annotation(VectorModel, DictModel, models.Model):
     def recalculate_vector(self):
         v = vector_from_html_text(self.text)
         if v is not None:
-            self.vector = v.tobytes()
+            self.set_vector(v)
         return v
 
     def save(self, *args, **kwargs):

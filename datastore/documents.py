@@ -35,11 +35,14 @@ class ESDocument(ESModel, DocType):
     created_at = fields.DateField(attr='created_at')
     updated_at = fields.DateField(attr='updated_at')
 
+    def get_queryset(self):
+        return super(ESDocument, self).get_queryset().order_by('id')
+
     class Meta:
         model = Document
         ignore_signals = settings.ES_IGNORE_SIGNALS
         auto_refresh = settings.ES_AUTO_REFRESH
-        queryset_pagination = 1000
+        queryset_pagination = 200
 
 
 
@@ -50,6 +53,7 @@ annotation_index.settings(
 )
 @annotation_index.doc_type
 class ESAnnotation(ESModel, DocType):
+    id = fields.IntegerField(attr='id')
     uuid = fields.TextField(attr='uuid')
     creator = fields.ObjectField(properties={
         'email': fields.TextField(),
@@ -75,8 +79,11 @@ class ESAnnotation(ESModel, DocType):
     def prepare_tags(self, instance):
         return instance.tags
 
+    def get_queryset(self):
+        return super(ESAnnotation, self).get_queryset().order_by('id')
+
     class Meta:
         model = Annotation
         ignore_signals = settings.ES_IGNORE_SIGNALS
         auto_refresh = settings.ES_AUTO_REFRESH
-        queryset_pagination = 1000
+        queryset_pagination = 500
