@@ -12,7 +12,6 @@ django.setup()
 # --------------------------------------------------------------------
 from django.conf import settings
 from django.db import transaction
-from tqdm import tqdm
 
 from datastore.models import Document
 from nndb import Indexer
@@ -31,11 +30,12 @@ class DocumentIndexer(Indexer):
                 continue
             i += 1
             self.mapping[d.id] = d.get_vector()
-        print('loaded %d vectors' % i)
+        print('[documents] loaded %d vectors' % i)
 
     def update(self):
         qs = (Document
                 .objects
+                .only('id', 'vector')
                 .filter(vector__isnull=False, vector_needs_synch=True)
                 .iterator())
         i = 0
@@ -47,7 +47,7 @@ class DocumentIndexer(Indexer):
             d.vector_needs_synch = False
             d.save()
         if i > 0:
-            print('updated %d vectors' % i)
+            print('[documents] updated %d vectors' % i)
         return i
 
 

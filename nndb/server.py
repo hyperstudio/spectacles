@@ -7,6 +7,7 @@ import random
 import numpy as np
 import annoy
 from pyRpc import PyRpc
+import logging
 
 
 class Server(object):
@@ -15,12 +16,15 @@ class Server(object):
             service_name,
             num_workers=8,
             update_interval=5,
-            vector_length=384):
+            vector_length=384,
+            logging_level=None):
         self.index_path = index_path
         self.service_name = service_name
         self.num_workers = num_workers
         self.update_interval = update_interval
         self.vector_length = vector_length
+        if logging_level is not None:
+            logging.basicConfig(level=logging_level)
 
         self.index = annoy.AnnoyIndex(self.vector_length)
 
@@ -32,10 +36,14 @@ class Server(object):
         return self.index.get_nns_by_item(
                 id, n, *args, **kwargs)
 
+    def num_items(self):
+        return self.index.get_n_items()
+
     def run(self):
         server = PyRpc(self.service_name, workers=self.num_workers)
         server.publishService(self.neighbors_by_vector)
         server.publishService(self.neighbors_by_id)
+        server.publishService(self.num_items)
         server.start()
         try:
             while True:
@@ -49,14 +57,3 @@ class Server(object):
                     print('could not reload', self.index_path)
         except KeyboardInterrupt:
             server.stop()
-
-
-
-#if __name__ == '__main__':
-#    print('running dummy.ann server')
-#    s = Server(
-#        index_path='./dummy.ann',
-#        update_interval=5,
-#        service_name='com.spectacles.dummy',
-#    )
-#    s.run()

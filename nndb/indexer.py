@@ -3,7 +3,19 @@ from __future__ import print_function
 from __future__ import unicode_literals
 import annoy
 import time
+import pdb
+import tqdm
 import random
+import multiprocessing
+
+
+def graceful_exit(fn):
+    def _impl(*args, **kwargs):
+        try:
+            return fn(*args, **kwargs)
+        except KeyboardInterrupt:
+            return None
+    return _impl
 
 
 class Indexer(object):
@@ -28,11 +40,12 @@ class Indexer(object):
 
     def save_annoy_file(self):
         index = annoy.AnnoyIndex(self.vector_length)
-        for i, v in self.mapping.items():
+        for i, v in tqdm.tqdm(self.mapping.items()):
             try:
                 index.add_item(i, v)
             except IndexError as e:
-                #print('failed to add index i =', i)
+                print('failed to add index i =', i, e, v)
+                pdb.set_trace()
                 continue
         t = time.time()
         index.build(self.index_trees)
@@ -40,38 +53,24 @@ class Indexer(object):
         print('built and saved index:', time.time() - t)
         index.unload()
 
-    def run(self):
+    def _run_init(self):
         self.initial_load()
-        try:
-            while True:
-                changed = self.update()
-                if changed:
-                    self.save_annoy_file()
-                time.sleep(self.update_interval)
-        except KeyboardInterrupt:
-            pass
+        self.save_annoy_file()
 
+    def _run_step(self):
+        changed = self.update()
+        if changed:
+            self.save_annoy_file()
 
-#class DummyIndexer(Indexer):
-#    def initial_load(self):
-#        for i in xrange(0, 1000):
-#            v = [random.gauss(0, 1) for z in xrange(self.vector_length)]
-#            self.mapping[i] = v
-#
-#    def update(self):
-#        changed = 0
-#        for i in xrange(0, 1000):
-#            if random.random() > 0.5:
-#                continue
-#            changed += 1
-#            v = [random.gauss(0, 1) for z in xrange(self.vector_length)]
-#            self.mapping[i] = v
-#        print('updated %d items' % changed)
-#
-#
-#if __name__ == '__main__':
-#    d = DummyIndexer(
-#        index_path='./dummy.ann',
-#        update_interval=5
-#    )
-#    d.run()
+    @graceful_exit
+    def run(self):
+        self._run_init()
+        while True:
+            self._run_step()
+            time.sleep(self.update_interval)
+
+    def background(self):
+        p = multiprocessing.Process(target=self.run, args=tuple())
+        p.daemon = False
+        p.start()
+        return p

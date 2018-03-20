@@ -39,4 +39,3 @@ class Client(object):
         result = result_or_error(remote.availableServices())
         for x in result:
             setattr(self, x['service'], proxyfn(remote, x['service']))
-

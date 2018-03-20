@@ -24,27 +24,31 @@ class AnnotationIndexer(Indexer):
                 .only('id', 'vector')
                 .filter(vector__isnull=False)
                 .iterator())
+        i = 0
         for a in qs:
             if not a.has_vector():
                 continue
+            i += 1
             self.mapping[a.id] = a.get_vector()
+        print('[annotations] loaded %d vectors' % i)
 
     def update(self):
-        changed = 0
         qs = (Annotation
                 .objects
                 .only('id', 'vector')
                 .filter(vector__isnull=False, vector_needs_synch=True)
                 .iterator())
+        i = 0
         for a in qs:
             if not a.has_vector():
                 continue
-            with transaction.atomic():
-                changed += 1
-                self.mapping[a.id] = a.get_vector()
-                a.vector_needs_sync = False
-                a.save()
-        return changed
+            i += 1
+            self.mapping[a.id] = a.get_vector()
+            a.vector_needs_synch = False
+            a.save()
+        if i > 0:
+            print('[annotations] updated %d vectors' % i)
+        return i
 
 
 indexer = AnnotationIndexer(
