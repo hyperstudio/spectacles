@@ -7,3 +7,4 @@ node_modules
 *.log
 uwsgi.sock
 uwsgi.log
+nohup.out

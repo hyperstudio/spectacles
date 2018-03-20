@@ -30,6 +30,7 @@ class VectorModel(object):
 
     def set_vector(self, ndarray):
         self.vector = ndarray.tobytes()
+        self.vector_needs_synch = True
 
 class DictModel(object):
     def to_dict(self, fields=None, json_fields=None):
