@@ -2,7 +2,10 @@
 from __future__ import unicode_literals
 from __future__ import print_function
 import spacy
+import warnings
 from bs4 import BeautifulSoup
+
+warnings.filterwarnings('ignore', category=UserWarning, module='bs4')
 
 _nlp = None
 
