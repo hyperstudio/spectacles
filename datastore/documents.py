@@ -10,7 +10,7 @@ class ESModel(DictModel):
     def to_dict(self, **kwargs):
         data = DocType.to_dict(self)
         meta = self.meta.to_dict()
-        data['_meta'] = meta
+        data.update(meta)
         return data
 
 # TODO: add archive_id to both annotation and document
@@ -32,8 +32,8 @@ class ESDocument(ESModel, DocType):
     text = fields.TextField(attr='text')
     title = fields.TextField(attr='title')
     author = fields.TextField(attr='author')
-    created_at = fields.DateField(attr='created_at')
-    updated_at = fields.DateField(attr='updated_at')
+    created_at = fields.DateField(attr='created_at', default_timezone='UTC')
+    updated_at = fields.DateField(attr='updated_at', default_timezone='UTC')
 
     def get_queryset(self):
         return super(ESDocument, self).get_queryset().order_by('id')
@@ -59,8 +59,8 @@ class ESAnnotation(ESModel, DocType):
         'email': fields.TextField(),
         'name': fields.TextField(),
     })
-    created_at = fields.DateField(attr='created_at')
-    updated_at = fields.DateField(attr='updated_at')
+    created_at = fields.DateField(attr='created_at', default_timezone='UTC')
+    updated_at = fields.DateField(attr='updated_at', default_timezone='UTC')
 
     document_id = fields.IntegerField()
     quote = fields.TextField()

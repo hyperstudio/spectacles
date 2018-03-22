@@ -108,8 +108,8 @@ class Upload(models.Model):
 
 class Annotation(VectorModel, DictModel, models.Model):
     _json_fields = (
-            'uuid', 'creator', 'created_at', 'updated_at',
-            'data')
+            'id', 'uuid', 'creator', 'created_at', 'updated_at',
+            'data', 'document_id', 'quote', 'text', 'tags')
 
     id = models.AutoField(primary_key=True)
     uuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)

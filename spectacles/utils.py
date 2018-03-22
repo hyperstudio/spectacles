@@ -16,7 +16,6 @@ PROPS = 'PROPS'
 
 
 class VectorModel(object):
-
     def recalculate_vector(self):
         raise NotImplementedError
 
