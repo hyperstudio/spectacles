@@ -29,7 +29,7 @@ def intelligent_match(query, fields, fuzziness='AUTO'):
         )
 
 
-def find_annotations(query, max_count=50, highlight='text', document_id=None):
+def find_annotations(query, highlight='text', document_id=None):
     m = intelligent_match(
         query=query,
         fields=['creator.email', 'creator.name', 'quote', 'text', 'tags'],
@@ -60,7 +60,7 @@ def find_annotations(query, max_count=50, highlight='text', document_id=None):
     #return Annotation.objects.filter(id__in=[hit.id for hit in results.hits])
 
 
-def find_documents(query, max_count=50, highlight='text'):
+def find_documents(query, highlight='text'):
     m = intelligent_match(
         query=query,
         fields=['text', 'title', 'author', 'creator.name', 'creator.email'],
