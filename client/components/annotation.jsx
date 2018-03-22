@@ -22,7 +22,7 @@ export class Annotation extends React.Component {
            dangerouslySetInnerHTML={{__html: ann.text}}>
       </div>
       <div className="annotation-tags">
-        {(ann.tags || []).map(t => <div className="annotation-tag" key={t + ann.uuid}>{t}</div>)}
+        {(ann.tags || []).map((t, i) => <div className="annotation-tag" key={t + '_' + i}>{t}</div>)}
       </div>
     </div>;
   }
