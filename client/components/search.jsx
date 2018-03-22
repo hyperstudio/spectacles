@@ -115,8 +115,8 @@ export class DocumentSearch extends React.Component {
   render() {
     let r = this.state.results;
     let docs = r.documents || [];
-    return <div className="search-page">
-      <div className="body gray">
+    let classes = ['search-page'].concat(this.props.className ? this.props.className.split(' ') : []);
+    return <div className={classes.join(' ')}>
         <div className="search-bar body gray">
           <div className="search-bar-input">
             <input className="search-bar-query"
@@ -129,7 +129,6 @@ export class DocumentSearch extends React.Component {
             {this.renderStatus()}
           </p>
         </div>
-      </div>
       <div className="search-results body white">
         {this.displayDocuments(docs)}
       </div>

@@ -33,7 +33,15 @@
     flex: 1;
     background: #FAF8EA;
     background: #FFF;
-    /*box-shadow: 0px 2px 2px 2px #ddd;*/
+    display: flex;
+    flex-direction: column;
+}
+.search-bar {
+  flex: 0;
+}
+.search-results {
+  flex: 1;
+  overflow-y: auto;
 }
 
 .state-choice {

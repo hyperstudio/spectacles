@@ -49,12 +49,11 @@ class DocumentsPage extends React.Component {
       </div>
       <div className="content">
         <div className="box">
-          <div className="docs-pane column">
-            <DocumentSearch
-              resultfn={this.searchResult.bind(this)}
-              documents={dp.props.documents}
-            />
-          </div>
+          <DocumentSearch
+            className="docs-pane column"
+            resultfn={this.searchResult.bind(this)}
+            documents={dp.props.documents}
+          />
           <div className="search-pane column">
             <AnnotationSearch/>
           </div>
