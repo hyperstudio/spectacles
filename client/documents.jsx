@@ -10,7 +10,7 @@ var $ = window.$;
 import {setupCSRF, createAnnotator} from './util.jsx';
 import {Annotation} from './components/annotation.jsx';
 import {AnnotationSearch} from './components/annotationSearch.jsx';
-import {DocumentSearch} from './components/search.jsx';
+import {DocumentSearch, DocumentSearchResult} from './components/search/documents.jsx';
 
 
 // TODO: Two separate SearchPanes, one over documents, one over annotations.
@@ -32,7 +32,7 @@ class DocumentsPage extends React.Component {
 
   searchResult(d) {
     let id = docId(d);
-    return <DocumentEntry key={id} document={d}/>;
+    return <DocumentSearchResult key={id} document={d}/>;
   }
 
   render() {
@@ -50,9 +50,11 @@ class DocumentsPage extends React.Component {
       <div className="content">
         <div className="box">
           <DocumentSearch
-            className="docs-pane column"
+            className="search-page docs-pane column"
             resultfn={this.searchResult.bind(this)}
-            documents={dp.props.documents}
+            defaultResults={{
+              documents: dp.props.documents
+            }}
           />
           <div className="search-pane column">
             <AnnotationSearch/>
@@ -80,50 +82,6 @@ var docId = (doc) => {
   return doc.id;
 }
 
-class DocumentEntry extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
-  link() {
-    return this.props.document &&
-      "/documents/" + docId(this.props.document);
-  }
-
-  renderHighlight() {
-    let doc = this.props.document;
-    let highlight = doc._meta && doc._meta.highlight;
-    if (!highlight) {
-      return '';
-    }
-    return <div className="document-highlight">
-      {highlight.text.map((t, i) =>
-        <div key={i} className="document-highlight-text"
-             dangerouslySetInnerHTML={{__html: t}}>
-        </div>
-      )}
-    </div>;
-  }
-
-  render() {
-    let doc = this.props.document;
-    let id = docId(doc);
-
-    return <div className="document-entry" key={id}>
-      <div className="document-title">
-        <a href={this.link()}>{doc.title}</a>
-      </div>
-      <div className="document-author">
-        {doc.creator.name}
-      </div>
-      <div className="document-meta">
-        <div className="document-creator"> {doc.author}</div>
-        <div className="document-timestamp"> {doc.updated_at} </div>
-      </div>
-      {this.renderHighlight()}
-    </div>;
-  }
-}
 
 setupCSRF($);
 DOM.render(
