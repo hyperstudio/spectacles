@@ -13,8 +13,7 @@ export class DocumentSearch extends AbstractSearch {
   });
 
   render() {
-    let r = this.state.results || {};
-    let docs = r.documents || [];
+    let docs = this.getResults().documents || [];
     let className = 'search-page docs-pane column';
     return <div className={className}>
       <div className="search-bar body gray">

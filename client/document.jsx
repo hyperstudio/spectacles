@@ -14,7 +14,6 @@ var Y = window.Y;
 class DocumentPage extends React.Component {
   constructor(props) {
     super(props);
-    console.log(this.props);
     this.state = {
       annotator: null,
       annotations: this.props.annotations || [],
@@ -28,14 +27,11 @@ class DocumentPage extends React.Component {
 
   initializeAnnotator() {
     let dp = this;
-    console.log(this.state.annotations);
     let onUpdate = (action) => (ann) => {
       if (!ann) {
         return;
       }
       var new_annotations = dp.state.annotations.slice();
-      console.log('action =', action);
-      console.log('ann.id =', ann.id);
       if (action === 'update') {
         var changed = false;
         var i;
@@ -43,7 +39,6 @@ class DocumentPage extends React.Component {
           var x = new_annotations[i];
           if (x.id == ann.id) {
             new_annotations[i] = Object.assign(x, ann);
-            console.log('updated x!');
             changed = true;
             break;
           }
@@ -56,12 +51,9 @@ class DocumentPage extends React.Component {
 
       if (action === 'delete') {
         var new_annotations = dp.state.annotations.filter((x) => x.id !== ann.id);
-        console.log(new_annotations.length);
-        console.log(dp.state.annotations.length);
         dp.setState({
           annotations: new_annotations,
         });
-        console.log('forcing update!');
         return;
       }
 
@@ -78,7 +70,6 @@ class DocumentPage extends React.Component {
         //  annotations: new_annotations,
         //});
         //console.log('CREATE: forcing update!');
-        //dp.forceUpdate();
         //return;
       }
       // TODO: Figure out if the annotation was created or deleted
@@ -99,7 +90,6 @@ class DocumentPage extends React.Component {
   render() {
     let dp = this;
     let doc = dp.props.document;
-    console.log('RE-RENDERING DOCUMENT PAGE');
     return <div className="document-page main">
       <div className="page-header">
         <div className="header-left">
@@ -139,7 +129,6 @@ class DocumentPage extends React.Component {
             defaultResults={{
               annotations: dp.state.annotations,
             }}
-            f={dp.state.annotations}
           />
         </div>
       </div>

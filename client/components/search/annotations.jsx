@@ -32,11 +32,7 @@ export class AnnotationSearch extends AbstractSearch {
   }
 
   render() {
-    console.log('RE-RENDERING ANNOTATION SEARCH');
-    let r = this.empty() ? this.props.defaultResults : this.state.results;
-    console.log(r);
-    let anns = r.annotations || [];
-    console.log('RESULT ANNOTATIONS:', anns);
+    let anns = this.getResults().annotations || [];
     return <div className={this.props.className}>
       <div className="body gray">
         <div className="search-bar body gray">

@@ -38,13 +38,16 @@ export class AbstractSearch extends React.Component {
   inProgress() {
     return this.state.complete === 'in-progress';
   }
+  getResults() {
+    return (this.empty() ? this.props.defaultResults : this.state.results) || {};
+  }
 
   onQuery(event) {
     let query = event.target.value;
     let counter = this.state.counter + 1;
     let timeout = this.state.timeout;
     let complete;
-    let results;
+    let results = {};
     // If any previous request is still in flight, cancel it
     if (timeout !== null) {
       clearTimeout(timeout);
@@ -53,11 +56,9 @@ export class AbstractSearch extends React.Component {
     if (query) {
       timeout = setTimeout(this.makeQuery(query, counter), this.props.debounce);
       complete = 'in-progress';
-      results = {};
     } else {
       timeout = null;
       complete = 'never';
-      results = this.props.defaultResults;
     }
     this.setState({
       query: query,
