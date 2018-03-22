@@ -6,7 +6,7 @@ var $ = window.$;
 
 import {setupCSRF, createAnnotator} from './util.jsx';
 import {Annotation} from './components/annotation.jsx';
-import {AnnotationSearch, AnnotationSearchResult} from './components/annotationSearch.jsx';
+import {AnnotationSearch, AnnotationSearchResult} from './components/search/annotations.jsx';
 
 
 let sortByTransform = (f) => (a, b) => {
@@ -21,10 +21,6 @@ class UserPage extends React.Component {
     console.log(this.props);
   }
 
-  searchResult(ann) {
-    return <AnnotationSearchResult key={ann.id} ann={ann}/>;
-  }
-
   render() {
     this.props.annotations.sort(
       sortByTransform((x) => new Date(x.updated_at)),
@@ -33,9 +29,12 @@ class UserPage extends React.Component {
 
     return <div className="user-page main">
         <AnnotationSearch
-          creator_id={this.props.user.id}
-          resultfn={this.searchResult.bind(this)}
-          annotations={this.props.annotations}
+          payload={{
+            creator_id: this.props.user.id,
+          }}
+          defaultResults={{
+            annotations: this.props.annotations
+          }}
         />
     </div>;
   }

@@ -9,8 +9,8 @@ var $ = window.$;
 
 import {setupCSRF, createAnnotator} from './util.jsx';
 import {Annotation} from './components/annotation.jsx';
-import {AnnotationSearch} from './components/annotationSearch.jsx';
 import {DocumentSearch, DocumentSearchResult} from './components/search/documents.jsx';
+import {AnnotationSearch} from './components/search/annotations.jsx';
 
 
 // TODO: Two separate SearchPanes, one over documents, one over annotations.
@@ -27,12 +27,7 @@ class DocumentsPage extends React.Component {
     this.fuseConfig = {
       keys: ['author', 'title', 'creator.name', 'creator.email'],
       shouldSort: true,
-    };
-  }
-
-  searchResult(d) {
-    let id = docId(d);
-    return <DocumentSearchResult key={id} document={d}/>;
+    }
   }
 
   render() {
@@ -51,14 +46,18 @@ class DocumentsPage extends React.Component {
         <div className="box">
           <DocumentSearch
             className="search-page docs-pane column"
-            resultfn={this.searchResult.bind(this)}
+            placeholder="Search Documents"
             defaultResults={{
-              documents: dp.props.documents
+              documents: dp.props.documents || [],
             }}
           />
-          <div className="search-pane column">
-            <AnnotationSearch/>
-          </div>
+          <AnnotationSearch
+            className="search-pane column"
+            placeholder="Search Annotations"
+            defaultResults={{
+              annotations: dp.props.annotations || [],
+            }}
+          />
         </div>
       </div>
     </div>;
@@ -74,14 +73,6 @@ class DocumentsPage extends React.Component {
     return <span>{name} ({email})</span>
   }
 }
-
-var docId = (doc) => {
-  if (doc._meta) {
-    return doc._meta.id;
-  }
-  return doc.id;
-}
-
 
 setupCSRF($);
 DOM.render(

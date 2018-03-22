@@ -13,6 +13,7 @@ export class AbstractSearch extends React.Component {
     headers: {},
     endpoint: '/api/search/DEFAULT-BROKEN-XXX',
   };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -30,6 +31,9 @@ export class AbstractSearch extends React.Component {
 
   done() {
     return this.state.complete === 'done' || this.state.complete === 'never';
+  }
+  empty() {
+    return this.state.complete === 'never';
   }
   inProgress() {
     return this.state.complete === 'in-progress';
@@ -109,23 +113,7 @@ export class AbstractSearch extends React.Component {
     });
   }
 
-  renderStatus() {
-    if (this.done()) {
-      return '';
-    }
-    if (this.inProgress()) {
-      return 'Loading';
-    }
-    return '';
-  }
-
-  renderResults(results) {
-    console.log(results);
-    throw "Not Implemented: renderResults()";
-  }
-
   render() {
-    console.log(results);
     throw "Not Implemented: render()";
   }
 }

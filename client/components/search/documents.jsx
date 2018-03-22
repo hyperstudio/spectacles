@@ -6,18 +6,11 @@ import {AbstractSearch} from './abstract.jsx';
 export class DocumentSearch extends AbstractSearch {
   static defaultProps = Object.assign(AbstractSearch.defaultProps, {
     endpoint: '/api/search/documents',
+    placeholder: "Search Documents",
+    defaultResults: {
+      documents: [],
+    },
   });
-
-  constructor(props) {
-    super(props);
-  }
-
-  displayDocuments(documents) {
-    if (!documents || documents.length == 0) {
-      return;
-    }
-    return documents.map(this.props.resultfn);
-  }
 
   render() {
     let r = this.state.results || {};
@@ -28,7 +21,7 @@ export class DocumentSearch extends AbstractSearch {
         <div className="search-bar-input">
           <input className="search-bar-query"
                  type="text"
-                 placeholder="Filter Documents"
+                 placeholder={this.props.placeholder}
                  value={this.state.query}
                  onChange={this.onQuery} autoFocus/>
         </div>
@@ -41,6 +34,26 @@ export class DocumentSearch extends AbstractSearch {
       </div>
     </div>;
   }
+
+  displayDocuments(documents) {
+    if (!documents || documents.length == 0) {
+      return;
+    }
+    return documents.map(this.props.resultfn || ((doc) => {
+      return <DocumentSearchResult key={doc.id} document={doc}/>;
+    }));
+  }
+
+  renderStatus() {
+    if (this.done()) {
+      return '';
+    }
+    if (this.inProgress()) {
+      return 'Loading';
+    }
+    return '';
+  }
+
 }
 
 

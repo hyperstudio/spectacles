@@ -6,7 +6,9 @@ var $ = window.$;
 
 import {setupCSRF, createAnnotator} from './util.jsx';
 import {Annotation} from './components/annotation.jsx';
-import {AnnotationSearch} from './components/annotationSearch.jsx';
+import {AnnotationSearch} from './components/search/annotations.jsx';
+var X = window.X;
+var Y = window.Y;
 
 
 class DocumentPage extends React.Component {
@@ -26,25 +28,58 @@ class DocumentPage extends React.Component {
 
   initializeAnnotator() {
     let dp = this;
-    let onUpdate = (ann) => {
+    console.log(this.state.annotations);
+    let onUpdate = (action) => (ann) => {
       if (!ann) {
         return;
       }
-      // Figure out if the annotation was updated
-      var changed = false;
-      var i;
-      for (i = 0; i < dp.state.annotations.length; i++) {
-        var x = dp.state.annotations[i];
-        if (x.data.id == ann.id) {
-          x.data.text = ann.text;
-          x.data.tags = ann.tags;
-          changed = true;
-          break;
+      var new_annotations = dp.state.annotations.slice();
+      console.log('action =', action);
+      console.log('ann.id =', ann.id);
+      if (action === 'update') {
+        var changed = false;
+        var i;
+        for (i = 0; i < new_annotations.length; i++) {
+          var x = new_annotations[i];
+          if (x.id == ann.id) {
+            new_annotations[i] = Object.assign(x, ann);
+            console.log('updated x!');
+            changed = true;
+            break;
+          }
         }
-      }
-      if (changed) {
-        dp.setState({annotations: dp.state.annotations});
+        if (changed) {
+          dp.setState({annotations: new_annotations});
+        }
         return;
+      }
+
+      if (action === 'delete') {
+        var new_annotations = dp.state.annotations.filter((x) => x.id !== ann.id);
+        console.log(new_annotations.length);
+        console.log(dp.state.annotations.length);
+        dp.setState({
+          annotations: new_annotations,
+        });
+        console.log('forcing update!');
+        return;
+      }
+
+      if (action === 'create') {
+        console.error('TODO: automatically update list on create');
+        // This is going to involve re-implenting the Store plugin,
+        // to fire these callbacks AFTER the HTTP requests to the server
+        // have completed. Right now, newly created annotations don't have any
+        // kind of Creator information, or UUIDs.
+        return;
+        //var new_annotations = dp.state.annotations.slice();
+        //new_annotations.push(ann);
+        //dp.setState({
+        //  annotations: new_annotations,
+        //});
+        //console.log('CREATE: forcing update!');
+        //dp.forceUpdate();
+        //return;
       }
       // TODO: Figure out if the annotation was created or deleted
     };
@@ -58,12 +93,13 @@ class DocumentPage extends React.Component {
   }
 
   searchResult(ann) {
-    return <Annotation key={ann.uuid} {...ann}/>;
+    return <Annotation key={ann.id} {...ann}/>;
   }
 
   render() {
     let dp = this;
     let doc = dp.props.document;
+    console.log('RE-RENDERING DOCUMENT PAGE');
     return <div className="document-page main">
       <div className="page-header">
         <div className="header-left">
@@ -94,13 +130,17 @@ class DocumentPage extends React.Component {
             </div>
           </div>
           {/* Annotation pane */}
-          <div className="column annotations-pane">
-            <AnnotationSearch
-              document_id={this.props.document.id}
-              resultfn={this.searchResult.bind(this)}
-              annotations={dp.props.annotations}
-            />
-          </div>
+          <AnnotationSearch
+            className="column annotations-pane"
+            resultfn={this.searchResult.bind(this)}
+            payload={{
+              document_id: dp.props.document.id,
+            }}
+            defaultResults={{
+              annotations: dp.state.annotations,
+            }}
+            f={dp.state.annotations}
+          />
         </div>
       </div>
     </div>;
