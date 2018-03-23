@@ -31,8 +31,8 @@ def index(request):
 @require_GET
 @login_required
 @ensure_csrf_cookie
-@props_template('app/documents.html')
-def documents(request):
+@props_template('app/archive.html')
+def archive(request):
     user = request.user
     if not user.is_authenticated:
         user = None
@@ -40,6 +40,7 @@ def documents(request):
     # view it's unnecessary.
     docs = Document.slim.all()[:100]
     return {
+        'archive': None,
         'documents': to_dict(docs, fields=Document._slim_fields),
         'user': to_dict(user),
     }

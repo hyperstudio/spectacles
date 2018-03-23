@@ -16,7 +16,8 @@ urlpatterns = [
 
     # spectacles routes
     url(r'^$', spectacles.views.index, name='spectacles-root'),
-    url(r'^documents$', spectacles.views.documents, name='spectacles-documents'),
+    url(r'^archive$', spectacles.views.archive, name='spectacles-archive'),
+    url(r'^documents$', spectacles.views.archive, name='spectacles-archive'),
     url(r'^documents/(\d+)$', spectacles.views.document, name='spectacles-document'),
     ### Authentication
     url(r'^auth/login$', spectacles.views.auth.login, name='auth-login'),
