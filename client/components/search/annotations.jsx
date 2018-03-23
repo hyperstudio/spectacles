@@ -4,7 +4,7 @@ import {AbstractSearch} from './abstract.jsx';
 
 
 export class AnnotationSearch extends AbstractSearch {
-  static defaultProps = Object.assign(AbstractSearch.defaultProps, {
+  static defaultProps = Object.assign({}, AbstractSearch.defaultProps, {
     endpoint: '/api/search/annotations',
     placeholder: "Search Annotations",
     defaultResults: {

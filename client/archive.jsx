@@ -9,7 +9,7 @@ var $ = window.$;
 
 import {setupCSRF, createAnnotator} from './util.jsx';
 import {Annotation} from './components/annotation.jsx';
-import {DocumentSearch, DocumentSearchResult} from './components/search/documents.jsx';
+import {DocumentSearch} from './components/search/documents.jsx';
 import {AnnotationSearch} from './components/search/annotations.jsx';
 
 
