@@ -124,6 +124,7 @@ def create(request, doc):
         data=ann_data,
     )
     ann.save()
+    return _clean_ann(to_dict(ann), doc.id)
     return to_dict(_clean_ann(ann.data, doc.id))
 
 
@@ -140,4 +141,5 @@ def update(request, doc, annotation_id):
 
     ann.data.update(updated)
     ann.save()
-    return to_dict(_clean_ann(ann.data, doc.id))
+    return _clean_ann(to_dict(ann), doc.id)
+    #return to_dict(_clean_ann(ann.data, doc.id))

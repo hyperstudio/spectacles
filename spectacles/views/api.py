@@ -26,7 +26,6 @@ def search_annotations(request):
     except (TypeError, ValueError):
         raise NotImplementedError('400!')
 
-    print('ANNS query:', req['query'])
     anns_r = list(search.find_annotations(
         query=req['query'],
         document_id=req.get('document_id', None),

@@ -45,6 +45,14 @@ class DocumentPage extends React.Component {
         }
         if (changed) {
           dp.setState({annotations: new_annotations});
+        } else {
+          console.log('actually a creation event!');
+          var new_annotations = dp.state.annotations.slice();
+          new_annotations.push(ann);
+          console.log('(1) ewly created annotation:', ann);
+          dp.setState({
+            annotations: new_annotations,
+          });
         }
         return;
       }
@@ -58,19 +66,20 @@ class DocumentPage extends React.Component {
       }
 
       if (action === 'create') {
-        console.error('TODO: automatically update list on create');
+        //console.error('TODO: automatically update list on create');
         // This is going to involve re-implenting the Store plugin,
         // to fire these callbacks AFTER the HTTP requests to the server
         // have completed. Right now, newly created annotations don't have any
         // kind of Creator information, or UUIDs.
-        return;
-        //var new_annotations = dp.state.annotations.slice();
-        //new_annotations.push(ann);
-        //dp.setState({
-        //  annotations: new_annotations,
-        //});
-        //console.log('CREATE: forcing update!');
         //return;
+        var new_annotations = dp.state.annotations.slice();
+        new_annotations.push(ann);
+        console.log('newly createda nnotation:', ann);
+        dp.setState({
+          annotations: new_annotations,
+        });
+        //console.log('CREATE: forcing update!');
+        return;
       }
       // TODO: Figure out if the annotation was created or deleted
     };
@@ -90,8 +99,8 @@ class DocumentPage extends React.Component {
   render() {
     let dp = this;
     let doc = dp.props.document;
-    return <div className="document-page main">
-      <div className="page-header">
+    return <div id="ann-wrapper" className="document-page grid-container">
+      <div className="page-header header">
         <div className="header-left">
           <a className="nav-item nav-archive" href="/documents"> Example Archive </a>
           <span className="nav-item nav-spacer"> > </span>
@@ -104,34 +113,31 @@ class DocumentPage extends React.Component {
           <div className="state-choice choice-ann">Annotations</div>
         </div>
       </div>
-      <div className="page-content content">
-        <div className="box">
-          {/* Document pane */}
-          <div className="column document-pane">
-            <div className="document-title">{doc.title}</div>
-            <div className="document-author">{doc.author}</div>
-            <div className="document-content" ref="documentContent">
-              {/* For compatibility with existing annotation range definitions; */}
-              {/* the previous site must have introduced this div wrapper */}
-              <div className="document-content-inner"
-                   ref="documentContentInner"
-                   dangerouslySetInnerHTML={{__html: doc.text}}>
-              </div>
-            </div>
+
+      {/* Document pane */}
+      <div className="column document-pane scroll-y">
+        <div className="document-title">{doc.title}</div>
+        <div className="document-author">{doc.author}</div>
+        <div className="document-content" ref="documentContent">
+          {/* For compatibility with existing annotation range definitions; */}
+          {/* the previous site must have introduced this div wrapper */}
+          <div className="document-content-inner"
+               ref="documentContentInner"
+               dangerouslySetInnerHTML={{__html: doc.text}}>
           </div>
-          {/* Annotation pane */}
-          <AnnotationSearch
-            className="column annotations-pane"
-            resultfn={this.searchResult.bind(this)}
-            payload={{
-              document_id: dp.props.document.id,
-            }}
-            defaultResults={{
-              annotations: dp.state.annotations,
-            }}
-          />
         </div>
       </div>
+      {/* Annotation pane */}
+      <AnnotationSearch
+        className="column annotations-pane scroll-y"
+        resultfn={this.searchResult.bind(this)}
+        payload={{
+          document_id: dp.props.document.id,
+        }}
+        defaultResults={{
+          annotations: dp.state.annotations,
+        }}
+      />
     </div>;
   }
 }

@@ -48,7 +48,9 @@ function StoreLogger(element, callbacks) {
 export function createAnnotator(domRef, onUpdate, userEmail, documentId) {
   // grabs Annotator from client side JS script
   window.Annotator.Plugin.StoreLogger = StoreLogger;
-  return new window.Annotator(domRef)
+  return new window.Annotator(domRef, {
+    popupTarget: document.getElementById('ann-wrapper'),
+  })
     .addPlugin('Auth', {
       tokenUrl: '/api/store/token',
     })
@@ -70,13 +72,25 @@ export function createAnnotator(domRef, onUpdate, userEmail, documentId) {
       // TODO: what to do about this ID?
       uri: documentId,
     },
+    callbacks: {
+      update: onUpdate('update'),
+      delete: onUpdate('delete'),
+      create: (ann) => {
+        return console.log('create event for:', ann);
+      }
+    },
+    onUpdate: function(annotation, data) {
+      console.error('XXXXXXXXXX');
+      console.log(annotation, data);
+      console.error('XXXXXXXXXX');
+    },
   })
-  .addPlugin('StoreLogger', {
-    // TODO: better callback naming and definitions here.
-    update: onUpdate('update'),
-    delete: onUpdate('delete'),
-    create: onUpdate('create'),
-  })
+  //.addPlugin('StoreLogger', {
+  //  // TODO: better callback naming and definitions here.
+  //  update: onUpdate('update'),
+  //  delete: onUpdate('delete'),
+  //  create: onUpdate('create'),
+  //})
   .addPlugin('RichText', {
     editor_enabled: true,
     tinymce: {
