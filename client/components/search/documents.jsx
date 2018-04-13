@@ -14,8 +14,7 @@ export class DocumentSearch extends AbstractSearch {
 
   render() {
     let docs = this.getResults().documents || [];
-    let className = 'search-page docs-pane column';
-    return <div className={className}>
+    return <div className={this.props.className}>
       <div className="search-bar body gray">
         <div className="search-bar-input">
           <input className="search-bar-query"
@@ -24,9 +23,6 @@ export class DocumentSearch extends AbstractSearch {
                  value={this.state.query}
                  onChange={this.onQuery} autoFocus/>
         </div>
-        <p className="search-bar-results">
-          {this.renderStatus()}
-        </p>
       </div>
       <div className="search-results body white">
         {this.displayDocuments(docs)}
@@ -42,17 +38,6 @@ export class DocumentSearch extends AbstractSearch {
       return <DocumentSearchResult key={doc.id} document={doc}/>;
     }));
   }
-
-  renderStatus() {
-    if (this.done()) {
-      return '';
-    }
-    if (this.inProgress()) {
-      return 'Loading';
-    }
-    return '';
-  }
-
 }
 
 

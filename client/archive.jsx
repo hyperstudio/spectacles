@@ -11,6 +11,8 @@ import {setupCSRF, createAnnotator} from './util.jsx';
 import {Annotation} from './components/annotation.jsx';
 import {DocumentSearch} from './components/search/documents.jsx';
 import {AnnotationSearch} from './components/search/annotations.jsx';
+import {Navigation} from './components/nav.jsx';
+
 
 
 // TODO: Two separate SearchPanes, one over documents, one over annotations.
@@ -32,34 +34,33 @@ class DocumentsPage extends React.Component {
 
   render() {
     let dp = this;
-    return <div className="documents-page main">
+    /*
       <div className="page-header">
-        <div className="header-left">
-          <a className="nav-item nav-archive" href="/documents"> Example Archive </a>
-        </div>
-        <div className="header-center"></div>
-        <div className="header-right">
-          <div className="state-choice">{dp.renderUser()}</div>
-        </div>
+      <div className="header-left">
+        <a className="nav-item nav-archive" href="/documents"> Example Archive </a>
       </div>
-      <div className="content">
-        <div className="box">
-          <DocumentSearch
-            className="search-page docs-pane column"
-            placeholder="Search Documents"
-            defaultResults={{
-              documents: dp.props.documents || [],
-            }}
-          />
-          <AnnotationSearch
-            className="search-pane column"
-            placeholder="Search Annotations"
-            defaultResults={{
-              annotations: dp.props.annotations || [],
-            }}
-          />
-        </div>
+      <div className="header-center"></div>
+      <div className="header-right">
+        <div className="state-choice">{dp.renderUser()}</div>
       </div>
+    </div>
+    */
+    return <div className="archive-page grid-container">
+      <Navigation doc={{}}/>
+      <DocumentSearch
+        className="column pane-left scroll-y"
+        placeholder="Search Documents"
+        defaultResults={{
+          documents: dp.props.documents || [],
+        }}
+      />
+      <AnnotationSearch
+        className="column pane-right scroll-y"
+        placeholder="Search Annotations"
+        defaultResults={{
+          annotations: dp.props.annotations || [],
+        }}
+      />
     </div>;
   }
 

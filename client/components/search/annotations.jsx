@@ -21,16 +21,6 @@ export class AnnotationSearch extends AbstractSearch {
     }));
   }
 
-  renderStatus() {
-    if (this.done()) {
-      return '';
-    }
-    if (this.inProgress()) {
-      return 'Loading'
-    }
-    return ''
-  }
-
   render() {
     let anns = this.getResults().annotations || [];
     return <div className={this.props.className}>
@@ -43,9 +33,6 @@ export class AnnotationSearch extends AbstractSearch {
                    value={this.state.query}
                    onChange={this.onQuery} autoFocus/>
           </div>
-          <p className="search-bar-results">
-            {this.renderStatus()}
-          </p>
         </div>
       </div>
       <div className="search-results body white">

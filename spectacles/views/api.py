@@ -61,6 +61,20 @@ def search_documents(request):
         'documents': to_dict(docs_r, fields=fields)
     })
 
+@require_POST
+@login_required
+@ensure_csrf_cookie
+@json_response
+def similar_annotations(request, annotation_id):
+    raise NotImplementedError
+
+@require_POST
+@login_required
+@ensure_csrf_cookie
+@json_response
+def similar_documents(request, document_id):
+    raise NotImplementedError
+
 @require_http_methods(['GET', 'POST', 'DELETE'])
 @login_required
 @ensure_csrf_cookie

@@ -80,17 +80,9 @@ export function createAnnotator(domRef, onUpdate, userEmail, documentId) {
       }
     },
     onUpdate: function(annotation, data) {
-      console.error('XXXXXXXXXX');
       console.log(annotation, data);
-      console.error('XXXXXXXXXX');
     },
   })
-  //.addPlugin('StoreLogger', {
-  //  // TODO: better callback naming and definitions here.
-  //  update: onUpdate('update'),
-  //  delete: onUpdate('delete'),
-  //  create: onUpdate('create'),
-  //})
   .addPlugin('RichText', {
     editor_enabled: true,
     tinymce: {

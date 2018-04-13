@@ -1,5 +1,59 @@
 @import url('https://fonts.googleapis.com/css?family=Lato:300,300i,400,400i,700,700i|Noto+Serif:400,400i,700,700i&subset=latin-ext');
 
+#react-root {
+    min-width: 1100px;
+}
+
+.main {
+    width: 100%;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+.search-bar-query {
+  font-size: 20px;
+  background: white;
+  box-shadow: none;
+  border: 1px solid #ccc;
+  padding: 5px 10px;
+  width: 100%;
+  box-sizing: border-box;
+}
+.search-bar {
+  flex: 0;
+}
+.search-results {
+  margin-top: 20px;
+  flex: 1;
+  overflow-y: auto;
+}
+.column {
+    /*overflow: auto;*/
+    margin: 10px;
+    margin-top: 0;
+    padding: 10px 20px;
+    /*background: #FAF8EA;
+    background: #FFF;*/
+    display: flex;
+    flex-direction: column;
+}
+.content {
+    flex: 1;
+    display: flex;
+    overflow: auto;
+    flex-direction: row;
+}
+.nav-item {
+    margin: 0 2px;
+    font-size: 16px;
+    font-family: Arial;
+}
+.box {
+    min-height: -webkit-min-content;
+    display: flex;
+    width: 100%;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -11,7 +65,10 @@ html, body {
 
 html {
   font-family: 'Noto Serif', 'Times New Roman', Times, serif;
-  background: #FEFEFE;
+  background: #EEE;
+}
+.page-header {
+  background: white;
 }
 
 
@@ -22,6 +79,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .grid-container {
   display: grid;
+  align-content: baseline;
   grid-template-columns: repeat(2, 1fr);
   grid-gap: 10px;
   grid-auto-rows: auto;
@@ -35,20 +93,47 @@ h1, h2, h3, h4, h5, h6 {
   overflow-y: auto;
 }
 
-.header {
-  grid-column: 1/3;
-  grid-row: 1;
-  height: 60px;
-  margin-bottom: 20px;
-  outline: 1px solid blue;
-}
-.document-pane {
+.document-pane,
+.pane-left {
   grid-column: 1;
   grid-row: 2;
 }
-.annotations-pane {
+.document-pane {
+    color: #111;
+    /*flex-grow: 1;*/
+    min-width: 600px;
+    box-sizing: border-box;
+    box-shadow: 0px 2px 2px 2px #ddd;
+}
+.annotations-pane,
+.pane-right {
   grid-column: 2;
   grid-row: 2;
 }
 
 
+.header {
+  grid-column: 1/3;
+  grid-row: 1;
+  border-bottom: 1px solid #ccc;
+}
+
+.page-header {
+    display: flex;
+    flex-direction: row;
+    padding: 5px;
+    margin: 10px;
+    box-sizing: border-box;
+    margin: 0;
+}
+.header-right {
+    font-family: arial;
+}
+.header-right.annotations .choice-ann,
+.header-right.information .choice-info,
+.header-right.similar .choice-sim {
+    font-weight: bold;
+}
+.header-center {
+    flex: 1;
+}

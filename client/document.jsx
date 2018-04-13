@@ -7,8 +7,7 @@ var $ = window.$;
 import {setupCSRF, createAnnotator} from './util.jsx';
 import {Annotation} from './components/annotation.jsx';
 import {AnnotationSearch} from './components/search/annotations.jsx';
-var X = window.X;
-var Y = window.Y;
+import {Navigation} from './components/nav.jsx';
 
 
 class DocumentPage extends React.Component {
@@ -43,13 +42,12 @@ class DocumentPage extends React.Component {
             break;
           }
         }
+
         if (changed) {
           dp.setState({annotations: new_annotations});
         } else {
-          console.log('actually a creation event!');
           var new_annotations = dp.state.annotations.slice();
           new_annotations.push(ann);
-          console.log('(1) ewly created annotation:', ann);
           dp.setState({
             annotations: new_annotations,
           });
@@ -66,22 +64,13 @@ class DocumentPage extends React.Component {
       }
 
       if (action === 'create') {
-        //console.error('TODO: automatically update list on create');
-        // This is going to involve re-implenting the Store plugin,
-        // to fire these callbacks AFTER the HTTP requests to the server
-        // have completed. Right now, newly created annotations don't have any
-        // kind of Creator information, or UUIDs.
-        //return;
         var new_annotations = dp.state.annotations.slice();
         new_annotations.push(ann);
-        console.log('newly createda nnotation:', ann);
         dp.setState({
           annotations: new_annotations,
         });
-        //console.log('CREATE: forcing update!');
         return;
       }
-      // TODO: Figure out if the annotation was created or deleted
     };
     let ann = createAnnotator(
         dp.refs.documentContent,
@@ -100,19 +89,7 @@ class DocumentPage extends React.Component {
     let dp = this;
     let doc = dp.props.document;
     return <div id="ann-wrapper" className="document-page grid-container">
-      <div className="page-header header">
-        <div className="header-left">
-          <a className="nav-item nav-archive" href="/documents"> Example Archive </a>
-          <span className="nav-item nav-spacer"> > </span>
-          <a className="nav-item nav-document" href={"/documents/" + doc.id}> {doc.title} </a>
-        </div>
-        <div className="header-center"></div>
-        <div className={"header-right " + dp.state.columnView}>
-          <div className="state-choice choice-info">Information</div>
-          <div className="state-choice choice-sim">Similar Documents</div>
-          <div className="state-choice choice-ann">Annotations</div>
-        </div>
-      </div>
+      <Navigation doc={doc}/>
 
       {/* Document pane */}
       <div className="column document-pane scroll-y">
