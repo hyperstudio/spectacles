@@ -89,7 +89,7 @@ class DocumentPage extends React.Component {
     let dp = this;
     let doc = dp.props.document;
     return <div id="ann-wrapper" className="document-page grid-container">
-      <Navigation doc={doc}/>
+      <Navigation doc={doc} user={this.props.user}/>
 
       {/* Document pane */}
       <div className="column document-pane scroll-y">

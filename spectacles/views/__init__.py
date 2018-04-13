@@ -13,7 +13,7 @@ from spectacles.utils import json_response
 from spectacles.utils import to_dict
 from spectacles.utils import flatten
 from spectacles.utils import PROPS
-from datastore.models import Document
+from datastore.models import Document, Annotation
 
 
 
@@ -39,11 +39,19 @@ def archive(request):
     # Fetch the documents without the 'text' attribute, because for the listing
     # view it's unnecessary.
     docs = Document.slim.all()[:100]
-    return {
+    recs = {
+        'docs': to_dict(Document.slim.all()[200:210], fields=Document._slim_fields),
+        'anns': to_dict(Annotation.objects.all()[200:210]),
+    }
+
+    print('# docs:', len(recs['docs']))
+    print('# anns:', len(recs['anns']))
+    return to_dict({
         'archive': None,
         'documents': to_dict(docs, fields=Document._slim_fields),
-        'user': to_dict(user),
-    }
+        'recs': recs,
+        'user': user,
+    })
 
 
 @require_GET

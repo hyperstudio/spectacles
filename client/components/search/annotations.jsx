@@ -24,8 +24,7 @@ export class AnnotationSearch extends AbstractSearch {
   render() {
     let anns = this.getResults().annotations || [];
     return <div className={this.props.className}>
-      <div className="body gray">
-        <div className="search-bar body gray">
+        <div className="search-bar gray">
           <div className="search-bar-input">
             <input className="search-bar-query"
                    type="text"
@@ -34,9 +33,8 @@ export class AnnotationSearch extends AbstractSearch {
                    onChange={this.onQuery} autoFocus/>
           </div>
         </div>
-      </div>
-      <div className="search-results body white">
-        {this.displayAnnotations(anns)}
+      <div className="search-results">
+        {this.state.query ? this.displayAnnotations(anns) : this.props.children}
       </div>
     </div>;
   }

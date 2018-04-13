@@ -31,7 +31,6 @@
     /*overflow: auto;*/
     margin: 10px;
     margin-top: 0;
-    padding: 10px 20px;
     /*background: #FAF8EA;
     background: #FFF;*/
     display: flex;
@@ -66,9 +65,11 @@ html, body {
 html {
   font-family: 'Noto Serif', 'Times New Roman', Times, serif;
   background: #EEE;
+  background: #E6E6EF;
 }
 .page-header {
   background: white;
+
 }
 
 
@@ -121,8 +122,9 @@ h1, h2, h3, h4, h5, h6 {
 .page-header {
     display: flex;
     flex-direction: row;
-    padding: 5px;
-    margin: 10px;
+    padding: 10px;
+    margin: 0;
+    margin-bottom: 10px;
     box-sizing: border-box;
     margin: 0;
 }
@@ -136,4 +138,37 @@ h1, h2, h3, h4, h5, h6 {
 }
 .header-center {
     flex: 1;
+}
+
+.react-tabs__tab-list {
+  flex: 0;
+  display: block;
+
+  padding: 10px;
+  padding-top: 0;
+  margin: 0;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.react-tabs__tab {
+  list-style: none;
+  display: inline-block;
+  margin-right: 20px;
+  color: #86868F;
+  border-bottom: 1px solid #86868F;
+  cursor: pointer;
+  text-transform: uppercase;
+  font-size: 18px;
+}
+
+.react-tabs__tab--selected {
+  color: #06060F;
+  border-color: #06060F;
+}
+
+.react-tabs__tab-panel--selected {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
 }

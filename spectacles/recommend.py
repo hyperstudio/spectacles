@@ -6,6 +6,7 @@ from django.conf import settings
 
 from nndb.client import Client
 from nndb.client import RPCException
+from datastore.models import Document, Annotation
 
 
 _ann_client = None

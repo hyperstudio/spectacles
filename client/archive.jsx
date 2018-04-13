@@ -7,9 +7,11 @@ var request = require('browser-request');
 // Contributed from other scripts
 var $ = window.$;
 
+import {Tab, Tabs, TabList, TabPanel} from 'react-tabs';
+
 import {setupCSRF, createAnnotator} from './util.jsx';
 import {Annotation} from './components/annotation.jsx';
-import {DocumentSearch} from './components/search/documents.jsx';
+import {DocumentSearch, DocumentSearchResult} from './components/search/documents.jsx';
 import {AnnotationSearch} from './components/search/annotations.jsx';
 import {Navigation} from './components/nav.jsx';
 
@@ -34,26 +36,28 @@ class DocumentsPage extends React.Component {
 
   render() {
     let dp = this;
-    /*
-      <div className="page-header">
-      <div className="header-left">
-        <a className="nav-item nav-archive" href="/documents"> Example Archive </a>
-      </div>
-      <div className="header-center"></div>
-      <div className="header-right">
-        <div className="state-choice">{dp.renderUser()}</div>
-      </div>
-    </div>
-    */
     return <div className="archive-page grid-container">
-      <Navigation doc={{}}/>
-      <DocumentSearch
-        className="column pane-left scroll-y"
-        placeholder="Search Documents"
-        defaultResults={{
-          documents: dp.props.documents || [],
-        }}
-      />
+      <Navigation user={this.props.user}/>
+      <Tabs className="column pane-left scroll-y">
+        <TabList>
+          <Tab> All Documents </Tab>
+          <Tab> Recommended Documents </Tab>
+        </TabList>
+
+        <TabPanel>
+          <DocumentSearch
+            className="column pane-left scroll-y"
+            placeholder="Search Documents"
+            defaultResults={{
+              documents: this.props.documents || [],
+            }}
+          />
+        </TabPanel>
+
+        <TabPanel>
+          {this.renderRecommendations()}
+        </TabPanel>
+      </Tabs>
       <AnnotationSearch
         className="column pane-right scroll-y"
         placeholder="Search Annotations"
@@ -64,14 +68,13 @@ class DocumentsPage extends React.Component {
     </div>;
   }
 
-  renderUser() {
-    let name = 'Anonymous';
-    let email = '?';
-    if (this.props.user) {
-      name = this.props.user.name;
-      email = this.props.user.email;
-    }
-    return <span>{name} ({email})</span>
+  renderRecommendations() {
+    return <div className="doc-recs">
+      {this.props.recs.docs.map((doc) => {
+        console.log('doc?', doc);
+        return <DocumentSearchResult key={doc.id} document={doc}/>
+      })}
+    </div>;
   }
 }
 

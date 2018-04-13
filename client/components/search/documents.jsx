@@ -14,6 +14,7 @@ export class DocumentSearch extends AbstractSearch {
 
   render() {
     let docs = this.getResults().documents || [];
+    let children = this.props.children || this.displayDocuments(docs);
     return <div className={this.props.className}>
       <div className="search-bar body gray">
         <div className="search-bar-input">
@@ -25,7 +26,7 @@ export class DocumentSearch extends AbstractSearch {
         </div>
       </div>
       <div className="search-results body white">
-        {this.displayDocuments(docs)}
+        {this.state.query ? this.displayDocuments(docs) : children}
       </div>
     </div>;
   }
