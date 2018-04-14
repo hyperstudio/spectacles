@@ -1,6 +1,7 @@
 'use strict';
 import React from 'react';
 import {AbstractSearch} from './abstract.jsx';
+import _ from 'underscore';
 
 
 export class AnnotationSearch extends AbstractSearch {
@@ -16,13 +17,18 @@ export class AnnotationSearch extends AbstractSearch {
     if (!annotations || annotations.length == 0) {
       return;
     }
-    return annotations.map(this.props.resultfn || ((ann) => {
-      return <AnnotationSearchResult key={ann.id} annotation={ann}/>;
+    //console.log(_.sortBy([1, 2, 6, 5, 3, 4], (n) => n));
+    return _.sortBy(annotations, (ann) => {
+      // Todo: calculate actual distance in text?
+      return ann.ranges.length ? ann.ranges[0].startOffset : 0;
+    }).map(this.props.resultfn || ((ann) => {
+      return <AnnotationSearchResult callback={this.props.callback} key={ann.id} annotation={ann}/>;
     }));
   }
 
   render() {
     let anns = this.getResults().annotations || [];
+    let children = this.props.children || this.displayAnnotations(anns);
     return <div className={this.props.className}>
         <div className="search-bar gray">
           <div className="search-bar-input">
@@ -34,7 +40,7 @@ export class AnnotationSearch extends AbstractSearch {
           </div>
         </div>
       <div className="search-results">
-        {this.state.query ? this.displayAnnotations(anns) : this.props.children}
+        {this.state.query ? this.displayAnnotations(anns) : children}
       </div>
     </div>;
   }

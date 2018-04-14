@@ -13,7 +13,8 @@ from django.views.decorators.http import require_POST
 from spectacles import search
 from spectacles.utils import json_response
 from spectacles.utils import to_dict
-from datastore.models import Document
+from datastore.models import Document, Annotation
+from spectacles.recommend import recommend_annotations, recommend_documents
 
 
 @require_POST
@@ -66,7 +67,12 @@ def search_documents(request):
 @ensure_csrf_cookie
 @json_response
 def similar_annotations(request, annotation_id):
-    raise NotImplementedError
+    print('hit the endpoint!')
+    ann = get_object_or_404(Annotation, uuid=annotation_id)
+    print("annotation:", ann)
+    similar  = recommend_annotations(ann, search_k=10000)
+    objs = [to_dict(Annotation.objects.get(id=id_)) for id_ in similar]
+    return objs
 
 @require_POST
 @login_required

@@ -34,7 +34,14 @@ def make_recommender(client_fetcher):
         v = t.get_vector()
         if v is None:
             # TODO: alternate type of recommendation engine here?
-            return None
+            print('no similar annotations because NO VECTOR')
+            t.recalculate_vector()
+            print('t.vector:', t.get_vector())
+            if t.has_vector():
+                t.save()
+                v = t.get_vector()
+            else:
+                return None
         try:
             return c.neighbors_by_vector(v, n, search_k=search_k)
         except RPCException as e:

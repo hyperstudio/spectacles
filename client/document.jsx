@@ -1,6 +1,8 @@
 'use strict';
 var React = require('react');
 var DOM = require('react-dom');
+var request = require('browser-request');
+var Cookie = require('js-cookie');
 // Contributed from other scripts
 var $ = window.$;
 
@@ -14,7 +16,10 @@ class DocumentPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      tab: 'search',
       annotator: null,
+      annotation: undefined,
+      similar: undefined,
       annotations: this.props.annotations || [],
       columnView: 'annotations',
     };
@@ -82,7 +87,31 @@ class DocumentPage extends React.Component {
   }
 
   searchResult(ann) {
-    return <Annotation key={ann.id} {...ann}/>;
+    let dp = this;
+    let callback = (e) => {
+      console.log('clicked back!');
+      dp.setState({annotation: ann});
+      request({
+        method: 'POST',
+        uri: '/api/similar/annotation/' + ann.uuid,
+        headers: {'X-CSRFToken': Cookie.get('csrftoken')},
+        json: true,
+      }, function(error, response, body) {
+        // Ignore results that have been superceded
+        if (error) {
+          console.error(error, response, body);
+          dp.setState({
+            similar: [],
+          });
+          return;
+        }
+        dp.setState({
+          similar: body,
+        });
+      });
+      return false;
+    };
+    return <Annotation callback={callback} key={ann.id} {...ann}/>;
   }
 
   render() {
@@ -104,19 +133,38 @@ class DocumentPage extends React.Component {
           </div>
         </div>
       </div>
+
       {/* Annotation pane */}
-      <AnnotationSearch
-        className="column annotations-pane scroll-y"
-        resultfn={this.searchResult.bind(this)}
-        payload={{
-          document_id: dp.props.document.id,
-        }}
-        defaultResults={{
-          annotations: dp.state.annotations,
-        }}
-      />
+      {this.state.annotation ? this.renderAnnotation() : this.renderSearch()}
     </div>;
   }
+
+
+  renderAnnotation() {
+    let dp = this;
+    let ann = this.state.annotation;
+    if (!ann) {
+      return <div> No Annotation To Display </div>;
+    }
+    return <div className="column pane-right scroll-y">
+      <button onClick={(e) => dp.setState({annotation: undefined})}>Back</button>
+      <Annotation key={ann.id} {...ann}/>
+      <div> Similar Annotations</div>
+      {(this.state.similar || []).map((x) => <Annotation key={x.id} {...x}/>)}
+    </div>;
+  }
+  renderSearch() {
+    let dp = this;
+    return <AnnotationSearch className="column annotations-pane scroll-y" resultfn={this.searchResult.bind(this)}
+    callback={(ann) => dp.setState({annotation: ann})}
+    payload={{
+    document_id: dp.props.document.id,
+    }}
+    defaultResults={{
+    annotations: dp.state.annotations,
+    }}/>;
+  }
+
 }
 
 

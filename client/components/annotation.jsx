@@ -18,6 +18,7 @@ export class Annotation extends React.Component {
         <div className="annotation-timestamp">{ann.updated_at}</div>
       </div>
       <div className="annotation-quote">{ann.quote}</div>
+      <div onClick={this.props.callback}>Click</div>
       <div className="annotation-text"
            dangerouslySetInnerHTML={{__html: ann.text}}>
       </div>

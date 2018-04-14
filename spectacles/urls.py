@@ -29,6 +29,7 @@ urlpatterns = [
     url(r'^activity/(?P<user_id>\d+)$', spectacles.views.user, name='api-user'),
     url(r'^api/search/annotations$', spectacles.views.api.search_annotations, name='api-search-anns'),
     url(r'^api/search/documents$', spectacles.views.api.search_documents, name='api-search-docs'),
+    url(r'^api/similar/annotation/(?P<annotation_id>[0-9a-f-]+)$', spectacles.views.api.similar_annotations, name='api-sim-anns'),
     #url(r'^api/documents/(?P<document_id>\d+)$', views.api_document, name='api-document'),
     #url(r'^api/annotations$', views.api_annotations, name='api-annotations'),
     #url(r'^api/annotations/(?P<annotation_id>[0-9a-f-]+)$', views.api_annotation, name='api-annotation'),

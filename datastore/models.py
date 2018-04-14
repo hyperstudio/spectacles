@@ -144,7 +144,17 @@ class Annotation(VectorModel, DictModel, models.Model):
         return self.data.get('tags', [])
 
     def recalculate_vector(self):
-        v = vector_from_html_text(self.text)
+        v1 = vector_from_html_text(self.text)
+        v2 = vector_from_html_text(self.quote)
+        if v1 is not None and v2 is not None:
+            v = (v1 + v2) / 2
+        elif v1 is not None:
+            v = v1
+        elif v2 is not None:
+            v = v2
+        else:
+            v = None
+
         if v is not None:
             self.set_vector(v)
         return v
