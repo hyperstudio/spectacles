@@ -1082,12 +1082,14 @@
       annotation.quote = annotation.quote.join(' / ');
       $(annotation.highlights).data('annotation', annotation);
       $(annotation.highlights).attr('data-annotation-id', annotation.id);
+      $(annotation.highlights).first().attr('id', annotation.id);
       return annotation;
     };
 
     Annotator.prototype.updateAnnotation = function(annotation) {
       this.publish('beforeAnnotationUpdated', [annotation]);
       $(annotation.highlights).attr('data-annotation-id', annotation.id);
+      $(annotation.highlights).first().attr('id', annotation.id);
       this.publish('annotationUpdated', [annotation]);
       return annotation;
     };
