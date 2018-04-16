@@ -6,6 +6,8 @@ var Cookie = require('js-cookie');
 // Contributed from other scripts
 var $ = window.$;
 
+import {Tab, Tabs, TabList, TabPanel} from 'react-tabs';
+
 import {setupCSRF, createAnnotator} from './util.jsx';
 import {Annotation} from './components/annotation.jsx';
 import {AnnotationSearch} from './components/search/annotations.jsx';
@@ -135,7 +137,25 @@ class DocumentPage extends React.Component {
       </div>
 
       {/* Annotation pane */}
-      {this.state.annotation ? this.renderAnnotation() : this.renderSearch()}
+      <Tabs className="column pane-right scroll-y" defaultIndex={0}>
+        <TabList>
+          <Tab> Annotations </Tab>
+          <Tab> Related </Tab>
+          <Tab> Information </Tab>
+        </TabList>
+
+        <TabPanel>
+          {this.state.annotation ? this.renderAnnotation() : this.renderSearch()}
+        </TabPanel>
+
+        <TabPanel>
+          <h1> Similar Documents </h1>
+        </TabPanel>
+
+        <TabPanel>
+          <h1> Document Information </h1>
+        </TabPanel>
+      </Tabs>
     </div>;
   }
 
@@ -148,11 +168,12 @@ class DocumentPage extends React.Component {
     }
     return <div className="column pane-right scroll-y">
       <button onClick={(e) => dp.setState({annotation: undefined})}>Back</button>
-      <Annotation key={ann.id} {...ann}/>
-      <div> Similar Annotations</div>
+      <Annotation key={ann.id} {...ann} isSelected={true}/>
+      <div className="similar-annotations"> Similar Annotations</div>
       {(this.state.similar || []).map((x) => <Annotation key={x.id} {...x}/>)}
     </div>;
   }
+
   renderSearch() {
     let dp = this;
     return <AnnotationSearch className="column annotations-pane scroll-y" resultfn={this.searchResult.bind(this)}
