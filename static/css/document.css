@@ -11,10 +11,6 @@
     background: #FEFEFE;
 }*/
 
-.annotation img {
-    max-width: 100%;
-    height: auto;
-}
 
 
 .state-choice {
@@ -74,107 +70,16 @@
   font-size: 14px;
   color: #888;
 }
-.annotation-text {
-    display: block;
-}
-.annotation-text > * {
-    margin: 0;
-}
-.annotation-info {
-    display: block;
-    border-bottom: 1px solid #ccc;
-    margin-bottom: 10px;
-    padding: 5px;
-}
-.annotation-info-top {
-  border-bottom: 1px solid #ccc;
-}
-.annotation-info-bottom {
-  border-top: 1px solid #ccc;
-}
-.annotation-link, .annotation-controls {
-  display: flex;
-}
-.annotation-controls i {
-  cursor: pointer;
-  margin: 0 4px;
-  color: #888;
-}
-.annotation-controls i:hover {
-  color: #000;
-}
-.annotation-link, .annotation-creator {
-  flex: 1;
-}
-.annotation-info-top,
-.annotation-info-bottom {
-  display: flex;
-  padding: 2px;
-}
-
-.annotation {
-    /*box-shadow: 0px 2px 2px -2px #ddd
-      box-shadow: 0px 2px 2px 2px #ddd;*/
-    outline: 1px solid #ddd;
-    box-sizing: border-box;
-    padding: 5px;
-    margin-bottom: 20px;
-    background: white;
-}
-.annotation-tags {
-    margin-top: 10px;
-    margin-bottom: 10px;
-}
-.annotation-tag {
-    padding: 2px 5px;
-    border-radius: 4px;
-    border: 1px solid #0CA5B0;
-    display: inline-block;
-    margin: 0 2px;
-    color: #0CA5B0;
-    font-size: 11px;
-}
-.annotation-quote {
-    font-style: italic;
-    background: #FAF8EA;
-    margin: 10px;
-    padding: 8px;
-}
-.annotation-text {
-    padding: 5px;
-}
 
 
-.document-title {
+.document-display-title {
     font-size: 36px;
     font-family: Georgia;
     color: #000;
 }
-.document-author {
+.document-display-author {
     font-size: 30px;
     font-family: Georgia;
     color: #333;
 }
 
-a {
-    color: #FE4365;
-    text-decoration: none;
-}
-a:visited {
-    color: #381C83;
-}
-
-.react-fuzzy-filter__input {
-    width: 100%;
-    box-sizing: border-box;
-    margin-bottom: 20px;
-    padding: 5px;
-}
-.search-bar-query {
-  background: white;
-  box-shadow: none;
-  border: 1px solid #ccc;
-  padding: 5px 10px;
-  width: 100%;
-  box-sizing: border-box;
-}

@@ -1,15 +1,16 @@
 'use strict';
-var React = require('react');
 var DOM = require('react-dom');
 var request = require('browser-request');
 var Cookie = require('js-cookie');
 // Contributed from other scripts
 var $ = window.$;
 
+import React from 'react';
 import {Tab, Tabs, TabList, TabPanel} from 'react-tabs';
 
 import {setupCSRF, createAnnotator} from './util.jsx';
 import {Annotation} from './components/annotation.jsx';
+import {DocumentSearchResult} from './components/search/documents.jsx';
 import {AnnotationSearch} from './components/search/annotations.jsx';
 import {Navigation} from './components/nav.jsx';
 
@@ -124,9 +125,9 @@ class DocumentPage extends React.Component {
 
       {/* Document pane */}
       <div className="column document-pane scroll-y">
-        <div className="document-title">{doc.title}</div>
-        <div className="document-author">{doc.author}</div>
-        <div className="document-content" ref="documentContent">
+        <div className="document-display-title">{doc.title}</div>
+        <div className="document-display-author">{doc.author}</div>
+        <div className="document-display-content" ref="documentContent">
           {/* For compatibility with existing annotation range definitions; */}
           {/* the previous site must have introduced this div wrapper */}
           <div className="document-content-inner"
@@ -140,7 +141,7 @@ class DocumentPage extends React.Component {
       <Tabs className="column pane-right scroll-y" defaultIndex={0}>
         <TabList>
           <Tab> Annotations </Tab>
-          <Tab> Related </Tab>
+          <Tab> Related Documents </Tab>
           <Tab> Information </Tab>
         </TabList>
 
@@ -149,13 +150,50 @@ class DocumentPage extends React.Component {
         </TabPanel>
 
         <TabPanel>
-          <h1> Similar Documents </h1>
+          {this.renderSimilar()}
         </TabPanel>
 
         <TabPanel>
-          <h1> Document Information </h1>
+          {this.renderInfo()}
         </TabPanel>
       </Tabs>
+    </div>;
+  }
+
+  renderInfo() {
+    let doc = this.props.document;
+    // "author", "text", "created_at", "title", "updated_at", "creator", "id"
+    return <table className="document-info-table">
+      <tbody>
+        <tr>
+          <td> Title </td>
+          <td> {doc.title} </td>
+        </tr>
+        <tr>
+          <td> Author </td>
+          <td> {doc.author} </td>
+        </tr>
+        <tr>
+          <td> Creator </td>
+          <td> <a href={`/activity/${doc.creator.id}`}> {doc.creator.name} ({doc.creator.email})  </a></td>
+        </tr>
+        <tr>
+          <td> Created </td>
+          <td> {doc.created_at} </td>
+        </tr>
+        <tr>
+          <td> Updated </td>
+          <td> {doc.created_at} </td>
+        </tr>
+      </tbody>
+    </table>;
+  }
+
+  renderSimilar() {
+    return <div>
+      {(this.props.recs.docs || []).map((doc) => {
+        return <DocumentSearchResult key={doc.id} document={doc}/>;
+      })}
     </div>;
   }
 

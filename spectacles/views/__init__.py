@@ -12,6 +12,7 @@ from spectacles.utils import props_template
 from spectacles.utils import json_response
 from spectacles.utils import to_dict
 from spectacles.utils import flatten
+from spectacles.recommend import recommend_annotations, recommend_documents
 from spectacles.utils import PROPS
 from datastore.models import Document, Annotation
 
@@ -60,7 +61,20 @@ def archive(request):
 @props_template('app/document.html')
 def document(request, document_id):
     doc = get_object_or_404(Document, id=document_id)
+
+    similar  = recommend_documents(doc, search_k=10000)
+    recs = {
+        'docs': [
+            to_dict(Document.slim.get(id=id_),
+                    fields=Document._slim_fields)
+            for id_ in similar
+        ]
+    }
+    print(recs['docs'][0])
+
+
     return {
+        'recs': recs,
         'document': doc,
         'annotations': flatten(to_dict(doc.annotations.all()))
     }
