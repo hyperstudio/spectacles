@@ -247,6 +247,7 @@ a:hover {
 }
 .annotation-link, .annotation-controls {
   display: flex;
+  margin-left: auto;
 }
 .annotation-controls i {
   cursor: pointer;
@@ -308,5 +309,16 @@ a:hover {
 }
 .document-info-table td {
   padding: 10px;
+}
+
+
+.hide-similar {
+  width: 200px;
+  border: 1px solid #AD00E3CC;
+  text-transform: uppercase;
+  padding: 4px;
+  background: white;
+  margin-bottom: 10px;
+  font-weight: bold;
 }
 

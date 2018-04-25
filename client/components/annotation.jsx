@@ -9,11 +9,31 @@ export class Annotation extends React.Component {
   }
 
   renderControls() {
-    return <span className="annotation-controls">
-      <i className="annotation-scrollto icon-link">Find</i>
-      <i className="annotation-bookmark icon-star">Bookmark</i>
-      <i onClick={this.props.callback} className="annotation-similar icon-eye">Similar</i>
-    </span>
+    let showSimilar = '';
+    let ann = this.props;
+    if (!this.props.selected) {
+      showSimilar = <i onClick={this.props.callback}
+                       className="annotation-similar icon-eye">Similar</i>;
+    }
+    let link;
+    let linkid = ann.uuid.replace(/-/g,'');
+    if (this.props.document && this.props.document.id == this.props.document_id) {
+      link = <a className='annotation-link annotation-scrollto' href={`#${linkid}`}>
+        <i className='icon-hashtag'> Show on page </i>
+      </a>;
+    } else {
+      link = <a className='annotation-link' href={`/documents/${ann.document_id}#${linkid}`}>
+        <i className="icon-link" >View Document</i>
+      </a>;
+    }
+
+    return <div className="annotation-info-top">
+      {link}
+      <span className="annotation-controls">
+        <i className="annotation-bookmark icon-star">Bookmark</i>
+        {showSimilar}
+      </span>
+    </div>;
   }
 
   render() {
@@ -23,10 +43,7 @@ export class Annotation extends React.Component {
       className += " selected";
     }
     return <div className={className} key={ann.uuid}>
-      <div className="annotation-info-top">
-        <a className="annotation-link" href={`/documents/${ann.document_id}`}>View Document</a>
-        {this.renderControls()}
-      </div>
+      {this.renderControls()}
       <div className="annotation-quote">{ann.quote}</div>
       <div className="annotation-text"
            dangerouslySetInnerHTML={{__html: ann.text}}>

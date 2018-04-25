@@ -51,12 +51,12 @@
     display: inline-block;
 }
 .annotation.selected {
-  outline-color: #000;
+  outline-color: #AD00E3CC;
   margin-top: 10px;
 }
 .annotation.selected .annotation-info-top,
 .annotation.selected .annotation-info-bottom {
-  border-color: #000;
+  border-color: #AD00E3CC;
 }
 .annotation-quote {
     display: block;

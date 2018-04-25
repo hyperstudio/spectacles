@@ -92,7 +92,6 @@ class DocumentPage extends React.Component {
   searchResult(ann) {
     let dp = this;
     let callback = (e) => {
-      console.log('clicked back!');
       dp.setState({annotation: ann});
       request({
         method: 'POST',
@@ -114,7 +113,7 @@ class DocumentPage extends React.Component {
       });
       return false;
     };
-    return <Annotation callback={callback} key={ann.id} {...ann}/>;
+    return <Annotation document={dp.props.document} selected={dp.state.annotation} callback={callback} key={ann.id} {...ann}/>;
   }
 
   render() {
@@ -205,23 +204,27 @@ class DocumentPage extends React.Component {
       return <div> No Annotation To Display </div>;
     }
     return <div className="column pane-right scroll-y">
-      <button onClick={(e) => dp.setState({annotation: undefined})}>Back</button>
-      <Annotation key={ann.id} {...ann} isSelected={true}/>
+      <button className='hide-similar'
+              onClick={(e) => dp.setState({annotation: undefined})}>&larr; Back to search</button>
+      <Annotation key={ann.id} {...ann} isSelected={true} document={dp.props.document} selected={dp.state.annotation}/>
       <div className="similar-annotations"> Similar Annotations</div>
-      {(this.state.similar || []).map((x) => <Annotation key={x.id} {...x}/>)}
+      {(this.state.similar || []).map((x) => <Annotation document={dp.props.document} selected={dp.state.annotation} key={x.id} {...x}/>)}
     </div>;
   }
 
   renderSearch() {
     let dp = this;
-    return <AnnotationSearch className="column annotations-pane scroll-y" resultfn={this.searchResult.bind(this)}
-    callback={(ann) => dp.setState({annotation: ann})}
-    payload={{
-    document_id: dp.props.document.id,
-    }}
-    defaultResults={{
-    annotations: dp.state.annotations,
-    }}/>;
+    return <AnnotationSearch
+      className="column annotations-pane scroll-y"
+      resultfn={this.searchResult.bind(this)}
+      callback={(ann) => dp.setState({annotation: ann})}
+      payload={{
+        document_id: dp.props.document.id,
+      }}
+      defaultResults={{
+        annotations: dp.state.annotations,
+      }}
+    />;
   }
 
 }
