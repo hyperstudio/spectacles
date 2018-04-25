@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 from __future__ import print_function
 from django.shortcuts import render
 from django.http import JsonResponse
+from django.http import HttpResponse
 from django.db import models
 from django.db.models.query import QuerySet
 from django.core.serializers.json import DjangoJSONEncoder
@@ -98,7 +99,10 @@ def props_template(path):
 def json_response(fn):
     def inner(*args, **kwargs):
         # TODO: custom Exception class for easy error raising
-        return JsonResponse(fn(*args, **kwargs), safe=False)
+        result = fn(*args, **kwargs)
+        if isinstance(result, HttpResponse):
+            return result
+        return JsonResponse(result, safe=False)
     return inner
 
 # This is used to get annotations in a consistent format between the Postgres

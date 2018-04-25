@@ -42,14 +42,20 @@ export class Annotation extends React.Component {
     if (this.props.isSelected) {
       className += " selected";
     }
+    let tagsClass = 'annotation-tags';
+    if (!ann.tags.length) {
+      tagsClass += 'no-tags';
+    }
     return <div className={className} key={ann.uuid}>
       {this.renderControls()}
-      <div className="annotation-quote">{ann.quote}</div>
-      <div className="annotation-text"
-           dangerouslySetInnerHTML={{__html: ann.text}}>
-      </div>
-      <div className="annotation-tags">
-        {(ann.tags || []).map((t, i) => <div className="annotation-tag" key={t + '_' + i}>{t}</div>)}
+      <div className="annotation-body">
+        <div className="annotation-quote">{ann.quote}</div>
+        <div className="annotation-text"
+             dangerouslySetInnerHTML={{__html: ann.text}}>
+        </div>
+        <div className={tagsClass}>
+          {(ann.tags || []).map((t, i) => <div className="annotation-tag" key={t + '_' + i}>{t}</div>)}
+        </div>
       </div>
       <div className="annotation-info-bottom">
         <div className="annotation-creator">

@@ -10,6 +10,7 @@ from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
+from django.http import HttpResponseBadRequest as R400, HttpResponseNotFound as R404
 
 from spectacles.utils import json_response
 from spectacles.utils import to_dict
@@ -60,7 +61,7 @@ def crud(request, document_id, annotation_id=None):
         return update(request, doc, annotation_id)
 
     # TODO: correct error raising here
-    raise NotImplementedError(request.method)
+    return R400(request.method)
 
 
 def get(request, doc):
@@ -70,12 +71,13 @@ def get(request, doc):
     )))
 
 
-def delete(request, doc, annotation_id):
-    ann = doc.annotations.filter(data__id=annotation_id)
+def delete(request, doc, annotation_uuid):
+    print('annotation__uuid:', annotation_uuid)
+    ann = doc.annotations.filter(uuid=annotation_uuid)
     if ann.exists():
         ann = ann[0]
     else:
-        raise NotImplementedError('404!')
+        return R404()
     ann.delete()
     return None
 
@@ -84,8 +86,7 @@ def create(request, doc):
     try:
         req_data = json.loads(request.body)
     except (TypeError, ValueError):
-        # TODO: Raise the correct type of error, return to JS
-        raise NotImplementedError('400!')
+        return R400()
     new_id = uuid.uuid4()
     now = datetime.utcnow()
 
@@ -128,16 +129,16 @@ def create(request, doc):
     return to_dict(_clean_ann(ann.data, doc.id))
 
 
-def update(request, doc, annotation_id):
-    ann = doc.annotations.filter(data__id=annotation_id)
+def update(request, doc, annotation_uuid):
+    ann = doc.annotations.filter(uuid=annotation_uuid)
     if ann.exists():
         ann = ann[0]
     else:
-        raise NotImplementedError('404!')
+        return R404()
     try:
         updated = json.loads(request.body)
     except (TypeError, ValueError):
-        raise NotImplementedError('400!')
+        return R400()
 
     ann.data.update(updated)
     ann.save()

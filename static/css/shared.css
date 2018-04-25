@@ -233,6 +233,9 @@ a:hover {
 .annotation-text > * {
     margin: 0;
 }
+.annotation-body {
+  padding: 5px;
+}
 .annotation-info {
     display: block;
     border-bottom: 1px solid #ccc;
@@ -263,20 +266,22 @@ a:hover {
 .annotation-info-top,
 .annotation-info-bottom {
   display: flex;
-  padding: 2px;
+  padding: 5px;
 }
 
 .annotation {
     box-shadow: 0px 1px 5px 0px #ccc;
     outline: 1px solid #ddd;
     box-sizing: border-box;
-    padding: 5px;
     margin-bottom: 20px;
     background: white;
 }
 .annotation-tags {
     margin-top: 10px;
     margin-bottom: 10px;
+}
+.annotation-tags.no-tags {
+  margin: 0;
 }
 .annotation-tag {
     padding: 2px 5px;
@@ -290,7 +295,8 @@ a:hover {
 .annotation-quote {
     font-style: italic;
     background: #FAF8EA;
-    margin: 10px;
+    margin: 5px;
+    margin-bottom: 10px;
     padding: 8px;
 }
 .annotation-text {
@@ -320,5 +326,6 @@ a:hover {
   background: white;
   margin-bottom: 10px;
   font-weight: bold;
+  cursor: pointer;
 }
 
