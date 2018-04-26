@@ -1,11 +1,13 @@
-# Spectacles
+# Spectacles (alpha)
 
-## Architecture
-- `app`: contains all of the application-specific logic
-- `client`: contains all of the React.js code for the website. This code gets compiled by Webpack and the results are placed in the `static` folder.
-- `datastore`: implementation of an Annotator.js-compatible data store, similar to the `annotation-store` project. This can be extracted into a separate github repository in the future and contributed back to the community as a "plugin" for Django.
-- `scripts`: contains scripts and script output related to getting data from Annotation Studio into Spectacles.
-- `templates`: contains the basic HTML templates that Django looks for in order to render the website. THese are very simple shims, most of the website is defined by the React.js code in `client`.
+Spectacles is open source software for creating active archives of digital
+texts. It allows for user-created rich media annotations of those texts, as
+well as fuzzy search over both texts and annotations. Additionally it uses
+natural language processing techniques to allow users to browse annotations and
+texts similar to those they've found relevant to their research needs.
+
+**Spectacles is currently still under development** and should be considered to
+be alpha-version software. Read, don't run, the code at your own risk.
 
 ## Todo List
 - [x] Spec out ES document model
@@ -41,15 +43,15 @@
       - [x] Set up vector store (2/23)
       - [x] "Mark this as useful / bookmarked" for both documents and annotations (2/23)
         - [ ] Client side code for actually bookmarking
-      - [ ] Document recommendations
-      - [ ] Annotation recommendations
+      - [x] Document recommendations
+      - [x] Annotation recommendations
       - [ ] Intelligent recommendations using vector similarity (2/28)
     - [ ] Home page (3/2)
     - [ ] Account creation/registration flow (3/2)
     - [ ] Per-archive scoping
   - [ ] Implementation details
-    - [ ] Consistent data store on the client side
-    - [ ] Scope searches by current archive
+    - [x] Consistent data store on the client side
+    - [x] Scope searches by current archive
     - [ ] Separate out recommendation and datastore backend logic to be published as a package
   - [x] Deployment
     - [x] Server up and running
@@ -59,11 +61,3 @@
     - [x] Dependencies installed and django app running
     - [x] Django app connected to databases
     - [x] Nginx connected to Django through uWSGI
-
-- [ ] Future work
-  - [ ] US-IRAN data
-  - [ ] Ingestion flow
-    - [ ] Text processing through worker queues
-    - [ ] Importers for HTML, PDF, .DOC, .TXT
-    - [ ] Command-line tools
-    - [ ] Online interface
