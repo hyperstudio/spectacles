@@ -20,7 +20,4 @@ if __name__ == "__main__":
             )
         raise
     from django.conf import settings
-    print('-------------')
-    print('\nDEBUG = %r\nPRODUCTION = %r\nUSE_HEROKU = %r\n' % (settings.DEBUG, settings.PRODUCTION, settings.USE_HEROKU))
-    print('-------------')
     execute_from_command_line(sys.argv)

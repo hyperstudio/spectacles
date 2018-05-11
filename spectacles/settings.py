@@ -134,13 +134,10 @@ def set_default(d):
 
 set_default(DATABASES)
 set_default(ELASTICSEARCH_DSL)
-print(ELASTICSEARCH_DSL['default']['hosts'])
 
 # Elasticsearch Indexing
 ES_IGNORE_SIGNALS = env('ES_IGNORE_SIGNALS', False, cast=bool)
 ES_AUTO_REFRESH = env('ES_AUTO_REFRESH', True, cast=bool)
-print('ES_IGNORE_SIGNALS:', ES_IGNORE_SIGNALS)
-print('ES_AUTO_REFRESH:', ES_AUTO_REFRESH)
 
 
 
@@ -181,7 +178,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
-print(BASE_DIR)
 STATICFILES_DIRS = [
         os.path.join(BASE_DIR, '../static'),
     ]
