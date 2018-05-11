@@ -43,10 +43,11 @@ def make_recommender(client_fetcher):
             else:
                 return None
         try:
-            return c.neighbors_by_vector(v, n, search_k=search_k)
+            results = c.neighbors_by_vector(v, n, search_k=search_k)
         except RPCException as e:
             print(e)
-            return []
+            results = []
+        return [r for r in results if r != t.id]
     return recommender
 
 recommend_documents = make_recommender(doc_client)

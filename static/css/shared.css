@@ -320,12 +320,19 @@ a:hover {
 
 .hide-similar {
   width: 200px;
-  border: 1px solid #AD00E3CC;
+  border: 1px solid #888;
+  color: #888;
   text-transform: uppercase;
-  padding: 4px;
+  padding: 6px;
   background: white;
   margin-bottom: 10px;
   font-weight: bold;
   cursor: pointer;
+  margin-left: auto;
+  margin-right: auto;
+}
+.hide-similar:hover {
+  border-color: #000;
+  color: #000;
 }
 
