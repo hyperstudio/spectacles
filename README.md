@@ -28,6 +28,8 @@ free to submit issues or contact the authors directly with any questions.
   - Implement auth for all the different comments
   - Deeplinking to a fragment on a page
   - User registration
+  - Logout links in dropdown under username in upper right
+  - Single archive, name included in templates
   - Remove "recommended documents" view
   - Better home page
   - Allow scoping document and annotation elasticsearch by user ID
