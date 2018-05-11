@@ -71,7 +71,6 @@ class DocumentsPage extends React.Component {
   renderRecommendations() {
     return <div className="doc-recs">
       {this.props.recs.docs.map((doc) => {
-        console.log('doc?', doc);
         return <DocumentSearchResult key={doc.id} document={doc}/>
       })}
     </div>;

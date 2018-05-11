@@ -29,6 +29,7 @@ export class Annotation extends React.Component {
 
     return <div className="annotation-info-top">
       {link}
+      <span className="annotation-spacer"></span>
       <span className="annotation-controls">
         {/*<i className="annotation-bookmark icon-star">Bookmark</i>*/}
         {showSimilar}

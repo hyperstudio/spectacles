@@ -248,7 +248,7 @@ a:hover {
 .annotation-info-bottom {
   border-top: 1px solid #ccc;
 }
-.annotation-link, .annotation-controls {
+.annotation-link, .annotation-controls, .annotation-spacer {
   display: flex;
   margin-left: auto;
 }
@@ -260,7 +260,7 @@ a:hover {
 .annotation-controls i:hover {
   color: #000;
 }
-.annotation-link, .annotation-creator {
+.annotation-creator, .annotation-spacer {
   flex: 1;
 }
 .annotation-info-top,

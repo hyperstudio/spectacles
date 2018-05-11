@@ -17,13 +17,11 @@ export class AnnotationSearch extends AbstractSearch {
     if (!annotations || annotations.length == 0) {
       return;
     }
-    //console.log(_.sortBy([1, 2, 6, 5, 3, 4], (n) => n));
     return _.sortBy(annotations, (ann) => {
       // Todo: calculate actual distance in text?
       if (!ann.ranges) return 0;
       return ann.ranges.length ? ann.ranges[0].startOffset : 0;
     }).map(this.props.resultfn || ((ann) => {
-      console.log('default fn!');
       return <AnnotationSearchResult callback={this.props.callback} key={ann.id} annotation={ann}/>;
     }));
   }

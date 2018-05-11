@@ -22,24 +22,18 @@ function StoreLogger(element, callbacks) {
       this.annotator
         .subscribe("annotationCreated", function (annotation) {
           if (callbacks.create) {
-            console.log('calling create callback!');
             callbacks.create(annotation);
           }
-          console.info("The annotation: %o has just been created!", annotation)
         })
       .subscribe("annotationUpdated", function (annotation) {
         if (callbacks.update) {
-          console.log('calling update callback!');
           callbacks.update(annotation);
         }
-        console.info("The annotation: %o has just been updated!", annotation)
       })
       .subscribe("annotationDeleted", function (annotation) {
         if (callbacks.delete) {
-          console.log('calling delete callback!');
           callbacks.delete(annotation);
         }
-        console.info("The annotation: %o has just been deleted!", annotation)
       });
     }
   }
@@ -76,11 +70,11 @@ export function createAnnotator(domRef, onUpdate, userEmail, documentId) {
       update: onUpdate('update'),
       delete: onUpdate('delete'),
       create: (ann) => {
-        return console.log('create event for:', ann);
+        return;
       }
     },
     onUpdate: function(annotation, data) {
-      console.log(annotation, data);
+      return;
     },
   })
   .addPlugin('RichText', {

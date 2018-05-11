@@ -40,7 +40,6 @@ class DocumentPage extends React.Component {
       }
       var new_annotations = dp.state.annotations.slice();
       if (action === 'update') {
-        console.log('action is update!', new_annotations, ann);
         var changed = false;
         var i;
         for (i = 0; i < new_annotations.length; i++) {
