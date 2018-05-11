@@ -58,6 +58,11 @@ def search_documents(request):
         query=req['query']
     ).hits)
 
+    creator_id = req.get('creator_id', None)
+    if creator_id is not None:
+        creator = get_object_or_404(get_user_model(), id=creator_id)
+        docs_r = filter(lambda x: x.creator.email == creator.email, docs_r)
+
     return to_dict({
         'documents': to_dict(docs_r, fields=fields)
     })

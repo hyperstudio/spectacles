@@ -23,6 +23,7 @@ export class AnnotationSearch extends AbstractSearch {
       if (!ann.ranges) return 0;
       return ann.ranges.length ? ann.ranges[0].startOffset : 0;
     }).map(this.props.resultfn || ((ann) => {
+      console.log('default fn!');
       return <AnnotationSearchResult callback={this.props.callback} key={ann.id} annotation={ann}/>;
     }));
   }

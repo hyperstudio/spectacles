@@ -63,6 +63,7 @@ class ESAnnotation(ESModel, DocType):
     updated_at = fields.DateField(attr='updated_at', default_timezone='UTC')
 
     document_id = fields.IntegerField()
+    # Todo: Add Document Titlte
     quote = fields.TextField()
     text = fields.TextField()
     tags = fields.ListField(fields.TextField())

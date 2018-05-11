@@ -1,25 +1,11 @@
 #react-root {
     min-width: 1100px;
 }
-/*#react-root {
-    position: absolute;
-    top: 0;
-    right: 0;
-    left: 0;
-    bottom: 0;
-    display: flex;
-    background: #FEFEFE;
-}*/
-
-
 
 .state-choice {
     display: inline-block;
     margin-left: 20px;
 }
-
-    
-
 
 .mce-window {
     opacity: 1 !important;

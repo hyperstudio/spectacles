@@ -12,8 +12,4 @@ django.setup()
 
 print('Done setting up!')
 import spectacles
-import nndb
-print(spectacles)
-print(nndb)
-from datastore.models import *
-print(Document.objects.count(), 'documents in the database')
+print('Successfully imported the spectacles django application.')

@@ -23,9 +23,9 @@ class Server(object):
         self.num_workers = num_workers
         self.update_interval = update_interval
         self.vector_length = vector_length
+        # Used to hide log-spam from PyRPC
         if logging_level is not None:
             logging.basicConfig(level=logging_level)
-
         self.index = annoy.AnnoyIndex(self.vector_length)
 
     def neighbors_by_vector(self, vector, n, *args, **kwargs):
@@ -53,7 +53,7 @@ class Server(object):
                     new_index.load(self.index_path)
                     self.index.unload()
                     self.index = new_index
-                except IOError:
-                    print('could not reload', self.index_path)
+                except IOError as e:
+                    print('could not reload', self.index_path, e)
         except KeyboardInterrupt:
             server.stop()

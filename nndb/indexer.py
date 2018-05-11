@@ -3,7 +3,6 @@ from __future__ import print_function
 from __future__ import unicode_literals
 import annoy
 import time
-import pdb
 import tqdm
 import random
 import multiprocessing
@@ -44,13 +43,10 @@ class Indexer(object):
             try:
                 index.add_item(i, v)
             except IndexError as e:
-                print('failed to add index i =', i, e, v)
-                pdb.set_trace()
                 continue
         t = time.time()
         index.build(self.index_trees)
         index.save(self.index_path)
-        print('built and saved index:', time.time() - t)
         index.unload()
 
     def _run_init(self):

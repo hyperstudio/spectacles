@@ -30,7 +30,7 @@ export class Annotation extends React.Component {
     return <div className="annotation-info-top">
       {link}
       <span className="annotation-controls">
-        <i className="annotation-bookmark icon-star">Bookmark</i>
+        {/*<i className="annotation-bookmark icon-star">Bookmark</i>*/}
         {showSimilar}
       </span>
     </div>;
@@ -43,7 +43,7 @@ export class Annotation extends React.Component {
       className += " selected";
     }
     let tagsClass = 'annotation-tags';
-    if (!ann.tags.length) {
+    if (!ann.tags || !ann.tags.length) {
       tagsClass += 'no-tags';
     }
     return <div className={className} key={ann.uuid}>

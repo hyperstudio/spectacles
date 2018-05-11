@@ -16,7 +16,7 @@ from spectacles.utils import props_template
 # TODO: clean up this views file?
 @require_http_methods(['POST', 'GET'])
 @ensure_csrf_cookie
-@props_template('app/login.html')
+@props_template('spectacles/login.html')
 def login(request):
     props = {
         'csrftoken': csrf.get_token(request),

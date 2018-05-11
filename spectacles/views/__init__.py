@@ -20,7 +20,7 @@ from datastore.models import Document, Annotation
 
 @require_GET
 @ensure_csrf_cookie
-@props_template('app/index.html')
+@props_template('spectacles/index.html')
 def index(request):
     user = request.user if request.user.is_authenticated else None
     return {
@@ -32,7 +32,7 @@ def index(request):
 @require_GET
 @login_required
 @ensure_csrf_cookie
-@props_template('app/archive.html')
+@props_template('spectacles/archive.html')
 def archive(request):
     user = request.user
     if not user.is_authenticated:
@@ -58,7 +58,7 @@ def archive(request):
 @require_GET
 @login_required
 @ensure_csrf_cookie
-@props_template('app/document.html')
+@props_template('spectacles/document.html')
 def document(request, document_id):
     doc = get_object_or_404(Document, id=document_id)
 
@@ -83,7 +83,7 @@ def document(request, document_id):
 @require_GET
 @login_required
 @ensure_csrf_cookie
-@props_template('app/user.html')
+@props_template('spectacles/user.html')
 def user(request, user_id=None):
     if user_id is not None:
         user = get_object_or_404(get_user_model(), id=user_id)
@@ -95,10 +95,8 @@ def user(request, user_id=None):
     # view it's unnecessary.
     annotations = user.annotations.all()
     return {
-        'user': user,
-        PROPS: {
-            'user': to_dict(user),
-            'documents': flatten(to_dict(documents, fields=Document._slim_fields)),
-            'annotations': flatten(to_dict(annotations)),
-        }
+        'user': to_dict(user),
+        'logged_in': to_dict(request.user),
+        'documents': flatten(to_dict(documents, fields=Document._slim_fields)),
+        'annotations': flatten(to_dict(annotations)),
     }
