@@ -83,10 +83,29 @@ class DocumentPage extends React.Component {
     let ann = createAnnotator(
         dp.refs.documentContent,
         onUpdate,
-        dp.props.user.email,
+        dp.props.user,
         dp.props.document.id
     );
     this.setState({annotator: ann});
+
+    let fragment = window.location.hash.substr(1);
+    if (!fragment) return;
+
+    for (ann of this.state.annotations) {
+      if (ann.id !== fragment) {
+        continue;
+      }
+
+      location.hash = '#';
+      let interval = setInterval(function() {
+        let el = document.getElementById(fragment);
+        if (el) {
+          clearInterval(interval);
+          location.hash = '#' + fragment;
+        }
+      }, 500);
+      break;
+    }
   }
 
   searchResult(ann) {
