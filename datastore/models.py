@@ -106,10 +106,20 @@ class Upload(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, null=False)
     updated_at = models.DateTimeField(auto_now=True, null=False)
 
+
+class WithDocumentInformation(models.Manager):
+    def with_doc_info(self):
+        return (super(WithDocumentInformation, self)
+            .get_queryset()
+            .annotate(document_title=models.F('document__title')))
+
 class Annotation(VectorModel, DictModel, models.Model):
+    document_title=''
     _json_fields = (
             'id', 'uuid', 'creator', 'created_at', 'updated_at',
-            'data', 'document_id', 'quote', 'text', 'tags')
+            'data', 'document_id', 'document_title', 'quote', 'text', 'tags')
+
+    objects = WithDocumentInformation()
 
     id = models.AutoField(primary_key=True)
     uuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)

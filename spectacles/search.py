@@ -40,6 +40,7 @@ def find_annotations(query, highlight='text', document_id=None):
         'id',
         'uuid',
         'document_id',
+        'document',
 
         'quote',
         'text',

@@ -24,16 +24,16 @@ document_index.settings(
 @document_index.doc_type
 class ESDocument(ESModel, DocType):
     id = fields.IntegerField(attr='id')
-    # TODO: add user id to creator field
     creator = fields.ObjectField(properties={
+        'id': fields.IntegerField(),
         'email': fields.TextField(),
         'name': fields.TextField(),
     })
     text = fields.TextField(attr='text')
     title = fields.TextField(attr='title')
     author = fields.TextField(attr='author')
-    created_at = fields.DateField(attr='created_at', default_timezone='UTC')
-    updated_at = fields.DateField(attr='updated_at', default_timezone='UTC')
+    created_at = fields.DateField(attr='created_at')
+    updated_at = fields.DateField(attr='updated_at')
 
     def get_queryset(self):
         return super(ESDocument, self).get_queryset().order_by('id')
@@ -56,17 +56,32 @@ class ESAnnotation(ESModel, DocType):
     id = fields.IntegerField(attr='id')
     uuid = fields.TextField(attr='uuid')
     creator = fields.ObjectField(properties={
+        'id': fields.IntegerField(),
         'email': fields.TextField(),
         'name': fields.TextField(),
     })
-    created_at = fields.DateField(attr='created_at', default_timezone='UTC')
-    updated_at = fields.DateField(attr='updated_at', default_timezone='UTC')
+    created_at = fields.DateField(attr='created_at')
+    updated_at = fields.DateField(attr='updated_at')
 
     document_id = fields.IntegerField()
+    document_title = fields.TextField()
+    document = fields.ObjectField(properties={
+        'id': fields.IntegerField(),
+        'title': fields.TextField(),
+    })
     # Todo: Add Document Titlte
     quote = fields.TextField()
     text = fields.TextField()
     tags = fields.ListField(fields.TextField())
+
+    def prepare_document(self, instance):
+        return {
+            'id': instance.document.id,
+            'title': instance.document.title,
+        }
+
+    def prepare_document_title(self, instance):
+        return instance.document.title
 
     def prepare_document_id(self, instance):
         return instance.document.id

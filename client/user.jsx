@@ -5,7 +5,7 @@ var DOM = require('react-dom');
 var $ = window.$;
 
 import {setupCSRF, createAnnotator} from './util.jsx';
-import {AnnotationSearch, AnnotationSearchResult} from './components/search/annotations.jsx';
+import {AnnotationSearch} from './components/search/annotations.jsx';
 import {DocumentSearch} from './components/search/documents.jsx';
 import {Annotation} from './components/annotation.jsx';
 import {Navigation} from './components/nav.jsx';
@@ -21,10 +21,6 @@ let sortByTransform = (f) => (a, b) => {
 class UserPage extends React.Component {
   constructor(props) {
     super(props);
-  }
-
-  searchResult(ann) {
-    return <Annotation document={null} selected={null} callback={null} key={ann.id} {...ann}/>;
   }
 
   render() {
@@ -58,7 +54,6 @@ class UserPage extends React.Component {
               payload={{
                 creator_id: this.props.user.id,
               }}
-              resultfn={this.searchResult.bind(this)}
               defaultResults={{
                 annotations: this.props.annotations
               }}

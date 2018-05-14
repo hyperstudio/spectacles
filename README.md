@@ -21,17 +21,18 @@ free to submit issues or contact the authors directly with any questions.
 - [ ] Data import script based on US-IRAN
   - [ ] Document this
 - [ ] Website Styles
-  - [ ] Hide bookmarking
-  - [ ] Style user page
+  - [X] Hide bookmarking
+  - [X] Style user page
 - [ ] Functionality
   - [X] Avoid recommending source ann/doc in results
-  - [ ] Implement auth for all the different comments
-  - [ ] Deeplinking to a fragment on a page
   - [ ] User registration
+  - [ ] Better home page
+  - [X] Deeplinking to a fragment on a page
+  - [X] Implement auth for all the different annotations
+  - [X] Show document titles in annotation links
   - [ ] Logout links in dropdown under username in upper right
   - [ ] Single archive, name included in templates
   - [ ] Remove "recommended documents" view
-  - [ ] Better home page
   - [ ] Allow scoping document and annotation elasticsearch by user ID
 - [ ] Code
   - [ ] Frontend cleanup

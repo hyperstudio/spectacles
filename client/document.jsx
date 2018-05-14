@@ -108,9 +108,9 @@ class DocumentPage extends React.Component {
     }
   }
 
-  searchResult(ann) {
+  annotationCallback(ann) {
     let dp = this;
-    let callback = (e) => {
+    return (e) => {
       dp.setState({annotation: ann});
       request({
         method: 'POST',
@@ -132,7 +132,17 @@ class DocumentPage extends React.Component {
       });
       return false;
     };
-    return <Annotation document={dp.props.document} selected={dp.state.annotation} callback={callback} key={ann.id} {...ann}/>;
+  }
+
+  searchResult(ann) {
+    let dp = this;
+    return <Annotation
+      current_document={dp.props.document}
+      selected={dp.state.annotation}
+      callback={dp.annotationCallback(ann)}
+      key={ann.id}
+      annotation={ann}
+    />;
   }
 
   render() {
@@ -225,9 +235,24 @@ class DocumentPage extends React.Component {
     return <div className="column pane-right scroll-y">
       <button className='hide-similar'
               onClick={(e) => dp.setState({annotation: undefined})}>&larr; Back to search</button>
-      <Annotation key={ann.id} {...ann} isSelected={true} document={dp.props.document} selected={dp.state.annotation}/>
+      <Annotation
+        current_document={dp.props.document}
+        selected={dp.state.annotation}
+        callback={null}
+        key={ann.id}
+        annotation={ann}
+        isSelected={true}
+      />
       <div className="similar-annotations"> Similar Annotations</div>
-      {(this.state.similar || []).map((x) => <Annotation document={dp.props.document} selected={dp.state.annotation} key={x.id} {...x}/>)}
+      {(this.state.similar || []).map((x) => {
+        return <Annotation
+          current_document={dp.props.document}
+          selected={dp.state.annotation}
+          callback={null}
+          key={x.id}
+          annotation={x}
+        />;
+      })}
     </div>;
   }
 

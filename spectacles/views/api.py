@@ -72,11 +72,9 @@ def search_documents(request):
 @ensure_csrf_cookie
 @json_response
 def similar_annotations(request, annotation_id):
-    print('hit the endpoint!')
-    ann = get_object_or_404(Annotation, uuid=annotation_id)
-    print("annotation:", ann)
+    ann = get_object_or_404(Annotation.objects.with_doc_info(), uuid=annotation_id)
     similar  = recommend_annotations(ann, search_k=10000)
-    objs = [to_dict(Annotation.objects.get(id=id_)) for id_ in similar]
+    objs = [to_dict(Annotation.objects.with_doc_info().get(id=id_)) for id_ in similar]
     return objs
 
 @require_POST
@@ -112,7 +110,7 @@ def create_bookmark(request):
     # document_id, annotation_uuid
     annotation_uuid = req_data.get('annotation_uuid', None)
     if annotation_uuid is not None:
-        annotation = get_object_or_404(Annotation, uuid=annotation_uuid)
+        annotation = get_object_or_404(Annotation.objects.with_doc_info(), uuid=annotation_uuid)
         document = annotation.document
     else:
         annotation = None

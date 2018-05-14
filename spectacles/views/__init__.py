@@ -42,7 +42,7 @@ def archive(request):
     docs = Document.slim.all()[:100]
     recs = {
         'docs': to_dict(Document.slim.all()[200:210], fields=Document._slim_fields),
-        'anns': to_dict(Annotation.objects.all()[200:210]),
+        'anns': to_dict(Annotation.objects.with_doc_info().all()[200:210]),
     }
 
     print('# docs:', len(recs['docs']))

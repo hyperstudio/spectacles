@@ -9,21 +9,25 @@ export class Annotation extends React.Component {
   }
 
   renderControls() {
+    let {current_document, selected, callback, annotation} = this.props;
+
     let showSimilar = '';
-    let ann = this.props;
-    if (!this.props.selected) {
-      showSimilar = <i onClick={this.props.callback}
+    if (!selected) {
+      showSimilar = <i onClick={callback}
                        className="annotation-similar icon-eye">Similar</i>;
     }
+
     let link;
-    let linkid = ann.uuid.replace(/-/g,'');
-    if (this.props.document && this.props.document.id == this.props.document_id) {
+    let linkid = annotation.uuid.replace(/-/g,'');
+    let ann_doc_id = annotation.document_id || (annotation.document && annotation.document.id) || null;
+    let ann_doc_title = annotation.document_title || (annotation.document && annotation.document.title) || null;
+    if (current_document && current_document.id == ann_doc_id) {
       link = <a className='annotation-link annotation-scrollto' href={`#${linkid}`}>
         <i className='icon-hashtag'> Show on page </i>
       </a>;
     } else {
-      link = <a className='annotation-link' href={`/documents/${ann.document_id}#${linkid}`}>
-        <i className="icon-link" >View Document</i>
+      link = <a className='annotation-link' href={`/documents/${ann_doc_id}#${linkid}`}>
+        <i className="icon-link" >{ann_doc_title || 'View Document'}</i>
       </a>;
     }
 
@@ -38,31 +42,34 @@ export class Annotation extends React.Component {
   }
 
   render() {
-    let ann = this.props;
+    let {current_document, selected, callback, annotation, isSelected} = this.props;
+
     let className = "annotation active";
-    if (this.props.isSelected) {
+    if (isSelected) {
       className += " selected";
     }
     let tagsClass = 'annotation-tags';
-    if (!ann.tags || !ann.tags.length) {
+    if (!annotation.tags || !annotation.tags.length) {
       tagsClass += 'no-tags';
     }
-    return <div className={className} key={ann.uuid}>
+    return <div className={className} key={annotation.uuid}>
       {this.renderControls()}
       <div className="annotation-body">
-        <div className="annotation-quote">{ann.quote}</div>
+        <div className="annotation-quote">{annotation.quote}</div>
         <div className="annotation-text"
-             dangerouslySetInnerHTML={{__html: ann.text}}>
+             dangerouslySetInnerHTML={{__html: annotation.text}}>
         </div>
         <div className={tagsClass}>
-          {(ann.tags || []).map((t, i) => <div className="annotation-tag" key={t + '_' + i}>{t}</div>)}
+          {(annotation.tags || []).map((t, i) => {
+            return <div className="annotation-tag" key={t + '_' + i}>{t}</div>;
+          })}
         </div>
       </div>
       <div className="annotation-info-bottom">
         <div className="annotation-creator">
-          <a href={`/activity/${ann.creator.id}`}>{ann.creator.name}</a>
+          <a href={`/activity/${annotation.creator.id}`}>{annotation.creator.name}</a>
         </div>
-        <div className="annotation-timestamp">{ann.updated_at}</div>
+        <div className="annotation-timestamp">{annotation.updated_at}</div>
       </div>
     </div>;
   }
