@@ -39,19 +39,37 @@ function StoreLogger(element, callbacks) {
   }
 };
 
-export function createAnnotator(domRef, onUpdate, userEmail, documentId) {
+export function createAnnotator(domRef, onUpdate, user, documentId) {
   // grabs Annotator from client side JS script
   window.Annotator.Plugin.StoreLogger = StoreLogger;
   return new window.Annotator(domRef, {
     popupTarget: document.getElementById('ann-wrapper'),
   })
-    .addPlugin('Auth', {
-      tokenUrl: '/api/store/token',
-    })
+  .addPlugin('Auth', {
+    tokenUrl: '/api/store/token',
+  })
   .addPlugin('Tags', {})
-    .addPlugin('Permissions', {
-      user: userEmail,
-    })
+  .addPlugin('Permissions', {
+    user: user,
+    permissions: {
+      read: [user.id],
+      update: [user.id],
+      delete: [user.id],
+      admin: [user.id],
+    },
+    userId: (user) => {
+      if (user) {
+        return user.id || null;
+      }
+      return null;
+    },
+    userString: (user) => {
+      if (user) {
+        return user.email || user;
+      }
+      return '(anonymous)';
+    }
+  })
   .addPlugin('Store', {
     prefix: `/api/store/${documentId}`,
     urls: {

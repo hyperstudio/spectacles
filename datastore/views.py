@@ -23,13 +23,8 @@ from datastore.models import Annotation
 # these functions / fix the data model internally.
 def _clean_ann(a, document_id):
     a['uri'] = document_id
-    a['permissions'] = {
-        'read': [],
-        'update': [],
-        'delete': [],
-        'admin': [],
-    }
     return a
+
 def _clean_annotations(annotations, document_id):
     for a in annotations:
         yield _clean_ann(a.data, document_id)
