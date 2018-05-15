@@ -64,6 +64,7 @@ class UserPage extends React.Component {
             <DocumentSearch
               payload={{
                 creator_id: this.props.user.id,
+                titles_only: true,
               }}
               defaultResults={{
                 documents: this.props.documents

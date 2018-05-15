@@ -30,13 +30,8 @@ def search_annotations(request):
     anns_r = list(search.find_annotations(
         query=req['query'],
         document_id=req.get('document_id', None),
+        creator_id=req.get('creator_id', None)
     ).hits)
-    # TODO: fix this client-side filter (should be happening in ES)
-    creator_id = req.get('creator_id', None)
-    if creator_id is not None:
-        creator = get_object_or_404(get_user_model(), id=creator_id)
-        anns_r = filter(lambda x: x.creator.email == creator.email, anns_r)
-
     return {
         'annotations': to_dict(anns_r),
     }
@@ -55,13 +50,10 @@ def search_documents(request):
     fields = set(Document._json_fields)
     fields.remove('text')
     docs_r = list(search.find_documents(
-        query=req['query']
+        query=req['query'],
+        creator_id=req.get('creator_id', None),
+        titles_only=req.get('titles_only', False),
     ).hits)
-
-    creator_id = req.get('creator_id', None)
-    if creator_id is not None:
-        creator = get_object_or_404(get_user_model(), id=creator_id)
-        docs_r = filter(lambda x: x.creator.email == creator.email, docs_r)
 
     return to_dict({
         'documents': to_dict(docs_r, fields=fields)

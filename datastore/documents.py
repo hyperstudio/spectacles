@@ -79,7 +79,6 @@ class ESAnnotation(ESModel, DocType):
             'id': instance.document.id,
             'title': instance.document.title,
         }
-
     def prepare_document_title(self, instance):
         return instance.document.title
 

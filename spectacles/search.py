@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 import re
 import json
 from elasticsearch_dsl.query import MultiMatch
+from elasticsearch_dsl.query import Q
 from elasticsearch_dsl.query import QueryString
 
 from datastore.documents import ESAnnotation, ESDocument
@@ -29,7 +30,7 @@ def intelligent_match(query, fields, fuzziness='AUTO'):
         )
 
 
-def find_annotations(query, highlight='text', document_id=None):
+def find_annotations(query, highlight='text', document_id=None, creator_id=None):
     m = intelligent_match(
         query=query,
         fields=['creator.email', 'creator.name', 'quote', 'text', 'tags'],
@@ -50,21 +51,25 @@ def find_annotations(query, highlight='text', document_id=None):
         'updated_at',
         'created_at',
     ])
+    s = s.query(m)
+    if creator_id is not None:
+        s = s.query(Q('bool', must=[Q('match', creator__id=creator_id)]))
+    if document_id is not None:
+        s = s.query(Q('bool', must=[Q('match', document__id=document_id)]))
     if highlight is not None:
         s = s.highlight_options(order='score')
         s = s.highlight(highlight, fragment_size=50)
-    if document_id is not None:
-        s = s.filter('match', document_id=document_id)
-    s = s.query(m)
     results = s.execute()
     return results
-    #return Annotation.objects.filter(id__in=[hit.id for hit in results.hits])
 
 
-def find_documents(query, highlight='text'):
+def find_documents(query, highlight='text', creator_id=None, titles_only=False):
+    fields = ['title', 'author', 'creator.name', 'creator.email']
+    if not titles_only:
+        fields.append('text')
     m = intelligent_match(
         query=query,
-        fields=['text', 'title', 'author', 'creator.name', 'creator.email'],
+        fields=fields,
         fuzziness='AUTO'
     )
     s = ESDocument.search()
@@ -79,12 +84,13 @@ def find_documents(query, highlight='text'):
         'updated_at',
         'created_at',
     ])
+    s = s.query(m)
+    if creator_id is not None:
+        s = s.query(Q('bool', must=[Q('match', creator__id=creator_id)]))
     if highlight is not None:
         # TODO: Need to make sure we're using the existing analysis vectors instead of the plain
         # highlighter, for performance purposes. Also, need to return the offsets of the highlights
         s = s.highlight_options(order='score')
         s = s.highlight(highlight, fragment_size=50)
-    s = s.query(m)
     results = s.execute()
     return results
-    #return Document.objects.filter(id__in=[hit.id for hit in results.hits])
