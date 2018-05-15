@@ -20,6 +20,7 @@ urlpatterns = [
     url(r'^documents$', spectacles.views.archive, name='spectacles-archive'),
     url(r'^documents/(\d+)$', spectacles.views.document, name='spectacles-document'),
     ### Authentication
+    url(r'^auth/register$', spectacles.views.auth.register, name='auth-register'),
     url(r'^auth/login$', spectacles.views.auth.login, name='auth-login'),
     url(r'^auth/logout$', spectacles.views.auth.logout, name='auth-logout'),
 

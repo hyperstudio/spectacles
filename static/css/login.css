@@ -1,0 +1,44 @@
+.body {
+  text-align: center;
+  font-size: 16px;
+}
+
+.form {
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 4px;
+  padding: 20px;
+  display: inline-block;
+  text-align: left;
+  font-size: 16px;
+  width: 100%;
+  max-width: 600px;
+}
+
+.title {
+  font-size: 24px;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #ccc;
+}
+
+.error {
+  color: red;
+}
+
+table {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.label {
+  padding-right: 40px;
+  text-align: right;
+}
+
+.button {
+  width: 100%;
+}
+input {
+  font-size: 16px;
+}

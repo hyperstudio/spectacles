@@ -3,19 +3,20 @@ var React = require('react');
 var DOM = require('react-dom');
 
 
-class LoginPage extends React.Component {
+class RegisterPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       username: this.props.username || '',
       password: this.props.password || '',
+      name: this.props.name || '',
     };
   }
 
   renderError() {
     if (this.props.error) {
       return <h4 className="error">
-        Your username and password didn't match. Please try again.
+        An account for {this.props.username} already exists. Perhaps you meant to <a href="/auth/login"> log in? </a>
       </h4>
     }
   }
@@ -29,17 +30,17 @@ class LoginPage extends React.Component {
     return (event) => {
       let change = {};
       change[path] = event.target.value;
-      this.setState(change);
+      x.setState(change);
     };
   }
 
   render() {
     return <div>
       <div className="body">
-        <div className="login form">
-          <h3 className="title"> Log In to Spectacles </h3>
+        <div className="register form">
+          <h3 className="title">Register for Spectacles</h3>
           {this.renderError()}
-          <form method="post" action='/auth/login'>
+          <form method="post" action='/auth/register'>
             <input type="hidden"
                  name="csrfmiddlewaretoken"
                  value={this.props.csrftoken}/>
@@ -47,9 +48,15 @@ class LoginPage extends React.Component {
             <table>
               <tbody>
                 <tr>
+                  <td className="label">Name:</td>
+                  <td className="input">
+                    <input type="text" name="name" required autoFocus value={this.state.name} onChange={this.onChange('name')}/>
+                  </td>
+                </tr>
+                <tr>
                   <td className="label">Email:</td>
                   <td className="input">
-                    <input type="text" name="username" required autoFocus value={this.state.username} onChange={this.onChange('username')}/>
+                    <input type="text" name="username" required value={this.state.username} onChange={this.onChange('username')}/>
                   </td>
                 </tr>
                 <tr>
@@ -60,7 +67,7 @@ class LoginPage extends React.Component {
                 </tr>
               </tbody>
             </table>
-            <input type="submit" value="login" className="button"/>
+            <input type="submit" value="register" className="button"/>
           </form>
         </div>
       </div>
@@ -70,5 +77,5 @@ class LoginPage extends React.Component {
 
 
 DOM.render(
-    <LoginPage {...PROPS}/>,
+    <RegisterPage {...PROPS}/>,
     document.getElementById('react-root'));
