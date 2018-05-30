@@ -45,8 +45,6 @@ def archive(request):
         'anns': to_dict(Annotation.objects.with_doc_info().all()[200:210]),
     }
 
-    print('# docs:', len(recs['docs']))
-    print('# anns:', len(recs['anns']))
     return to_dict({
         'archive': None,
         'documents': to_dict(docs, fields=Document._slim_fields),
@@ -67,10 +65,9 @@ def document(request, document_id):
         'docs': [
             to_dict(Document.slim.get(id=id_),
                     fields=Document._slim_fields)
-            for id_ in similar
+            for id_ in similar or []
         ]
     }
-    print(recs['docs'][0])
 
 
     return {
