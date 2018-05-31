@@ -1,21 +1,23 @@
 set -e
-# On AWS, better to use EBS for /data; uncomment this to
-# set up two volumes to back /data/elasticsearch and /data/postgres
+### On AWS, better to use EBS for /data; uncomment this to set up two
+### volumes to back /data/elasticsearch and /data/postgres
 #./install-fstab.sh
 #./mount-volumes.sh
 
-### Install postgres
-./install-postgres.sh
-### Create the spectacles database
-./config/createdb-spectacles
-### Install elasticsearch
+### Elasticsearch
 ./install-elasticsearch.sh
-### Install nodejs and yarn
+### Postgres
+./install-postgres.sh
+##### Create the spectacles database
+./config/createdb-spectacles
+### Elasticsearch
+./install-elasticsearch.sh
+### Nodejs, Yarn
 ./install-yarn.sh
-### Install python
+### Python
 ./install-python.sh
-### Install nginx and letsencrypt
+### Nginx, Letsencrypt
 ./install-nginx.sh
 ./install-letsencrypt.sh
-### Install uwsgi
+### UWSGI
 ./install-uwsgi.sh
