@@ -16,9 +16,9 @@ be alpha-version software. Read and run the code at your own risk. Please feel
 free to submit issues or contact the authors directly with any questions.
 
 
-## Documentation
+# Documentation
 
-### Installation
+## Installation
 The installation scripts assume that you are installing on Ubuntu 16.04 or higher as the `ubuntu` user with `sudo` capabilities.
 
 ```bash
@@ -46,11 +46,14 @@ pip install -r requirements.txt
 ### Create a new admin user
 ./manage.py createsuperuser
 
-# All done! Ready to run the production web server:
-killall uwsgi && make prod
+# Ready to run the production web server:
+make prod
+# And the background indexer daemons
+./daemons/runall.sh
+# All done! 
 ```
 
-### Development
+## Development
 Start a local webserver with:
 ```
 ./manage.py runserver 8080
