@@ -1,0 +1,13 @@
+- [x] Hosting
+  - [x] Document install scripts
+- [ ] Data import script based on US-IRAN
+- [ ] Functionality
+  - [X] Avoid recommending source ann/doc in results
+  - [ ] Remove deleted annotations and documents from the recommendation datastores
+  - [ ] Logout links in dropdown under username in upper right
+  - [ ] Single archive, name included in templates
+  - [ ] Remove "recommended documents" view
+- [ ] Code
+  - [ ] Frontend cleanup
+  - [ ] Backend cleanup
+  - [ ] Merge multiple packages
