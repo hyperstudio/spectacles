@@ -14,9 +14,9 @@ from django.http import HttpResponseBadRequest as R400, HttpResponseNotFound as 
 
 from spectacles.utils import json_response
 from spectacles.utils import to_dict
-from datastore.auth import generate_consumer_token
-from datastore.models import Document
-from datastore.models import Annotation
+from spectacles.auth import generate_consumer_token
+from spectacles.models import Document
+from spectacles.models import Annotation
 
 
 # TODO: weird URI and permissions updating shouldn't have to happen Remove
@@ -67,7 +67,6 @@ def get(request, doc):
 
 
 def delete(request, doc, annotation_uuid):
-    print('annotation__uuid:', annotation_uuid)
     ann = doc.annotations.filter(uuid=annotation_uuid)
     if ann.exists():
         ann = ann[0]
@@ -138,4 +137,3 @@ def update(request, doc, annotation_uuid):
     ann.data.update(updated)
     ann.save()
     return _clean_ann(to_dict(ann), doc.id)
-    #return to_dict(_clean_ann(ann.data, doc.id))

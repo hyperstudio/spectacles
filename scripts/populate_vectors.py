@@ -10,9 +10,11 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "spectacles.settings")
 import django
 django.setup()
 #---------------------------------------------------------------------
-from datastore.models import Annotation, Document
-from django.core.paginator import Paginator
 from tqdm import tqdm
+
+from django.core.paginator import Paginator
+
+from spectacles.models import Annotation, Document
 
 
 MAX_LEN = 500 * 1000

@@ -7,7 +7,7 @@ from django.contrib import admin
 import spectacles.views
 import spectacles.views.auth
 import spectacles.views.api
-import datastore.views
+import spectacles.views.datastore
 
 
 urlpatterns = [
@@ -37,11 +37,11 @@ urlpatterns = [
     url(r'^api/bookmark$', spectacles.views.api.bookmark_crud, name='api-bookmark-crud'),
     url(r'^api/bookmark/(?P<bookmark_id>\d+)$', spectacles.views.api.bookmark_crud, name='api-bookmark-crud'),
     ### Datastore
-    url(r'^api/store/token$', datastore.views.token, name='ds-token'),
+    url(r'^api/store/token$', spectacles.views.datastore.token, name='ds-token'),
     url(r'^api/store/(?P<document_id>\d+)$',
-        datastore.views.crud,
+        spectacles.views.datastore.crud,
         name='ds-store-crud'),
     url(r'^api/store/(?P<document_id>\d+)/(?P<annotation_id>[0-9a-f-]+)$',
-        datastore.views.crud,
+        spectacles.views.datastore.crud,
         name='ds-store-crud'),
 ]

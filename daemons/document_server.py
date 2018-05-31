@@ -13,8 +13,8 @@ django.setup()
 from django.conf import settings
 from django.db import transaction
 
-from datastore.models import Document
-from nndb import Server
+from spectacles.models import Document
+from spectacles.nndb import Server
 
 
 server = Server(

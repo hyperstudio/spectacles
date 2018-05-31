@@ -1,8 +1,13 @@
-from django_elasticsearch_dsl import DocType, Index, fields
-from spectacles.utils import DictModel
-from datastore.models import Annotation
-from datastore.models import Document
+# coding: utf-8
+from __future__ import print_function, unicode_literals
 from django.conf import settings
+
+from django_elasticsearch_dsl import DocType, Index, fields
+
+from spectacles.utils import DictModel
+from spectacles.models import Annotation
+from spectacles.models import Document
+
 
 class ESModel(DictModel):
     _json_fields = []
@@ -12,8 +17,6 @@ class ESModel(DictModel):
         meta = self.meta.to_dict()
         data.update(meta)
         return data
-
-# TODO: add archive_id to both annotation and document
 
 
 document_index = Index('spectacles-document')

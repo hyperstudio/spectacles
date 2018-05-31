@@ -13,8 +13,8 @@ django.setup()
 from django.conf import settings
 from django.db import transaction
 
-from datastore.models import Annotation
-from nndb import Indexer
+from spectacles.models import Annotation
+from spectacles.nndb import Indexer
 
 
 class AnnotationIndexer(Indexer):

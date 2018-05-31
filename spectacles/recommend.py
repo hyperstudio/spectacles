@@ -6,7 +6,7 @@ from django.conf import settings
 
 from nndb.client import Client
 from nndb.client import RPCException
-from datastore.models import Document, Annotation
+from spectacles.models import Document, Annotation
 
 
 _ann_client = None
@@ -34,9 +34,7 @@ def make_recommender(client_fetcher):
         v = t.get_vector()
         if v is None:
             # TODO: alternate type of recommendation engine here?
-            print('no similar annotations because NO VECTOR')
             t.recalculate_vector()
-            print('t.vector:', t.get_vector())
             if t.has_vector():
                 t.save()
                 v = t.get_vector()
@@ -45,7 +43,6 @@ def make_recommender(client_fetcher):
         try:
             results = c.neighbors_by_vector(v, n, search_k=search_k)
         except RPCException as e:
-            print(e)
             results = []
         return [r for r in results if r != t.id]
     return recommender

@@ -13,7 +13,7 @@ django.setup()
 from django.conf import settings
 from django.db import transaction
 
-from nndb import Server
+from spectacles.nndb import Server
 
 
 server = Server(

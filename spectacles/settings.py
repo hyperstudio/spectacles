@@ -47,7 +47,6 @@ INSTALLED_APPS = [
     # Our code
     #'specutron', # Analysis
     'spectacles',
-    'datastore',
 ]
 
 AUTH_USER_MODEL = 'spectacles.User'

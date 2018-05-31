@@ -7,8 +7,8 @@ from elasticsearch_dsl.query import MultiMatch
 from elasticsearch_dsl.query import Q
 from elasticsearch_dsl.query import QueryString
 
-from datastore.documents import ESAnnotation, ESDocument
-from datastore.models import Annotation, Document
+from spectacles.documents import ESAnnotation, ESDocument
+from spectacles.models import Annotation, Document
 
 
 def intelligent_match(query, fields, fuzziness='AUTO'):

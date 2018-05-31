@@ -1,19 +1,18 @@
 # coding: utf-8
-from __future__ import unicode_literals
-from __future__ import print_function
+from __future__ import print_function, unicode_literals
 import json
 
-from django.contrib.auth.decorators import login_required
-from django.views.decorators.csrf import ensure_csrf_cookie
-from django.views.decorators.http import require_http_methods
 from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
+from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_http_methods
 
 from spectacles import search
 from spectacles.utils import json_response
 from spectacles.utils import to_dict
-from datastore.models import Document, Annotation
+from spectacles.models import Document, Annotation
 from spectacles.recommend import recommend_annotations, recommend_documents
 
 

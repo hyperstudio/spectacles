@@ -1,17 +1,16 @@
 # coding: utf-8
-from __future__ import unicode_literals
-from __future__ import print_function
-from django.shortcuts import render
-from django.http import JsonResponse
-from django.http import HttpResponse
-from django.db import models
-from django.db.models.query import QuerySet
-from django.core.serializers.json import DjangoJSONEncoder
-from django.http.response import HttpResponseBase
-from django.http.response import HttpResponseRedirect
+from __future__ import print_function, unicode_literals
 import json
 import numpy as np
-import pdb
+
+from django.core.serializers.json import DjangoJSONEncoder
+from django.db import models
+from django.db.models.query import QuerySet
+from django.http import HttpResponse
+from django.http import JsonResponse
+from django.http.response import HttpResponseBase
+from django.http.response import HttpResponseRedirect
+from django.shortcuts import render
 
 PROPS = 'PROPS'
 
@@ -32,6 +31,7 @@ class VectorModel(object):
         self.vector = ndarray.tobytes()
         self.vector_needs_synch = True
 
+
 class DictModel(object):
     def to_dict(self, fields=None, json_fields=None):
         out = {}
@@ -46,17 +46,14 @@ class DictModel(object):
 
 
 def to_dict(blob, **kwargs):
-    try:
-        if isinstance(blob, dict):
-            return {key: to_dict(value, **kwargs) for key, value in blob.items()}
-        if isinstance(blob, list):
-            return [to_dict(value, **kwargs) for value in blob]
-        if isinstance(blob, DictModel):
-            return blob.to_dict(**kwargs)
-        if isinstance(blob, QuerySet):
-            return [to_dict(v, **kwargs) for v in blob]
-    except Exception as e:
-        pdb.set_trace()
+    if isinstance(blob, dict):
+        return {key: to_dict(value, **kwargs) for key, value in blob.items()}
+    if isinstance(blob, list):
+        return [to_dict(value, **kwargs) for value in blob]
+    if isinstance(blob, DictModel):
+        return blob.to_dict(**kwargs)
+    if isinstance(blob, QuerySet):
+        return [to_dict(v, **kwargs) for v in blob]
     return blob
 
 
@@ -71,9 +68,7 @@ def props_template(path):
         def _2(request, *args, **kwargs):
             json_kwargs = {}
             context = fn(request, *args, **kwargs)
-            print(type(context))
             if isinstance(context, (HttpResponseBase, HttpResponseRedirect)):
-                print('RETURNING CONTEXT DIRECTLY')
                 return context
             if isinstance(context, tuple):
                 context, json_kwargs = context

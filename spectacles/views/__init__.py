@@ -1,6 +1,5 @@
 # coding: utf-8
-from __future__ import unicode_literals
-from __future__ import print_function
+from __future__ import print_function, unicode_literals
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
@@ -14,7 +13,7 @@ from spectacles.utils import to_dict
 from spectacles.utils import flatten
 from spectacles.recommend import recommend_annotations, recommend_documents
 from spectacles.utils import PROPS
-from datastore.models import Document, Annotation
+from spectacles.models import Document, Annotation
 
 
 

@@ -24,5 +24,4 @@ def vector_from_html_text(text):
     # text cleaning.
     if vector.shape[0] > 0:
         return vector
-    print('clean text:', repr(text))
     return None
