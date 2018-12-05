@@ -1,6 +1,6 @@
 Cython==0.27.3
 Django==1.11
-requests==2.18
+requests==2.20
 psycopg2==2.7.3.2
 elasticsearch==5.5.1
 elasticsearch-dsl==5.3.0
