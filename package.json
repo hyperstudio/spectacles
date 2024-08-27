@@ -19,7 +19,7 @@
     "react-tabs": "^2.2.1",
     "sort-by": "^1.2.0",
     "underscore": "^1.8.3",
-    "webpack": "^2.4.1"
+    "webpack": "^5.94.0"
   },
   "devDependencies": {
     "babel-core": "^6.24.1",
